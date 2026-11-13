@@ -289,6 +289,7 @@ struct ConversationView: View {
         // the whole bar.
         .frame(width: max(width - (barButtonsInSideRail ? 0 : 136), 0), alignment: .leading)
         .contentShape(Rectangle())
+        .accessibilityAddTraits(.isHeader)
         .accessibilityHint("Show conversation triggers")
         .accessibilityIdentifier("conversation-trigger-entry")
     }
@@ -383,7 +384,7 @@ struct ConversationView: View {
                         return await store.mentionableSessions(teamId: session.teamId, excluding: session.sessionId, matching: query)
                     }
                 ),
-                voiceTeamId: session.teamId,
+                voiceTeamId: store.voiceInputAvailable(teamId: session.teamId) ? session.teamId : nil,
                 temporaryDirectory: temporaryDirectory,
                 onSend: { session.send($0) },
                 onStop: { session.stop() }
@@ -450,6 +451,12 @@ struct ConversationView: View {
         #endif
     }
 
+    /// A message's own time, for its spoken label. Rows carry no date of
+    /// their own: the separator rows only mark pauses.
+    private func messageDate(_ messageId: String) -> Date? {
+        session.messages.first(where: { $0.id == messageId })?.createdAt
+    }
+
     private func rowSpacing(_ row: ChatRow) -> CGFloat {
         switch row {
         case .assistantText: 28
@@ -466,10 +473,14 @@ struct ConversationView: View {
         switch row {
         case .timestamp(_, let date):
             TimestampLabel(date: date)
-        case .user(_, _, let text, let images, let sender, let transfers):
-            UserBubble(text: text, images: images, sender: sender, transfers: transfers, session: session)
-        case .assistantText(_, _, let text, let streaming):
+        case .user(_, let messageId, let text, let images, let sender, let transfers):
+            UserBubble(text: text, images: images, sender: sender, transfers: transfers, session: session,
+                       date: messageDate(messageId))
+        case .assistantText(_, let messageId, let text, let streaming):
+            // One element for the whole reply: sender, time, every word.
             AssistantMarkdown(text: text, streaming: streaming, onLink: open(link:))
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(MessageAccessibility.label(mine: false, date: messageDate(messageId), text: text))
                 .frame(maxWidth: .infinity, alignment: .leading)
         case .reasoning(_, let part):
             ReasoningTile(part: part)
@@ -532,6 +543,8 @@ struct UserBubble: View {
     var sender: ChatMessage.Sender?
     var transfers: [TransferUpload] = []
     var session: ChatSession?
+    /// The message's time, spoken with its sender and words.
+    var date: Date?
 
     @State private var expanded = false
     @Environment(\.transcriptReadingInteraction) private var readingInteraction
@@ -585,6 +598,9 @@ struct UserBubble: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
                 .background(Theme.bubble, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                // One element, every word, the sender and the time.
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(MessageAccessibility.label(mine: true, date: date, text: text))
             }
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -689,7 +705,7 @@ struct DataURLImage: View {
         if let comma = url.firstIndex(of: ","), let data = Data(base64Encoded: String(url[url.index(after: comma)...])),
            let image = UIImage(data: data) {
             Image(uiImage: image).resizable().scaledToFill()
-                .accessibilityLabel("Attached image")
+                .accessibilityLabel(Text("Attached image, \(data.count.formatted(.byteCount(style: .file)))"))
         } else {
             Theme.bubble
         }
@@ -710,6 +726,7 @@ struct TimestampLabel: View {
             .frame(maxWidth: .infinity)
             .padding(.top, 4)
             .accessibilityLabel(date.formatted(date: .abbreviated, time: .shortened))
+            .accessibilityAddTraits(.isHeader)
     }
 }
 

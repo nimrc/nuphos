@@ -611,7 +611,7 @@ struct NewChatComposer: View {
                 await store.loadCredentialOptions()
                 return await store.mentionableSessions(teamId: draftTeam, excluding: nil, matching: query)
             }
-        ), voiceTeamId: draftTeam.isEmpty ? nil : draftTeam, initialAttachments: initialContent?.attachments ?? [], temporaryDirectory: temporaryDirectory, onSend: { submission in
+        ), voiceTeamId: store.voiceInputAvailable(teamId: draftTeam) ? draftTeam : nil, initialAttachments: initialContent?.attachments ?? [], temporaryDirectory: temporaryDirectory, onSend: { submission in
             do {
                 try admissionCheck?()
                 guard let session = store.newSession() else { throw SharedShareSession.Failure.workspace }

@@ -84,6 +84,7 @@ struct ChannelView: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(channel.faces.botId == nil)
+                    .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier("bot-trigger-entry")
                 }
                 if let bot = desktopBot {
@@ -174,7 +175,7 @@ struct ChannelView: View {
                 text: $draft,
                 canSend: channel.loaded && !channel.readOnly,
                 editRequest: $channel.unsent,
-                voiceTeamId: channel.teamId,
+                voiceTeamId: store.voiceInputAvailable(teamId: channel.teamId) ? channel.teamId : nil,
                 recipient: channel.title,
                 focusRequest: replyFocus,
                 onSend: { channel.send($0) },
@@ -460,6 +461,9 @@ private struct ChannelPostRow: View {
                         in: UnevenRoundedRectangle(cornerRadii: .init(
                             topLeading: !mine && first ? 6 : 18, bottomLeading: 18,
                             bottomTrailing: 18, topTrailing: mine && first ? 6 : 18), style: .continuous))
+            // One element per post: sender, time, every word.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(MessageAccessibility.label(mine: mine, date: post.sentAt, text: post.text))
     }
 
     /// The photos and files of a post still on its way, from the device.
