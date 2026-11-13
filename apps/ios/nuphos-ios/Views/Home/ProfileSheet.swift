@@ -93,7 +93,7 @@ struct ProfileSheet: View {
                 .listRowBackground(Theme.surface)
 
                 Section("Privacy") {
-                    Link("Privacy policy", destination: URL(string: "https://yuai.dev/privacy")!)
+                    Link("Privacy policy", destination: URL(string: "https://yu-bot.airhost.site/privacy/")!)
                     if session.aiConsentAccepted {
                         Button("Withdraw AI data sharing permission") {
                             Task {
