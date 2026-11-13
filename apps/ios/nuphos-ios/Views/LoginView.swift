@@ -89,7 +89,7 @@ struct LoginView: View {
                         }
                         loginOptions
                     }.disabled(signingIn)
-                    Text("By continuing, you agree to our [Terms of Service](https://yuai.dev/terms) and [Privacy Policy](https://yuai.dev/privacy).")
+                    Text("By continuing, you agree to our [Terms of Service](https://yu-bot.airhost.site/terms/) and [Privacy Policy](https://yu-bot.airhost.site/privacy/).")
                         .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }
                 .padding(24)
