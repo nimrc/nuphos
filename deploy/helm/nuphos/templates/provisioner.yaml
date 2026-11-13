@@ -107,6 +107,16 @@ spec:
       ports:
         - port: 8080
   egress:
+    # The backend, in-cluster: model calls, tools and skills (NUPHOS_BACKEND_URL).
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Release.Namespace }}
+          podSelector:
+            matchLabels:
+              {{- include "nuphos.selectorLabels" (list . "backend") | nindent 14 }}
+      ports:
+        - port: 3000
     - to:
         - namespaceSelector:
             matchLabels:

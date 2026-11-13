@@ -123,6 +123,12 @@ spec:
             - name: CLAUDE_CODE_RUNTIME_PROVISIONER_ENABLED
               value: {{ .Values.provisioner.enabled | quote }}
             {{- if .Values.provisioner.enabled }}
+            # Cloud runtimes then reach the backend at nuphos-backend.<namespace>.svc instead of
+            # going out through the public URL and back in.
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: CLAUDE_CODE_RUNTIME_NAMESPACE
               value: {{ .Values.provisioner.namespace | quote }}
             - name: CLAUDE_CODE_RUNTIME_NODE_SELECTOR
