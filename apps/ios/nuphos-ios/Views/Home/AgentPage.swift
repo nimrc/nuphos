@@ -455,6 +455,16 @@ struct AgentPage: View {
         .resolve(newBotState, scheme: colorScheme == .dark ? .dark : .light)
     }
 
+    /// The accessibility hint and value both entries read, so a state cannot
+    /// be described one way by the row and another by the bar button.
+    private var newBotAccessibilityHint: Text {
+        newBotAppearance.announcesProgress ? Text("Creating the Bot") : Text("Creates a Bot with its own chat")
+    }
+
+    private var newBotAccessibilityValue: Text {
+        newBotAppearance.announcesProgress ? Text("In progress") : Text("")
+    }
+
     /// The obvious create entry: the first row of the Bots list, so it also
     /// carries the empty state.
     private var newBotRow: some View {
@@ -464,7 +474,7 @@ struct AgentPage: View {
                 showNewBot = true
             } label: {
                 HStack(spacing: 8) {
-                    if newBotState == .creating, let spinner = newBotAppearance.spinner {
+                    if let spinner = newBotAppearance.spinner {
                         ProgressView()
                             .tint(spinner.color)
                             .accessibilityHidden(true)
@@ -488,8 +498,8 @@ struct AgentPage: View {
             .buttonStyle(NewBotButtonStyle())
             .disabled(newBotAppearance.readsAsDisabled)
             .accessibilityLabel("New Bot")
-            .accessibilityHint(newBotState == .creating ? Text("Creating the Bot") : Text("Creates a Bot with its own chat"))
-            .accessibilityValue(newBotState == .creating ? Text("In progress") : Text(""))
+            .accessibilityHint(newBotAccessibilityHint)
+            .accessibilityValue(newBotAccessibilityValue)
 
             if store.botsList.isEmpty {
                 Text("Give each Bot its own chat")
@@ -505,23 +515,37 @@ struct AgentPage: View {
         .listSectionSeparator(.hidden, edges: .top)
     }
 
-    /// The same create action in the navigation bar, top right. Creating keeps
-    /// it looking active and only refuses the tap; not ready disables it.
+    /// The same create action in the navigation bar, top right. It draws the
+    /// same `NewBotButtonAppearance` pair as the row: its fill is the button
+    /// background, its glyph or spinner is the foreground, and the state's
+    /// tap and accessibility flags apply unchanged in the bar.
     private var newBotBarButton: some View {
         Button {
             guard newBotAppearance.acceptsTaps else { return }
             showNewBot = true
         } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 20, weight: .medium))
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
+            ZStack {
+                Circle()
+                    .fill(newBotAppearance.fill.color)
+                if newBotAppearance.announcesProgress, let spinner = newBotAppearance.spinner {
+                    ProgressView()
+                        .tint(spinner.color)
+                        .accessibilityHidden(true)
+                } else {
+                    Image(systemName: "plus")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(newBotAppearance.glyph.color)
+                }
+            }
+            .frame(width: 32, height: 32)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
         }
-        .foregroundStyle(Theme.brand)
+        .buttonStyle(NewBotButtonStyle())
         .disabled(newBotAppearance.readsAsDisabled)
         .accessibilityLabel("New Bot")
-        .accessibilityHint(newBotState == .creating ? Text("Creating the Bot") : Text("Creates a Bot with its own chat"))
-        .accessibilityValue(newBotState == .creating ? Text("In progress") : Text(""))
+        .accessibilityHint(newBotAccessibilityHint)
+        .accessibilityValue(newBotAccessibilityValue)
     }
 
     private var list: some View {
