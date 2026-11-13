@@ -84,10 +84,13 @@ export async function listRuntimeInstances(
     }),
   )
 
+  // A server that offers only some providers lists, and so chats on, only those: its own cloud
+  // runtimes and members' computers alike.
+  const offered = config.claudeCodeRuntimeProvisioner.providers
   const instances = [
     ...groups.flat(),
     ...(userId ? await listOwnLocalRuntimes(teamId, userId) : []),
-  ]
+  ].filter((instance) => !offered.length || offered.includes(instance.provider))
   const deletions = await runtimeDeletions()
     .find({ teamId, completedAt: { $exists: false } })
     .sort({ requestedAt: 1 })

@@ -64,6 +64,8 @@ export type ClaudeCodeRuntimeProvisionerConfig = {
   images: Partial<Record<OpenAbProvider, string>>
   /** The providers a team may create a cloud runtime for; all when unset. */
   providers: readonly OpenAbProvider[]
+  /** A cloud runtime every team gets without adding one (default-runtime.ts); none when unset. */
+  defaultProvider?: OpenAbProvider
 }
 
 function keyValuePairs(entries: string[]): [string, string][] {
@@ -141,5 +143,8 @@ export function claudeCodeRuntimeProvisionerConfig(): ClaudeCodeRuntimeProvision
       ]),
     ),
     providers: optionalList('NUPHOS_RUNTIME_PROVIDERS').map(runtimeProviderName),
+    ...(optional('NUPHOS_DEFAULT_RUNTIME')
+      ? { defaultProvider: runtimeProviderName(optional('NUPHOS_DEFAULT_RUNTIME') ?? '') }
+      : {}),
   }
 }
