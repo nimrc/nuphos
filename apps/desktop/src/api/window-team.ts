@@ -23,7 +23,6 @@ import type {
   RuntimeQuota,
   RuntimeQuotaHistoryRange,
   RuntimeQuotaHistorySeries,
-  CreateRuntimeInput,
   ExternalRuntimeProviderProbe,
   PairExternalRuntimeInput,
   PairedExternalRuntime,
@@ -50,6 +49,7 @@ import type {
 } from '../types/team.ts'
 
 export type WindowTeamApi = {
+  atlasExportTeam(teamId: string): Promise<boolean>
   atlasGetTeamGoogleClient(teamId: string): Promise<TeamGoogleClient>
   atlasSetTeamGoogleClient(teamId: string, clientId: string, clientSecret: string): Promise<void>
   atlasDeleteTeamGoogleClient(teamId: string): Promise<void>
@@ -68,7 +68,6 @@ export type WindowTeamApi = {
     teamId: string,
     range: RuntimeQuotaHistoryRange,
   ): Promise<RuntimeQuotaHistorySeries[]>
-  atlasCreateRuntimeInstance(teamId: string, input: CreateRuntimeInput): Promise<RuntimeInstance>
   atlasProbeExternalRuntimeProvider(
     teamId: string,
     url: string,

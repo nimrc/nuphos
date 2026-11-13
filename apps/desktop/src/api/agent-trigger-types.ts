@@ -81,50 +81,15 @@ export type AgentTrigger = {
   cleanupStartedAt?: string
   cleanupUpdatedAt?: string
   lastRunAt?: string
+  /** A scheduled fire last reached the worker, whatever the turn's outcome. */
+  lastFiredAt?: string
+  /** Due time of the latest scheduled fire that never ran; cleared by the next fire. */
+  missedRunAt?: string
   createdAt: string
   updatedAt: string
   // Present only on the single-trigger GET and the create POST; stripped from
   // list responses to avoid shipping every secret on every refresh.
   webhookSecret?: string
-}
-
-export type AgentTriggerGroup = {
-  id: string
-  userId: string
-  createdByUserId?: string
-  executionPrincipalUserId?: string
-  executionAuthorizationStatus?: 'unchecked' | 'valid' | 'invalid'
-  executionAuthorizationCheckedAt?: string
-  executionAuthorizationError?: string
-  teamId: string
-  name: string
-  messageTemplate: string
-  memberKeys: string[]
-  expectedMemberCount: number
-  partitionCount: number
-  readyPartitionCount: number
-  failedPartitionCount: number
-  partitions: {
-    key: string
-    provider: string
-    integrationId: string
-    memberKeys: string[]
-    triggerId: string
-  }[]
-  slackDestination?: AgentTriggerSlackDestination
-  enabled: boolean
-  state: 'provisioning' | 'active' | 'partial' | 'paused'
-  createdAt: string
-  updatedAt: string
-}
-
-export type CreateAgentTriggerInput = {
-  name: string
-  triggerType: AgentTriggerType
-  messageTemplate: string
-  cronExpression?: string
-  targetSessionId: string
-  teamId?: string
 }
 
 export type UpdateAgentTriggerInput = {
@@ -136,28 +101,6 @@ export type UpdateAgentTriggerInput = {
   enabled?: boolean
 }
 
-export type UpdateAgentTriggerGroupInput = {
-  name?: string
-  messageTemplate?: string
-  enabled?: boolean
-}
-
-export type TestAgentTriggerGroupResult = {
-  ok: true
-  verifiedIngressCount: number
-  verifiedMemberCount: number
-  delivery: 'slack' | 'nuphos'
-  destinationLabel?: string
-}
-
-export type TestAgentTriggerResult = {
-  ok: true
-  delivery: 'slack' | 'nuphos'
-  destinationLabel?: string
-}
-
 export type DeleteAgentTriggerResult =
   | { ok: true; deleted: true; leftBehind?: string[] }
   | { ok: true; deleted: false; trigger: AgentTrigger }
-
-export type TriggerSchedulerStatus = { cronEnabled: boolean }

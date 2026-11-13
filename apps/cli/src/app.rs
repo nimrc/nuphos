@@ -51,12 +51,13 @@ const TIPS: [&str; 4] = [
     "Use /model to change the model and reasoning effort.",
 ];
 /// The agents Nuphos can run for a team, as the desktop's Add agent offers them.
-const PROVIDERS: [(&str, &str); 5] = [
+const PROVIDERS: [(&str, &str); 6] = [
     ("claude-code", "Claude Code"),
     ("codex", "Codex"),
     ("grok", "Grok Build"),
     ("antigravity", "Antigravity"),
     ("opencode", "OpenCode"),
+    ("hermes", "Hermes Agent"),
 ];
 /// How long a sign-in may take, from starting the agent to the browser.
 const SIGN_IN_TIMEOUT: Duration = Duration::from_secs(10 * 60);
@@ -701,7 +702,7 @@ impl App {
 
     /// The conversation's title on the left, the team on the right.
     fn draw_top_bar(&self, f: &mut Frame, area: Rect) {
-        let title = self.title.as_deref().unwrap_or("New agent");
+        let title = self.title.as_deref().unwrap_or("New task");
         let team = self.team_label();
         let room = (area.width as usize).saturating_sub(team.width() + 2);
         let title: String = render::clean(title).chars().take(room).collect();
@@ -1375,37 +1376,14 @@ impl App {
         });
     }
 
-    /// `/agents`: the team's agents to run this conversation on, then ways to
-    /// add one: a Nuphos-managed agent, or a self-hosted one by pairing code.
+    /// `/agents`: existing agents, plus connecting a self-hosted one by pairing code.
     fn open_agents(&mut self) {
         let current = self.runtime.as_ref().map(|r| r["id"].clone());
         let mut items: Vec<_> =
             self.runtimes.iter().map(|r| (shared::label(r), shared::runtime_detail(r), r.clone())).collect();
         let selected = items.iter().position(|(_, _, r)| Some(&r["id"]) == current.as_ref()).unwrap_or(0);
-        for (provider, name) in PROVIDERS {
-            items.push((format!("+ New {name} runtime"), "Nuphos-managed".into(), json!({ "add": provider })));
-        }
         items.push(("+ Connect a self-hosted runtime".into(), "pairing code".into(), json!({ "add": "self-hosted" })));
         self.picker = Some(Picker { title: "Runtimes".into(), items, selected, action: PickAction::Runtime });
-    }
-
-    fn add_agent(&mut self, kind: &str) {
-        if kind == "self-hosted" {
-            self.ask = Some(("The runtime's URL, from its console (https://… or wss://…)".into(), Ask::PairUrl));
-            return;
-        }
-        let (api, team, provider) = (self.api.clone(), self.team_id(), kind.to_string());
-        self.background(true, async move {
-            let result = api.create_runtime(&team, &provider).await;
-            Box::new(move |app: &mut App| match result {
-                Ok(runtime) => {
-                    app.notice = Some(format!("Added {}.", shared::label(&runtime)));
-                    app.adopt_agent(&runtime);
-                    app.sign_in_agent(runtime);
-                }
-                Err(e) => app.notice = Some(e.message),
-            }) as Apply
-        });
     }
 
     /// A new agent becomes the one new conversations start on.
@@ -1972,7 +1950,12 @@ impl App {
                         self.choose_team(value);
                     }
                     PickAction::Runtime => match value["add"].as_str() {
-                        Some(kind) => self.add_agent(kind),
+                        Some(_) => {
+                            self.ask = Some((
+                                "The runtime's URL, from its console (https://… or wss://…)".into(),
+                                Ask::PairUrl,
+                            ));
+                        }
                         None => self.choose_runtime(value),
                     },
                     PickAction::Conversation => self.resume(value),

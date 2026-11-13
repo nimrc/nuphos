@@ -4,7 +4,7 @@ import { AppError } from '@/lib/errors'
 import { logError } from '@/lib/observability'
 import { createSlackOutboundContext } from '@/lib/slack/agent-outbound'
 
-import { assertTriggerAccess, triggerExecutionPrincipalId } from '../trigger-access'
+import { assertTriggerAccess } from '../trigger-access'
 import { executeTrigger } from '../trigger-executor'
 
 import { findManagedTrigger, parseTriggerId } from './shared'
@@ -46,9 +46,8 @@ export type TestTriggerDestinationResult = {
 
 /**
  * Verify the destination configured by the desktop UI without manufacturing a
- * provider alert or entering incident investigation/dedupe. Real provider
- * webhooks and the agent-facing trigger_test_fire tool continue to use
- * executeTrigger via testFireTrigger.
+ * provider alert or entering incident investigation/dedupe. Agent sessions
+ * continue to use executeTrigger via testFireTrigger.
  *
  * Legacy/Nuphos-only triggers do not have a separately addressable outbound
  * destination, so they retain the existing background agent verification.
@@ -76,7 +75,7 @@ export async function testTriggerDestination(
   }
 
   const slack = await createSlackOutboundContext({
-    userId: triggerExecutionPrincipalId(trigger),
+    userId: trigger.userId,
     conversationId: randomUUID(),
     teamId: trigger.teamId,
   })

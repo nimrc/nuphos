@@ -18,6 +18,7 @@ import { raiseWindow } from '../window-raise'
 
 import { getChangelogState } from './changelog'
 import { pickPaths, savePastedAttachments } from './dialogs'
+import { setMainLocale } from './i18n-electron.ts'
 import { importLocalSession } from '../agent/local-session-import'
 
 import { listLocalAgentSessions, validateLocalSessionSource } from './local-sessions'
@@ -26,7 +27,7 @@ import { readAppIcon, setAppIcon } from './app-icon'
 import { readLoginItem, writeLoginItem } from './login-item'
 import { writePersistedThemeSource } from './theme'
 import { fileTransferReadChannels } from './channels-file-transfer'
-import { checkForUpdates, getUpdaterState, installUpdate } from './updater'
+import { updaterChannels } from './channels-updater'
 import { mostRecentlyFocusedVisibleAppWindow } from './windows'
 
 import type { PastedAttachmentPayload } from './dialogs'
@@ -105,6 +106,7 @@ export const appChannels = {
   },
   'app:getAppIcon': () => readAppIcon(),
   'app:setAppIcon': (_e: unknown, icon: string) => setAppIcon(icon),
+  'app:setLocale': (_e: unknown, locale: unknown) => setMainLocale(locale),
   'app:getLoginItem': () => readLoginItem(app, process.platform),
   'app:setLoginItem': (_e: unknown, openAtLogin: unknown) =>
     writeLoginItem(app, process.platform, openAtLogin),
@@ -238,9 +240,7 @@ export const appChannels = {
     return dirs
   },
   'changelog:getState': () => getChangelogState(),
-  'updater:getState': () => getUpdaterState(),
-  'updater:check': () => checkForUpdates(),
-  'updater:install': () => installUpdate(),
+  ...updaterChannels,
 } as const
 
 // Avatar trust runs during render, so the renderer reads the endpoint synchronously.

@@ -95,6 +95,7 @@ struct RuntimesPage: View {
                             SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false)
                                 .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                         }
+                        .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                     }
                 }
                 .listRowBackground(Theme.surface)

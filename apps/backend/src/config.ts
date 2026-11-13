@@ -15,6 +15,7 @@ import {
 } from './config/claude-code-preview'
 import { coreConfig } from './config/core'
 import { dashboardsConfig } from './config/dashboards'
+import { meetingsConfig } from './config/meetings'
 import { messagingConfig } from './config/messaging'
 import { otelConfig } from './config/otel'
 import { platformConfig } from './config/platform'
@@ -41,4 +42,5 @@ export const config = {
   box: boxConfig(),
   voice: voiceConfig(),
   yuai: yuaiConfig(),
+  meetings: meetingsConfig(),
 }

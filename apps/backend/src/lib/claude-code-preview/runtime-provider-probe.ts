@@ -40,6 +40,7 @@ export async function probeExternalRuntimeProvider(
       return 'antigravity'
     if (adapterVersion?.startsWith('opencode@')) return 'opencode'
     if (adapterVersion?.startsWith('omp@')) return 'omp'
+    if (adapterVersion?.startsWith('hermes@')) return 'hermes'
 
     return undefined
   } catch {

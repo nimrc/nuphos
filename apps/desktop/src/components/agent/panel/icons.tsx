@@ -54,6 +54,14 @@ export function OpenCodeIcon(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+export function HermesIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M3 2h2.5v5h5V2H13v12h-2.5V9.5h-5V14H3V2Z" />
+    </svg>
+  )
+}
+
 const PROVIDER_ICON: Record<AgentProvider, (props: SVGProps<SVGSVGElement>) => ReactElement> = {
   'claude-code': ClaudeIcon,
   codex: CodexIcon,
@@ -62,6 +70,7 @@ const PROVIDER_ICON: Record<AgentProvider, (props: SVGProps<SVGSVGElement>) => R
   opencode: OpenCodeIcon,
   // oh-my-pi (omp.sh).
   omp: (props) => <Pi {...(props as LucideProps)} />,
+  hermes: HermesIcon,
 }
 
 /** The agent's mark; Claude Code's when the provider is unknown, as for legacy records. */

@@ -96,8 +96,8 @@ issuer endpoint, e.g. `https://<tenant>.logto.app/oidc`), `oidc.clientId`,
 `oidc.clientSecret` (or add `OIDC_CLIENT_SECRET` to `secrets.existingSecret`)
 and `oidc.name`, the label on the "Continue with" button. A verified email
 signs in to the existing account with that email, so the user `nuphos-admin
-bootstrap` created can switch to SSO. Desktop shows the button; the iOS and
-Android apps do not offer OIDC yet.
+bootstrap` created can switch to SSO. Desktop and iOS show the button; Android
+does not offer OIDC yet.
 
 ## Secrets
 
@@ -144,18 +144,6 @@ infrastructure, for example with the
 The Mongo container runs as root so it can own its keyfile, the same as the
 official image's entrypoint. The release's namespace therefore cannot enforce
 the `restricted` Pod Security Standard.
-
-## Cloud runtimes
-
-With `provisioner.enabled=true`, "Add agent -> Cloud" in Desktop and iOS creates a runtime for
-that team in `provisioner.namespace`: a Deployment (non-root, no service account token, 8Gi memory
-limit, `provisioner.cpuLimit` CPU), a Service the backend dials in-cluster, a Secret and two PVCs
-on the default StorageClass. Each team signs its runtime in to its own Claude account. The backend
-gets a ServiceAccount that may manage only those objects in that namespace (plus reading
-PersistentVolumes when one is deleted). `provisioner.nodeSelector` and `provisioner.tolerations`
-place every runtime, e.g. on one dedicated node. The namespace's NetworkPolicy admits only the
-backend and lets runtimes reach public addresses only, so teams cannot reach each other's runtimes
-or anything private in the cluster.
 
 ## Not included
 

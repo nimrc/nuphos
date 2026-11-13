@@ -57,7 +57,9 @@ export function shortAccount(account: string | undefined): string | undefined {
 
 /** The providers this app signs in itself; a catalog also carries ones only Nuphos runs. */
 function localProvider(provider: AgentProvider): LocalAgentProvider | undefined {
-  return provider === 'antigravity' || provider === 'omp' ? undefined : provider
+  return provider === 'antigravity' || provider === 'hermes' || provider === 'omp'
+    ? undefined
+    : provider
 }
 
 /**

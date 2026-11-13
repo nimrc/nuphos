@@ -6,6 +6,7 @@ export const OPENAB_PROVIDERS = [
   'antigravity',
   'opencode',
   'omp',
+  'hermes',
 ] as const
 
 export type OpenAbProvider = (typeof OPENAB_PROVIDERS)[number]
@@ -28,6 +29,7 @@ const PROVIDERS: Record<
   opencode: { label: 'OpenCode', errorPrefix: 'opencode', short: 'opencode', shim: true },
   // oh-my-pi (omp.sh), `omp acp`; this fork binds it to Yu AI (apps/runtime/yuai-omp).
   omp: { label: 'omp', errorPrefix: 'omp', short: 'omp', shim: true },
+  hermes: { label: 'Hermes Agent', errorPrefix: 'hermes', short: 'hermes', shim: true },
 }
 
 export function isOpenAbProvider(value: unknown): value is OpenAbProvider {

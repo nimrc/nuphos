@@ -668,16 +668,6 @@
         }
       }
     },
-    "New agent": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "新建智能体"
-          }
-        }
-      }
-    },
     "No Credentials connected": {
       "localizations": {
         "zh-Hans": {
@@ -1264,7 +1254,13 @@
           }
         }
       }
-    }
+    },
+    "New task": {},
+    "Ask Nuphos anything…": {},
+    "Connect cloud accounts and integrations in Nuphos to use them here.": {},
+    "Sign in with your Nuphos account to continue.": {},
+    "Sign out of Nuphos?": {},
+    "Welcome to Nuphos": {}
   },
   "version": "1.0"
 }

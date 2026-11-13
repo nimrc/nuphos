@@ -19,6 +19,7 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
         static let antigravity = Self(rawValue: "antigravity")
         static let opencode = Self(rawValue: "opencode")
         static let omp = Self(rawValue: "omp")
+        static let hermes = Self(rawValue: "hermes")
     }
     enum Status: String, Codable, Sendable { case active, disabled }
 
@@ -129,6 +130,7 @@ extension RuntimeInstance.Provider {
         case "antigravity": "Antigravity"
         case "opencode": "OpenCode"
         case "omp": "omp"
+        case "hermes": "Hermes Agent"
         case "nuphos": "Nuphos"
         default: raw?.isEmpty == false ? "Unknown runtime" : "Runtime"
         }

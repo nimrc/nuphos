@@ -239,7 +239,7 @@ struct HomeView: View {
     private var newAgentItem: some ToolbarContent {
         if sizeClass == .regular {
             ToolbarItem(placement: .topBarLeading) {
-                Button("New agent", systemImage: "square.and.pencil") { openChat = nil }
+                Button("New task", systemImage: "square.and.pencil") { openChat = nil }
             }
         }
     }

@@ -8,6 +8,7 @@ export const AGENT_PROVIDERS = [
   'antigravity',
   'opencode',
   'omp',
+  'hermes',
 ] as const
 
 export type AgentProvider = (typeof AGENT_PROVIDERS)[number]
@@ -20,6 +21,7 @@ export const AGENT_PROVIDER: Record<AgentProvider, { label: string; account: str
   antigravity: { label: 'Antigravity', account: 'Google' },
   opencode: { label: 'OpenCode', account: 'a model provider' },
   omp: { label: 'omp', account: 'a model provider' },
+  hermes: { label: 'Hermes Agent', account: 'a model provider' },
 }
 
 export type LocalRuntimeSummary = {
@@ -75,12 +77,6 @@ export type RuntimeInstance = {
   /** This computer's agent, known locally before the team catalog lists it. */
   starting?: boolean
   createdAt: string
-}
-
-export type CreateRuntimeInput = {
-  /** Defaults to the agent type's name, made unique in the team. */
-  label?: string
-  provider: RuntimeInstance['provider']
 }
 
 /** A runtime the operator runs themselves: Nuphos only learns where it is and
