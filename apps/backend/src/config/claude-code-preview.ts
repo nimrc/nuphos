@@ -3,9 +3,11 @@ import { createHmac } from 'node:crypto'
 import { bool, optional, optionalList } from './env'
 
 import type { ClaudeCodePreviewConfig } from '@/lib/claude-code-preview/gate'
+import type { OpenAbProvider } from '@/lib/claude-code-preview/runtime-provider'
 import type { RuntimeScheduling } from '@/lib/claude-code-preview/runtime-deployment'
 
 import { resolveDevelopmentRuntimeEndpoint } from '@/lib/claude-code-preview/gate'
+import { OPENAB_PROVIDERS } from '@/lib/claude-code-preview/runtime-provider'
 
 /** A local stack has no key to hand out, so it derives a stable one from its JWT secret. */
 function localStackTokenKey(): string | undefined {
@@ -58,6 +60,10 @@ export type ClaudeCodeRuntimeProvisionerConfig = {
   kubeContext?: string
   /** Where runtime pods are allowed to land, and how much CPU they may burn. */
   scheduling: RuntimeScheduling
+  /** Images that replace the published release per provider (`provider=image`). */
+  images: Partial<Record<OpenAbProvider, string>>
+  /** The providers a team may create a cloud runtime for; all when unset. */
+  providers: readonly OpenAbProvider[]
 }
 
 function keyValuePairs(entries: string[]): [string, string][] {
@@ -74,6 +80,17 @@ function keyValuePairs(entries: string[]): [string, string][] {
 
     return [key, value]
   })
+}
+
+function runtimeProviderName(raw: string): OpenAbProvider {
+  const provider = OPENAB_PROVIDERS.find((p) => p === raw)
+
+  if (!provider)
+    throw new Error(
+      `Unknown runtime provider ${JSON.stringify(raw)} (one of ${OPENAB_PROVIDERS.join(', ')})`,
+    )
+
+  return provider
 }
 
 function runtimeCpuLimit(): string | undefined {
@@ -104,6 +121,9 @@ function runtimeSchedulingConfig(): RuntimeScheduling {
       ([key, value]) => ({ key, value }),
     ),
     ...(cpuLimit ? { cpuLimit } : {}),
+    ...(optional('CLAUDE_CODE_RUNTIME_IMAGE_PULL_SECRET')
+      ? { imagePullSecret: optional('CLAUDE_CODE_RUNTIME_IMAGE_PULL_SECRET') }
+      : {}),
   }
 }
 
@@ -114,5 +134,12 @@ export function claudeCodeRuntimeProvisionerConfig(): ClaudeCodeRuntimeProvision
     kubectl: process.env.NODE_ENV !== 'production' && bool('CLAUDE_CODE_RUNTIME_KUBECTL', false),
     kubeContext: optional('CLAUDE_CODE_RUNTIME_KUBE_CONTEXT'),
     scheduling: runtimeSchedulingConfig(),
+    images: Object.fromEntries(
+      keyValuePairs(optionalList('CLAUDE_CODE_RUNTIME_IMAGES')).map(([provider, image]) => [
+        runtimeProviderName(provider),
+        image,
+      ]),
+    ),
+    providers: optionalList('NUPHOS_RUNTIME_PROVIDERS').map(runtimeProviderName),
   }
 }

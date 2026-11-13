@@ -98,6 +98,14 @@ export async function createManagedRuntimeInstance(args: {
   provider: OpenAbProvider
   label: string
 }): Promise<RuntimeInstance> {
+  const offered = config.claudeCodeRuntimeProvisioner.providers
+
+  if (offered.length && !offered.includes(args.provider))
+    throw new AppError(
+      422,
+      'runtime_provider_unavailable',
+      `This server offers cloud agents for ${offered.join(', ')} only.`,
+    )
   const slots = await freeHostedSlots(args.teamId)
 
   if (!slots.length) throw runtimeLimitReached()

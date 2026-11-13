@@ -22,6 +22,7 @@ import { avatarsRoutes } from '@/routes/avatars'
 import { claudeCodeRuntimeSkills } from '@/routes/claude-code-runtime-skills'
 import { cliRoutes } from '@/routes/cli'
 import { cliAuthRoutes } from '@/routes/cli-auth'
+import { llmYuaiRoutes } from '@/routes/llm-yuai'
 import { cloudflareAppRoutes } from '@/routes/cloudflare-app'
 import { desktopRoutes } from '@/routes/desktop'
 import { discordRoutes } from '@/routes/discord'
@@ -89,6 +90,8 @@ app.use('*', jsonEtag())
 
 app.get('/openapi.json', (c) => c.json(openApiDocument))
 app.route('/health', health)
+// Yu AI for OpenCode runtimes; authenticated by the runtime's session token, not a cookie.
+app.route('/llm/yuai', llmYuaiRoutes)
 // Public OIDC issuer metadata for AWS BYOS web-identity federation. AWS STS
 // fetches these unauthenticated, so they live outside the auth'd route tree.
 app.route('/.well-known', wellKnownRoutes)

@@ -12,6 +12,9 @@ const keys = [
   'CLAUDE_CODE_RUNTIME_NODE_SELECTOR',
   'CLAUDE_CODE_RUNTIME_NODE_TOLERATIONS',
   'CLAUDE_CODE_RUNTIME_CPU_LIMIT',
+  'CLAUDE_CODE_RUNTIME_IMAGES',
+  'CLAUDE_CODE_RUNTIME_IMAGE_PULL_SECRET',
+  'NUPHOS_RUNTIME_PROVIDERS',
   'CLAUDE_CODE_RUNTIME_DEV_URL',
   'CLAUDE_CODE_RUNTIME_DEV_AUTH_KEY',
   'CLAUDE_CODE_PREVIEW_TOKEN_ENCRYPTION_KEY',
@@ -102,6 +105,8 @@ describe('claudeCodeRuntimeProvisionerConfig', () => {
       namespace: 'openab-runtimes',
       kubectl: false,
       scheduling: { nodeSelector: {}, tolerations: [], cpuLimit: '4' },
+      images: {},
+      providers: [],
     })
   })
 
@@ -116,7 +121,22 @@ describe('claudeCodeRuntimeProvisionerConfig', () => {
       namespace: 'openab-dev',
       kubectl: true,
       scheduling: { nodeSelector: {}, tolerations: [], cpuLimit: '4' },
+      images: {},
+      providers: [],
     })
+  })
+
+  test('reads image overrides, a pull secret and the offered providers', () => {
+    process.env.CLAUDE_CODE_RUNTIME_IMAGES = 'opencode=registry.example.com/runtime:opencode-yuai'
+    process.env.CLAUDE_CODE_RUNTIME_IMAGE_PULL_SECRET = 'regcred'
+    process.env.NUPHOS_RUNTIME_PROVIDERS = 'opencode'
+    const config = claudeCodeRuntimeProvisionerConfig()
+
+    expect(config.images).toEqual({ opencode: 'registry.example.com/runtime:opencode-yuai' })
+    expect(config.scheduling.imagePullSecret).toBe('regcred')
+    expect(config.providers).toEqual(['opencode'])
+    process.env.NUPHOS_RUNTIME_PROVIDERS = 'opencode,gpt'
+    expect(() => claudeCodeRuntimeProvisionerConfig()).toThrow('Unknown runtime provider')
   })
 
   test('pins runtimes to the isolated pool only when the pool is configured', () => {

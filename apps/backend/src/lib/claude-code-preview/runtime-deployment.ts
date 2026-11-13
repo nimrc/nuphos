@@ -16,6 +16,8 @@ export type RuntimeScheduling = {
   tolerations: { key: string; value: string }[]
   /** CPU limit for the agent container. Unset leaves it unbounded. */
   cpuLimit?: string
+  /** A docker-registry Secret in the runtime namespace, for a privately hosted image. */
+  imagePullSecret?: string
 }
 
 export const DEFAULT_RUNTIME_SCHEDULING: RuntimeScheduling = {
@@ -69,6 +71,9 @@ export function hostedRuntimeDeploymentObject(args: {
         metadata: { labels: { app: name, ...labels(args.teamId) } },
         spec: {
           automountServiceAccountToken: false,
+          ...(scheduling.imagePullSecret
+            ? { imagePullSecrets: [{ name: scheduling.imagePullSecret }] }
+            : {}),
           // Both stay absent unless the cluster actually has the isolated pool,
           // so a cluster without it schedules runtimes on any node.
           ...(Object.keys(scheduling.nodeSelector).length > 0
