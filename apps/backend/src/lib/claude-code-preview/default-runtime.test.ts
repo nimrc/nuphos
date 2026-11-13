@@ -8,12 +8,12 @@ import { useRuntimeRegistry } from '@/lib/test/doubles/runtime-registry'
 
 import { ensureDefaultRuntime } from './default-runtime'
 
-type Team = { _id: ObjectId; ownerID: ObjectId; defaultRuntimeClaimedAt?: Date }
+type Team = { _id: ObjectId; ownerID: ObjectId; defaultRuntimeProvider?: string }
 
 const OWNER = new ObjectId()
 const TEAM = new ObjectId()
 let team: Team
-let hosted: { teamId: string }[]
+let hosted: { teamId: string; provider: string }[]
 let created: { teamId: string; userId: string; provider: string; label: string }[]
 let failNext = false
 const provisioner = config.claudeCodeRuntimeProvisioner
@@ -23,16 +23,24 @@ useDb({
   db: () => ({
     collection: () => ({
       // An atomic claim, like Mongo's: only a team without the field matches.
-      findOneAndUpdate: async (filter: { _id: ObjectId }, update: { $set: Partial<Team> }) => {
-        if (!filter._id.equals(team._id) || team.defaultRuntimeClaimedAt) return null
+      findOneAndUpdate: async (
+        filter: { _id: ObjectId; defaultRuntimeProvider: { $ne: string } },
+        update: { $set: Partial<Team> },
+      ) => {
+        if (
+          !filter._id.equals(team._id) ||
+          team.defaultRuntimeProvider === filter.defaultRuntimeProvider.$ne
+        )
+          return null
         const before = { ...team }
 
         Object.assign(team, update.$set)
 
         return before
       },
-      updateOne: async () => {
-        delete team.defaultRuntimeClaimedAt
+      updateOne: async (_: unknown, update: { $set?: Partial<Team>; $unset?: object }) => {
+        if (update.$set) Object.assign(team, update.$set)
+        else delete team.defaultRuntimeProvider
 
         return { modifiedCount: 1 }
       },
@@ -42,8 +50,8 @@ useDb({
 useRuntimeRegistry({
   runtimes: () =>
     ({
-      findOne: async (filter: { teamId: string }) =>
-        hosted.find((r) => r.teamId === filter.teamId) ?? null,
+      findOne: async (filter: { teamId: string; provider: string }) =>
+        hosted.find((r) => r.teamId === filter.teamId && r.provider === filter.provider) ?? null,
     }) as never,
 })
 useRuntimeInstances({
@@ -53,7 +61,7 @@ useRuntimeInstances({
       throw new Error('cluster unavailable')
     }
     created.push(args)
-    hosted.push({ teamId: args.teamId })
+    hosted.push({ teamId: args.teamId, provider: args.provider })
 
     return {} as never
   },
@@ -92,7 +100,7 @@ test('a team whose runtime was deleted on purpose gets no new one', async () => 
 })
 
 test('a team that already has a hosted runtime gets none', async () => {
-  hosted = [{ teamId: TEAM.toHexString() }]
+  hosted = [{ teamId: TEAM.toHexString(), provider: 'opencode' }]
   await ensureDefaultRuntime(TEAM.toHexString())
 
   expect(created).toEqual([])
@@ -113,4 +121,13 @@ test('nothing without a default provider or with the provisioner off', async () 
   await ensureDefaultRuntime(TEAM.toHexString())
 
   expect(created).toEqual([])
+})
+
+test('a new default provider gives a team that had the old one a runtime of the new one', async () => {
+  await ensureDefaultRuntime(TEAM.toHexString())
+  Object.assign(provisioner, { defaultProvider: 'omp' })
+  await ensureDefaultRuntime(TEAM.toHexString())
+  await ensureDefaultRuntime(TEAM.toHexString())
+
+  expect(created.map((c) => c.provider)).toEqual(['opencode', 'omp'])
 })

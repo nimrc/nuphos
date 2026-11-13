@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The Nuphos layer for agents that ship their own ACP server (Grok Build, Google
-// Antigravity, OpenCode). Claude Code and Codex get this layer by patching their Node adapters;
+// Antigravity, OpenCode, omp). Claude Code and Codex get this layer by patching their Node adapters;
 // a native binary cannot be patched, so this process sits in front of it instead and
 // passes every frame through, except where a Nuphos session needs something:
 //
@@ -11,7 +11,7 @@
 //   the patched adapters apply them.
 // - Nuphos's instructions, in whatever form the agent accepts them.
 import { spawn } from 'node:child_process'
-import { lstatSync, mkdirSync, symlinkSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { createInterface } from 'node:readline'
@@ -43,6 +43,30 @@ const SESSION_ENV = new Set([
   'GH_TOKEN',
   'GITHUB_TOKEN',
 ])
+
+/** Where an image puts omp's settings; `${VAR}` in them takes the session env's value. */
+export const OMP_TEMPLATES_DIR = '/etc/nuphos-runtime/omp'
+
+/**
+ * omp (omp.sh) reads its providers and model roles from ~/.omp/agent, and a models.yml
+ * `baseUrl` is literal. So an image ships templates and each start writes them into the
+ * agent's home with this session's values (the backend URL, for one), replacing what a
+ * previous start wrote. Without templates omp keeps whatever it has.
+ */
+export function seedOmpAgentDir(env, templatesDir = OMP_TEMPLATES_DIR) {
+  const dir = join(env.HOME || homedir(), '.omp', 'agent')
+
+  for (const file of ['models.yml', 'config.yml']) {
+    const template = join(templatesDir, file)
+    if (!existsSync(template)) continue
+    const text = readFileSync(template, 'utf8').replace(
+      /\$\{([A-Z_][A-Z0-9_]*)\}/g,
+      (_, name) => env[name] ?? '',
+    )
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(join(dir, file), text, { mode: 0o600 })
+  }
+}
 
 export const PROVIDERS = {
   grok: {
@@ -81,6 +105,16 @@ export const PROVIDERS = {
     // No system prompt parameter over ACP: the instructions lead the first prompt.
     instruct: null,
     // A prompt sent while a turn runs joins that turn instead of starting its own.
+    serialPrompts: true,
+  },
+  omp: {
+    command: (env) => {
+      seedOmpAgentDir(env)
+      return ['omp', 'acp']
+    },
+    home: () => ({}),
+    // No system prompt parameter over ACP: the instructions lead the first prompt.
+    instruct: null,
     serialPrompts: true,
   },
 }

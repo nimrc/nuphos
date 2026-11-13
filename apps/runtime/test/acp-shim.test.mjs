@@ -498,3 +498,31 @@ test('Antigravity forwards advertised capabilities, errors and process exit', as
  })`,
   )
 })
+
+test('omp gets its settings from the image templates, filled with the session env', async () => {
+  const { seedOmpAgentDir } = await import('../image/acp-shim.mjs')
+  const { mkdir, readFile, writeFile, stat } = await import('node:fs/promises')
+  const root = await mkdtemp(join(tmpdir(), 'omp-seed-'))
+  const templates = join(root, 'templates')
+  const home = join(root, 'home')
+  try {
+    await mkdir(templates)
+    await writeFile(
+      join(templates, 'models.yml'),
+      'providers:\n  yuai:\n    baseUrl: ${NUPHOS_BACKEND_URL}/llm/yuai/v1\n    apiKey: NUPHOS_TOKEN\n',
+    )
+    seedOmpAgentDir({ HOME: home, NUPHOS_BACKEND_URL: 'http://backend.svc:3000' }, templates)
+    const models = join(home, '.omp', 'agent', 'models.yml')
+    assert.equal(
+      await readFile(models, 'utf8'),
+      'providers:\n  yuai:\n    baseUrl: http://backend.svc:3000/llm/yuai/v1\n    apiKey: NUPHOS_TOKEN\n',
+    )
+    assert.equal((await stat(models)).mode & 0o777, 0o600)
+    // No config.yml template: nothing written for it. A later start rewrites models.yml.
+    await assert.rejects(stat(join(home, '.omp', 'agent', 'config.yml')))
+    seedOmpAgentDir({ HOME: home, NUPHOS_BACKEND_URL: 'http://other:3000' }, templates)
+    assert.match(await readFile(models, 'utf8'), /http:\/\/other:3000\/llm/)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})

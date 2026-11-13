@@ -1,0 +1,10 @@
+# Seeded into ~/.omp/agent/config.yml by acp-shim on every start, so edits do not stick: one
+# model for every role, and the only chat model offered.
+setupVersion: 2
+modelRoles:
+  default: yuai/deepseek-v4.1-flash
+  smol: yuai/deepseek-v4.1-flash
+  slow: yuai/deepseek-v4.1-flash
+  plan: yuai/deepseek-v4.1-flash
+enabledModels:
+  - yuai/deepseek-v4.1-flash

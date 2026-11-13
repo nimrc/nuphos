@@ -5,9 +5,13 @@ https://nuphos.yuai.dev. What it adds on top of upstream:
 
 - **Sign-in through any OpenID Connect provider** (Logto at auth.yuai.dev): `OIDC_*` env,
   Desktop and iOS buttons, and `/auth/social/device` to approve `nuphos login` codes.
-- **Cloud runtimes bound to Yu AI**: OpenCode only (`NUPHOS_RUNTIME_PROVIDERS=opencode`), on the
-  image built from `apps/runtime/yuai` (`CLAUDE_CODE_RUNTIME_IMAGES=opencode=<image>`), with one
-  model, `deepseek-v4.1-flash`. OpenCode calls `$NUPHOS_BACKEND_URL/llm/yuai/v1` with its
+- **Cloud runtimes bound to Yu AI**: omp (omp.sh, `omp acp`) is a provider of its own, `omp`, and
+  the deployment offers it alone (`NUPHOS_RUNTIME_PROVIDERS=omp`), on the image built from
+  `apps/runtime/yuai-omp` (`CLAUDE_CODE_RUNTIME_IMAGES=omp=<image>`), with one model,
+  `deepseek-v4.1-flash`. acp-shim writes `~/.omp/agent/{models,config}.yml` from the image's
+  templates in `/etc/nuphos-runtime/omp/` on every start, filling in the session's
+  `NUPHOS_BACKEND_URL`. The OpenCode variant (`apps/runtime/yuai`) still builds; omp idles at about
+  a fifth of OpenCode's memory. OpenCode calls `$NUPHOS_BACKEND_URL/llm/yuai/v1` with its
   session token; the backend finds the paying user (the sender of a human turn, the conversation
   owner otherwise), looks up that user's own Yu AI key through sub2api's admin API by email
   (`YUAI_ADMIN_KEY`; a key named `YUAI_KEY_NAME`, default `nuphos`, wins) and forwards the call.
@@ -19,19 +23,21 @@ https://nuphos.yuai.dev. What it adds on top of upstream:
 - **Helm**: `oidc.*`, `backend.imagePullSecrets`, and `provisioner.*` (ServiceAccount, RBAC and
   NetworkPolicy for cloud runtimes).
 
-## Building the runtime image
+## Building the runtime images
 
 ```sh
+# omp (the one deployed): context is apps/runtime, for the shim
+docker build -f apps/runtime/yuai-omp/Dockerfile -t <registry>/nuphos-runtime:omp-yuai-<n> apps/runtime
+# OpenCode
 docker build -t <registry>/nuphos-runtime:opencode-yuai-<n> apps/runtime/yuai
-docker push <registry>/nuphos-runtime:opencode-yuai-<n>
 ```
 
-`BASE` picks the published OpenCode runtime it builds on.
+`BASE` picks the published runtime image they build on; `OMP_VERSION` the omp release.
 
 ## TODO
 
-- **Session token lifetime.** The token OpenCode sends is minted per turn and expires after 24h,
-  but OpenCode reads `{env:NUPHOS_TOKEN}` once, when acp-shim starts it for a session. An OpenCode
+- **Session token lifetime.** The token omp/OpenCode send is minted per turn and expires after 24h,
+  but the agent reads `NUPHOS_TOKEN` from the env acp-shim started it with. An agent
   process kept alive past 24h would get 401 from `/llm/yuai`. Check whether acp-shim respawns
   OpenCode with each turn's env; if not, read the token per request (e.g. a header from a file
   under `$OPENAB_CREDENTIALS_DIR`, as `runtime-guard.sh` does) or accept recently expired tokens

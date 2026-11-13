@@ -1,5 +1,12 @@
 /** Every agent a runtime image can carry; the identifier is also the image variant. */
-export const OPENAB_PROVIDERS = ['claude-code', 'codex', 'grok', 'antigravity', 'opencode'] as const
+export const OPENAB_PROVIDERS = [
+  'claude-code',
+  'codex',
+  'grok',
+  'antigravity',
+  'opencode',
+  'omp',
+] as const
 
 export type OpenAbProvider = (typeof OPENAB_PROVIDERS)[number]
 
@@ -19,6 +26,8 @@ const PROVIDERS: Record<
     shim: true,
   },
   opencode: { label: 'OpenCode', errorPrefix: 'opencode', short: 'opencode', shim: true },
+  // oh-my-pi (omp.sh), `omp acp`; this fork binds it to Yu AI (apps/runtime/yuai-omp).
+  omp: { label: 'omp', errorPrefix: 'omp', short: 'omp', shim: true },
 }
 
 export function isOpenAbProvider(value: unknown): value is OpenAbProvider {
