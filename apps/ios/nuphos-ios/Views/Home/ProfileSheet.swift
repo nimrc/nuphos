@@ -78,7 +78,7 @@ struct ProfileSheet: View {
                 } header: {
                     Text("Voice input")
                 } footer: {
-                    Text("The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Voice input is included with a Nuphos subscription; recordings are transcribed by OpenAI Whisper.")
+                    Text("The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Recordings are transcribed by OpenAI Whisper.")
                 }
                 .listRowBackground(Theme.surface)
                 #endif
