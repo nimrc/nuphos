@@ -11,6 +11,6 @@ providers:
       - id: deepseek-v4.1-flash
         name: DeepSeek V4.1 Flash
         reasoning: true
-        input: [text]
+        input: [text, image]
         contextWindow: 128000
         maxTokens: 8192
