@@ -1,5 +1,15 @@
 import SwiftUI
 
+/// A button that never dims its label for `disabled`. The New Bot "not ready"
+/// state already sets its own fill and text colour; the system's disabled
+/// dim would blend both toward the row and drop the measured contrast below
+/// the 4.5:1 text floor.
+private struct NewBotButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+    }
+}
+
 /// The Agent page: the conversation history for the selected team, with
 /// the composer capsule pinned to the bottom when there is no column beside it.
 struct AgentPage: View {
@@ -475,7 +485,7 @@ struct AgentPage: View {
                 )
                 .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(NewBotButtonStyle())
             .disabled(newBotAppearance.readsAsDisabled)
             .accessibilityLabel("New Bot")
             .accessibilityHint(newBotState == .creating ? Text("Creating the Bot") : Text("Creates a Bot with its own chat"))

@@ -13,6 +13,7 @@ enum NewBotButtonContrastTests {
 
     static func run() {
         statesResolveDistinctly()
+        notReadyIsDrawnUndimmed()
         for scheme in [ThemeScheme.light, .dark] {
             print("New Bot contrast — \(scheme == .dark ? "dark" : "light")")
             for state in [NewBotButtonState.ready, .creating, .notReady] {
@@ -78,6 +79,15 @@ enum NewBotButtonContrastTests {
                 precondition(oldText < textFloor, "The old white-on-muted fill unexpectedly passed")
             }
         }
+    }
+
+    /// The not-ready control is disabled for VoiceOver. SwiftUI's `.plain`
+    /// button style dims a disabled label toward the row: rendered #48484A on
+    /// #C8C8CB fell to about #939395 on #DFDFE1, 2.30:1. `AgentPage` draws it
+    /// with `NewBotButtonStyle`, which keeps the colours the test measures.
+    private static func notReadyIsDrawnUndimmed() {
+        let source = (try? String(contentsOfFile: "nuphos-ios/Views/Home/AgentPage.swift", encoding: .utf8)) ?? ""
+        precondition(source.contains(".buttonStyle(NewBotButtonStyle())"), "The New Bot row lost its non-dimming button style")
     }
 
     private static func stateName(_ state: NewBotButtonState) -> String {
