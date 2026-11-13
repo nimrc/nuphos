@@ -60,7 +60,7 @@ struct AgentPage: View {
         content
             .toolbar {
                 if page == .chats {
-                    ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
+                    newBotToolbarItem
                 }
             }
             // On the switch, so the empty and error states refresh too.
@@ -437,10 +437,15 @@ struct AgentPage: View {
     /// Not ready is the only disabled state, and the only light fill.
     private var newBotState: NewBotButtonState {
         #if DEBUG
-        // `-preview-new-bot creating|not-ready|ready`: pin a state for screenshots.
+        // `-preview-new-bot creating|not-ready|ready` (or the
+        // NEW_BOT_PREVIEW_STATE environment variable, which the Simulator's
+        // launch command can set) pins a state for screenshots.
         let args = CommandLine.arguments
-        if let i = args.firstIndex(of: "-preview-new-bot"), i + 1 < args.count {
-            switch args[i + 1] {
+        var pin: String?
+        if let i = args.firstIndex(of: "-preview-new-bot"), i + 1 < args.count { pin = args[i + 1] }
+        if let state = ProcessInfo.processInfo.environment["NEW_BOT_PREVIEW_STATE"] { pin = state }
+        if let pin {
+            switch pin {
             case "ready": return .ready
             case "creating": return .creating
             case "not-ready", "notReady": return .notReady
@@ -513,6 +518,19 @@ struct AgentPage: View {
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
         .listSectionSeparator(.hidden, edges: .top)
+    }
+
+    /// The bar button draws its own filled disc, so it must not sit on the
+    /// system toolbar glass: that material lightens the fill in dark mode and
+    /// would stop the disc matching the row's fill.
+    @ToolbarContentBuilder
+    private var newBotToolbarItem: some ToolbarContent {
+        if #available(iOS 26, *) {
+            ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
+                .sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
+        }
     }
 
     /// The same create action in the navigation bar, top right. It draws the
