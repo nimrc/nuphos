@@ -117,6 +117,10 @@ extension RuntimeInstance.Provider {
         return "\(provider) · \(instance)"
     }
 
+    /// Providers whose runtime needs its own provider sign-in. omp is bound to Yu AI
+    /// and has no sign-in at all, so nothing in the app offers one for it.
+    static func supportsSignIn(_ raw: String?) -> Bool { raw != "omp" }
+
     static func name(_ raw: String?) -> String {
         switch raw {
         case "codex": "Codex"

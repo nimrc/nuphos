@@ -51,7 +51,9 @@ struct AgentDetailView: View {
                 }
             }
             Section {
-                if current.status == .active {
+                // omp is bound to Yu AI and has no sign-in of its own, so it offers none.
+                if current.status == .active,
+                   RuntimeInstance.Provider.supportsSignIn(current.provider.rawValue) {
                     NavigationLink(quota?.needsSignIn == true ? "Sign In" : "Sign In Again") {
                         AgentSetupView(team: team, runtime: current)
                     }

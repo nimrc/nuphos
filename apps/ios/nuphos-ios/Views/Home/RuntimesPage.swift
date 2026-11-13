@@ -48,6 +48,14 @@ struct RuntimesPage: View {
         }
     }
 
+    /// Whether the row leads anywhere: an administrator's cloud page, a runtime that can be
+    /// signed in, or how to sign one in elsewhere. omp for a member leads nowhere.
+    private func opensPage(_ runtime: RuntimeInstance) -> Bool {
+        let administrator = store.selectedTeam?.isAdministrator == true
+        if runtime.tier == .cloud, administrator { return true }
+        return RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue)
+    }
+
     /// The box's runtime that opens its computer's desktop: the viewer's own computer, whose host can.
     private func desktopRuntime(in box: SelectorBox) -> RuntimeInstance? {
         guard let userId = store.userId else { return nil }
@@ -74,12 +82,19 @@ struct RuntimesPage: View {
                         .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                     }
                     ForEach(box.agents) { runtime in
-                        NavigationLink {
-                            RuntimeDestination(runtime: runtime).environment(store)
-                        } label: {
+                        // A row is only a link when it opens something: omp has no page of its own
+                        // for members and no sign-in, so it reads as a status line, not a dead end.
+                        if opensPage(runtime) {
+                            NavigationLink {
+                                RuntimeDestination(runtime: runtime).environment(store)
+                            } label: {
+                                SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false)
+                            }
+                            .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
+                        } else {
                             SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false)
+                                .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                         }
-                        .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                     }
                 }
                 .listRowBackground(Theme.surface)
@@ -100,6 +115,9 @@ private struct RuntimeDestination: View {
         if let team = store.selectedTeam {
             if runtime.tier == .cloud, team.isAdministrator {
                 AgentDetailView(team: team, runtime: runtime)
+            } else if !RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue) {
+                // omp runs on Yu AI with no sign-in of its own: no sign-in page, and none to explain.
+                EmptyView()
             } else if SelectorBox.grouped(store.runtimes, devices: store.agentDevices)
                 .first(where: { $0.agents.contains(runtime) })?.canSignIn(runtime, administrator: team.isAdministrator) == true {
                 AgentSetupView(team: team, runtime: runtime, selectOnCompletion: false)
