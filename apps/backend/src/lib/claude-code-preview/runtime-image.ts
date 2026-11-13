@@ -8,6 +8,7 @@ import {
 
 import type { OpenAbProvider } from './runtime-provider'
 
+import { config } from '@/config'
 import { logEvent } from '@/lib/observability'
 
 const MANIFEST_TYPES = [
@@ -100,6 +101,10 @@ export async function managedRuntimeImage(
   provider: OpenAbProvider,
   requestedVersion?: string,
 ): Promise<string | undefined> {
+  // An operator-built image replaces every published version, updates included.
+  const override = config.claudeCodeRuntimeProvisioner.images[provider]
+
+  if (override) return override
   const pinned = stableRuntimeVersion(requestedVersion)
   const release = pinned ? null : await latestRuntimeRelease(provider)
   const version = pinned ? requestedVersion : release?.version

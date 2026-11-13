@@ -226,6 +226,24 @@ test('hosted runtimes list as managed; rows of the retired provisioner model are
   ])
 })
 
+test('a server offering some providers lists only their runtimes', async () => {
+  const opencode = await add(app(), 'Ours', 'opencode')
+
+  await add(app(), 'Theirs', 'claude-code')
+  const provisioner = config.claudeCodeRuntimeProvisioner
+  const before = provisioner.providers
+
+  provisioner.providers = ['opencode']
+  try {
+    expect((await listRuntimeInstances('one')).map((instance) => instance.id)).toEqual([
+      opencode.id,
+    ])
+  } finally {
+    provisioner.providers = before
+  }
+  expect(await listRuntimeInstances('one')).toHaveLength(2)
+})
+
 test('rename and disable change the hosted runtime row itself', async () => {
   const server = app()
   const instance = await add(server, 'Work')

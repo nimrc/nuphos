@@ -91,6 +91,26 @@ storage:
   tolerations: []
   affinity: {}
 
+# Cloud runtimes: each team's "Add agent -> Cloud" becomes a Deployment, Service, Secret and two
+# PVCs (10Gi home, 20Gi workspace, default StorageClass) in `namespace`. The backend gets a
+# ServiceAccount allowed to manage exactly those there. A NetworkPolicy admits only the backend
+# into that namespace and lets runtimes reach the internet but no private address.
+provisioner:
+  enabled: false
+  namespace: nuphos-runtimes
+  createNamespace: true
+  # Applied to every runtime pod, e.g. { kubernetes.io/hostname: worker-1 }.
+  nodeSelector: {}
+  # key: value pairs tolerated (any effect), e.g. { dedicated: nuphos }.
+  tolerations: {}
+  cpuLimit: '4' # per runtime; `none` for no limit. Memory is capped at 8Gi by the backend.
+  # Runtimes reach the backend in-cluster (the release's nuphos-backend Service, so keep the
+  # release named `nuphos`) and the internet otherwise.
+  networkPolicy:
+    enabled: true
+    # Private ranges runtimes may still reach, e.g. a resolver outside the cluster.
+    allowCidrs: []
+
 runtime:
   # The runtime executes agent code. Its pod mounts no backend secret and no
   # service account token, and a NetworkPolicy keeps it away from MongoDB.

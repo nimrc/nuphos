@@ -1,0 +1,139 @@
+{{- if .Values.provisioner.enabled }}
+{{- $ns := .Values.provisioner.namespace }}
+{{- $sa := printf "%s-backend" (include "nuphos.fullname" .) }}
+{{- if .Values.provisioner.createNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $ns }}
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+---
+{{- end }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $sa }}
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+automountServiceAccountToken: false
+---
+# What the provisioner applies, reconciles, deletes, and the pods/exec its runtime sign-in uses.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $sa }}-provisioner
+  namespace: {{ $ns }}
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ['apps']
+    resources: [deployments]
+    verbs: [get, list, watch, create, update, patch, delete]
+  - apiGroups: ['']
+    resources: [services, secrets, configmaps, persistentvolumeclaims]
+    verbs: [get, list, watch, create, update, patch, delete]
+  - apiGroups: ['']
+    resources: [pods]
+    verbs: [get, list, watch]
+  - apiGroups: ['']
+    resources: [pods/exec]
+    verbs: [create, get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $sa }}-provisioner
+  namespace: {{ $ns }}
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $sa }}-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: {{ $sa }}
+    namespace: {{ .Release.Namespace }}
+---
+# Deleting a runtime reads the volume behind each claim, which is cluster-scoped.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Release.Namespace }}-{{ $sa }}-volumes
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ['']
+    resources: [persistentvolumes]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Namespace }}-{{ $sa }}-volumes
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Release.Namespace }}-{{ $sa }}-volumes
+subjects:
+  - kind: ServiceAccount
+    name: {{ $sa }}
+    namespace: {{ .Release.Namespace }}
+{{- if .Values.provisioner.networkPolicy.enabled }}
+---
+# Runtimes run agent code for many teams: only the backend may dial them, and they reach the
+# internet (the backend too, through its public URL) but nothing private, each other included.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: runtimes
+  namespace: {{ $ns }}
+  labels:
+    {{- include "nuphos.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Release.Namespace }}
+          podSelector:
+            matchLabels:
+              {{- include "nuphos.selectorLabels" (list . "backend") | nindent 14 }}
+      ports:
+        - port: 8080
+  egress:
+    # The backend, in-cluster: model calls, tools and skills (NUPHOS_BACKEND_URL).
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Release.Namespace }}
+          podSelector:
+            matchLabels:
+              {{- include "nuphos.selectorLabels" (list . "backend") | nindent 14 }}
+      ports:
+        - port: 3000
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - { port: 53, protocol: UDP }
+        - { port: 53, protocol: TCP }
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10, 169.254.0.0/16]
+        {{- range .Values.provisioner.networkPolicy.allowCidrs }}
+        - ipBlock:
+            cidr: {{ . }}
+        {{- end }}
+{{- end }}
+{{- end }}

@@ -20,6 +20,15 @@ app.kubernetes.io/instance: {{ $.Release.Name }}
 app.kubernetes.io/component: {{ index . 1 }}
 {{- end -}}
 
+{{/* A map as comma-separated key=value, the shape optionalList() reads. */}}
+{{- define "nuphos.keyValues" -}}
+{{- $pairs := list -}}
+{{- range $k, $v := . -}}
+{{- $pairs = append $pairs (printf "%s=%s" $k $v) -}}
+{{- end -}}
+{{- join "," $pairs -}}
+{{- end -}}
+
 {{- define "nuphos.secretName" -}}
 {{- .Values.secrets.existingSecret | default (printf "%s-secrets" (include "nuphos.fullname" .)) -}}
 {{- end -}}

@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { wakeOfflineBox } from '@/lib/agent/devices/box-wake'
 import { isLocalRuntimeId, parseLocalRuntimeId } from '@/lib/agent/devices/local-runtime/address'
 import { boxUpdateStatus } from '@/lib/claude-code-preview/box-update'
+import { ensureDefaultRuntime } from '@/lib/claude-code-preview/default-runtime'
 import { localRuntimeStatus } from '@/lib/claude-code-preview/local-runtime-catalog'
 import { isAllowedRemoteOpenAbUrl } from '@/lib/claude-code-preview/runtime-backend-url'
 import {
@@ -109,6 +110,8 @@ export function registerAgentRuntimeRoutes(teamScoped: Hono<{ Variables: TeamAut
 
   teamScoped.get('/agent-runtimes', async (c) => {
     const teamId = c.get('teamId')
+
+    await ensureDefaultRuntime(teamId)
 
     return c.json({
       runtimes: await withRuntimeReadiness(

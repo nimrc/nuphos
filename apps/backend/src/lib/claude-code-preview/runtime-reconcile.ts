@@ -96,7 +96,10 @@ async function applyHostedRuntime(runtime: ClaudeCodeRuntimeDoc, deps: Provision
   }
   // Re-read under the placement lease; a queued tick must not replay an older Update.
   const selected = await runtimes().findOne({ _id: runtime._id, teamId: runtime.teamId })
-  const image = selected?.deploymentImage
+  // An operator-built image wins over the recorded one, so bumping it (or moving clusters)
+  // rolls every existing runtime of that provider too.
+  const image =
+    config.claudeCodeRuntimeProvisioner.images[deps.provider] ?? selected?.deploymentImage
 
   if (!selected || !image) throw new Error('Runtime image selection is unavailable')
   const { teamId, _id: runtimeId } = runtime
