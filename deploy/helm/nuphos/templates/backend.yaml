@@ -38,6 +38,10 @@ spec:
         {{- include "nuphos.selectorLabels" (list . "backend") | nindent 8 }}
     spec:
       automountServiceAccountToken: false
+      {{- with .Values.backend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
