@@ -4,6 +4,7 @@ mod accounts;
 mod agent;
 mod api;
 mod app;
+mod bots;
 mod cli;
 mod config;
 mod login;
@@ -69,18 +70,29 @@ enum Command {
     },
     /// List runtimes (what agents run on, such as Claude Code; find agents with
     /// `nuphos conversations`), pick one for new agents (or move --session to it),
-    /// add a Cloud runtime with --create, or sign one in with --login.
+    /// or sign an existing runtime in with --login.
     #[command(name = "agents", alias = "runtime")]
     Runtime {
         name: Option<String>,
         #[arg(long)]
         session: Option<String>,
-        /// Add a Nuphos-managed Cloud runtime for provider NAME (claude-code, codex, grok, antigravity, opencode) and sign it in.
-        #[arg(long, requires = "name", conflicts_with_all = ["session", "login"])]
-        create: bool,
         /// Sign the Cloud runtime NAME in to its provider account.
         #[arg(long, requires = "name", conflicts_with = "session")]
         login: bool,
+    },
+    /// List your Bots in the team, or create one named NAME with --create. A new Bot runs with Full Access.
+    #[command(name = "bots", alias = "bot")]
+    Bots {
+        name: Option<String>,
+        /// Create a Bot named NAME.
+        #[arg(long, requires = "name")]
+        create: bool,
+        /// The new Bot's face, such as 01-vermeer-girl (the desktop's Bot picker shows them).
+        #[arg(long, requires = "create")]
+        avatar: Option<String>,
+        /// Runtime for the new Bot (id or label).
+        #[arg(long = "agent", alias = "runtime", requires = "create")]
+        runtime: Option<String>,
     },
     /// Show or set an agent's model and reasoning effort (--session), or list the runtime's models.
     Model {
@@ -269,13 +281,13 @@ async fn run(args: Args) -> Result<i32> {
         }
         Some(Command::Conversations { query }) => cli::conversations(&ctx, query.as_deref()).await.map(|_| 0),
         Some(Command::Team { name, .. }) => cli::team(&mut ctx, name).await.map(|_| 0),
-        Some(Command::Runtime { name: Some(provider), create: true, .. }) => {
-            cli::create_runtime(&mut ctx, &provider).await.map(|_| 0)
-        }
         Some(Command::Runtime { name: Some(name), login: true, .. }) => {
             cli::login_runtime(&ctx, &name).await.map(|_| 0)
         }
         Some(Command::Runtime { name, session, .. }) => cli::runtime(&mut ctx, name, session).await.map(|_| 0),
+        Some(Command::Bots { name, create, avatar, runtime }) => {
+            bots::bots(&ctx, name, create, avatar, runtime).await.map(|_| 0)
+        }
         Some(Command::Model { value, effort, session }) => {
             cli::model(&mut ctx, value, effort, session).await.map(|_| 0)
         }
@@ -580,5 +592,22 @@ mod account_args {
         }
         let args = Args::try_parse_from(["nuphos", "--account", "sam@example.com", "team"]).unwrap();
         assert_eq!(args.account.as_deref(), Some("sam@example.com"));
+    }
+}
+
+#[cfg(test)]
+mod runtime_args {
+    use clap::Parser;
+
+    use super::{Args, Command};
+
+    #[test]
+    fn managed_creation_is_no_longer_a_command() {
+        for command in ["agents", "runtime"] {
+            assert!(Args::try_parse_from(["nuphos", command, "codex", "--create"]).is_err());
+            let args = Args::try_parse_from(["nuphos", command, "Codex", "--login"]).unwrap();
+            assert!(matches!(args.command, Some(Command::Runtime { login: true, .. })));
+        }
+        assert!(Args::try_parse_from(["nuphos", "team", "Acme", "--create"]).is_ok());
     }
 }

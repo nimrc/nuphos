@@ -96,6 +96,8 @@ export type WindowAppApi = {
   appSetApiEndpoint(url: string | null): Promise<string>
   appGetPlatform(): Promise<string>
   appSelectAsciiInputSource(): Promise<void>
+  /** The menu bar and notifications follow the language the windows show. */
+  appSetLocale(locale: string): Promise<void>
   appSetNativeTheme(source: 'system' | 'light' | 'dark'): Promise<void>
   appGetAppIcon(): Promise<string>
   appSetAppIcon(icon: string): Promise<void>
@@ -131,6 +133,8 @@ export type WindowAppApi = {
   updaterGetState(): Promise<UpdaterState>
   updaterCheck(): Promise<void>
   updaterInstall(): Promise<void>
+  updaterGetAutoInstall(): Promise<{ enabled: boolean }>
+  updaterSetAutoInstall(enabled: boolean): Promise<{ enabled: boolean }>
   onUpdaterStatus(cb: (state: UpdaterState) => void): () => void
   changelogGetState(): Promise<ChangelogState>
   onChangelogStatus(cb: (state: ChangelogState) => void): () => void
@@ -244,6 +248,8 @@ export type WindowAppApi = {
     reviewed: { relPath: string; realPath: string }[],
   ): Promise<LocalSetupResult>
   localSetupSetAutoSync(teamId: string, enabled: boolean): Promise<void>
+  localSetupSetFolders(teamId: string, folders: string[]): Promise<LocalSetupResult>
+  localSetupSources(teamId: string): Promise<Record<string, string>>
   teamSkillsImportLocal(
     teamId: string,
     scope: SkillScope | undefined,

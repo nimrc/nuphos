@@ -11,7 +11,7 @@ import { isActiveTeamMember } from '../devices/store'
 import { clientToolWithLabel, withLabel } from './labeling'
 import { createLocalExecAudit } from './local-tools-audit'
 
-import type { AgentSessionOrigin } from '@/lib/agent/tools-triggers-shared'
+import type { AgentSessionOrigin } from '@/lib/agent/message-origin'
 
 export type LocalExecDevice = {
   /** Persistent transport owner, distinct from the acting viewer of a Box. */
@@ -136,7 +136,7 @@ export function describeDevices(devices: LocalExecDevice[]): string {
 }
 
 /** Wakes a paused Box for a command: null once it is up, else why not. A plan refusal (402) says why. */
-async function wakeRefusal(deviceId: string, wake: (() => Promise<boolean>) | undefined) {
+export async function wakeRefusal(deviceId: string, wake: (() => Promise<boolean>) | undefined) {
   if (!wake) return null
   const woke = await wake().catch((error: unknown) =>
     error instanceof AppError && error.status === 402 ? error.message : false,

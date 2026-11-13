@@ -119,7 +119,7 @@ fun ConversationScreen(
     val selectedTeamId = store.selectedTeam?.id
     val conversation = store.conversations.firstOrNull { it.sessionId == sessionId && (it.teamId == null || it.teamId == selectedTeamId) }
     val session = remember(store, sessionId, selectedTeamId) {
-        if (fresh) store.session(sessionId, "New agent")
+        if (fresh) store.session(sessionId, "New task")
         else conversation?.let { store.session(it) } ?: store.session(sessionId, "Agent")
     }
     // A chat named by a link before the list knew it: show it as a chat once its detail says so.
@@ -266,7 +266,7 @@ fun ConversationScreen(
                     }
                 },
                 navigationIcon = {
-                    if (newChat) TextButton(onClick = onBack) { Text("New agent") }
+                    if (newChat) TextButton(onClick = onBack) { Text("New task") }
                     else IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back") }
                 },
                 actions = {
@@ -482,7 +482,6 @@ fun ConversationScreen(
                     var recalledFiles by remember(session, queueGeneration, queueWorkspace, queueConsent) {
                         mutableStateOf(emptyList<ai.nuphos.android.model.ComposerAttachment>())
                     }
-                    session.answering?.let { ai.nuphos.android.ui.chats.ReplyChip(it.quote) { session.answering = null } }
                     ServerQueuedMessages(session.serverQueue, writable = !session.readOnly && !session.isArchived,
                         canSteer = session.canSteer, onRecall = { recalled ->
                             if (draft == null) false else runCatching {
