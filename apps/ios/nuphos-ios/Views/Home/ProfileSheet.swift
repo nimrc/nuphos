@@ -15,6 +15,7 @@ struct ProfileSheet: View {
 
     @State private var confirmSignOut = false
     @State private var privacyError: String?
+    @State private var yuaiBalance: Double?
     @AppStorage(Whisper.promptKey) private var whisperPrompt = Whisper.defaultPrompt
 
     var body: some View {
@@ -38,6 +39,17 @@ struct ProfileSheet: View {
                                     .frame(minHeight: 44)
                             }
                         }
+                    }
+                    .listRowBackground(Theme.surface)
+                }
+
+                if let yuaiBalance {
+                    Section("Yu AI balance") {
+                        Text(yuaiBalance, format: .currency(code: "USD"))
+                            .font(.system(size: 22, weight: .semibold))
+                            .monospacedDigit()
+                            .foregroundStyle(Theme.heading)
+                            .padding(.vertical, 4)
                     }
                     .listRowBackground(Theme.surface)
                 }
@@ -126,7 +138,11 @@ struct ProfileSheet: View {
             .scrollContentBackground(.hidden)
             .background(Theme.canvas)
             .sheet(isPresented: $editing) { EditProfileSheet(user: currentUser) }
-            .refreshable { await session.refreshUser() }
+            .task { await loadYuaiBalance() }
+            .refreshable {
+                await session.refreshUser()
+                await loadYuaiBalance()
+            }
             .navigationTitle("Account")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -145,6 +161,12 @@ struct ProfileSheet: View {
             }
         }
         .tint(Theme.heading)
+    }
+
+    /// Hidden when the backend has no Yu AI, or the user no Yu AI account.
+    private func loadYuaiBalance() async {
+        guard let token = session.token else { return }
+        yuaiBalance = try? await AccountAPI.yuaiBalance(token: token)
     }
 
     private var header: some View {

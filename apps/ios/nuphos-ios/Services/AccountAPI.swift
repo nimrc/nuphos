@@ -66,6 +66,13 @@ enum AccountAPI {
         return result.revoked
     }
 
+    /// `GET /auth/yuai/balance`: Yu AI balance in USD; nil without a Yu AI account.
+    static func yuaiBalance(token: String) async throws -> Double? {
+        struct Balance: Decodable { let balance: Double? }
+        let result: Balance = try await request("yuai/balance", token: token)
+        return result.balance
+    }
+
     // MARK: Two-factor authentication (Settings → Two-factor authentication)
 
     struct Passkey: Decodable, Equatable, Identifiable { let id: String; let name: String; let createdAt: String }

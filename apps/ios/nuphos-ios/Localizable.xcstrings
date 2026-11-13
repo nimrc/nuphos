@@ -1235,6 +1235,16 @@
         }
       }
     },
+    "Yu AI balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu AI 余额"
+          }
+        }
+      }
+    },
     "just now": {
       "localizations": {
         "zh-Hans": {

@@ -938,6 +938,7 @@
   "POST /teams/:teamId/trello-integrations/start-oauth": "admin",
   "PUT /teams/:teamId/trello-integrations/:integrationId/access": "admin",
   "GET /auth/social/device": "public",
+  "GET /auth/yuai/balance": "user",
   "POST /auth/social/device": "public",
   "GET /llm/yuai/v1/*": "public",
   "POST /llm/yuai/v1/*": "public"

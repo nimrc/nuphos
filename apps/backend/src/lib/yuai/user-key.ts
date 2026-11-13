@@ -18,18 +18,27 @@ async function admin<T>(path: string): Promise<T> {
   })
 
   if (!response.ok)
-    throw new AppError(502, 'yuai_lookup_failed', `Yu AI key lookup failed (${response.status})`)
+    throw new AppError(502, 'yuai_lookup_failed', `Yu AI lookup failed (${response.status})`)
   const body = (await response.json()) as { data?: T } & T
 
   return body.data ?? body
 }
 
-/** The user's active Yu AI key: one named like `config.yuai.keyName`, else the newest. */
-async function lookupKey(email: string): Promise<string | null> {
-  const users = await admin<Page<{ id: number; email: string }>>(
+type Sub2apiUser = { id: number; email: string; balance: number }
+
+/** The Yu AI account signed up with this email, if any. */
+export async function yuaiUser(rawEmail: string): Promise<Sub2apiUser | null> {
+  const email = rawEmail.trim().toLowerCase()
+  const users = await admin<Page<Sub2apiUser>>(
     `/users?${new URLSearchParams({ search: email, page_size: '20' }).toString()}`,
   )
-  const user = users.items.find((u) => u.email.toLowerCase() === email)
+
+  return users.items.find((u) => u.email.toLowerCase() === email) ?? null
+}
+
+/** The user's active Yu AI key: one named like `config.yuai.keyName`, else the newest. */
+async function lookupKey(email: string): Promise<string | null> {
+  const user = await yuaiUser(email)
 
   if (!user) return null
   const keys = await admin<Page<Sub2apiKey>>(`/users/${String(user.id)}/api-keys?page_size=100`)

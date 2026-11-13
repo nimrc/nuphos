@@ -50,6 +50,7 @@ import { teamsRoutes } from '@/routes/teams'
 import { trelloAppRoutes } from '@/routes/trello-app'
 import { webhooksRoutes } from '@/routes/webhooks'
 import { internalWellKnownRoutes, wellKnownRoutes } from '@/routes/well-known'
+import { yuaiRoutes } from '@/routes/yuai'
 
 export { websocket } from 'hono/bun'
 
@@ -92,6 +93,7 @@ app.get('/openapi.json', (c) => c.json(openApiDocument))
 app.route('/health', health)
 // Yu AI for OpenCode runtimes; authenticated by the runtime's session token, not a cookie.
 app.route('/llm/yuai', llmYuaiRoutes)
+app.route('/auth/yuai', yuaiRoutes)
 // Public OIDC issuer metadata for AWS BYOS web-identity federation. AWS STS
 // fetches these unauthenticated, so they live outside the auth'd route tree.
 app.route('/.well-known', wellKnownRoutes)
