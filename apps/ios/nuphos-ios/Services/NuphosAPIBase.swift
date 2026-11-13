@@ -22,8 +22,8 @@ enum NuphosAPI {
             switch self {
             case .unauthorized: "Your session has expired. Please sign in again."
             case .sessionRequired: "Sign in again to manage your devices."
-            case .http(let code, let message): message ?? "Nuphos returned an unexpected response (\(code))."
-            case .invalidResponse: "Nuphos returned something we could not read."
+            case .http(let code, let message): message ?? "Yu AI returned an unexpected response (\(code))."
+            case .invalidResponse: "Yu AI returned something we could not read."
             case .mfaRequired: "Enter the code from your authenticator app."
             case .reauthRequired: "Enter a code from your authenticator app to continue."
             case .signInRequired: "For your security, sign in again to continue."

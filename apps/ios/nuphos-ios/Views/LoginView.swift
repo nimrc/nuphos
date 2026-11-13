@@ -445,12 +445,12 @@ private struct LoginServerSettings: View {
                 } header: {
                     Text("Server address")
                 } footer: {
-                    Text("Leave this unchanged to use Nuphos Cloud. Enter your server address to use a self-hosted instance.")
+                    Text("Leave this unchanged to use Yu AI Cloud. Enter your server address to use a self-hosted instance.")
                 }
                 if let error { Section { Text(error).foregroundStyle(.red) } }
                 if !savedURL.isEmpty {
                     Section {
-                        Button("Use Nuphos Cloud") { savedURL = ""; dismiss() }
+                        Button("Use Yu AI Cloud") { savedURL = ""; dismiss() }
                     }
                 }
             }

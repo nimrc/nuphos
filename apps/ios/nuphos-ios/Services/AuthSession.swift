@@ -143,7 +143,7 @@ final class AuthSession {
         } catch {
             guard generation == expected, token == saved else { return }
             if self.user == nil {
-                state = .signedOut(error: "We could not reach Nuphos. Check your connection and try again.")
+                state = .signedOut(error: "We could not reach Yu AI. Check your connection and try again.")
             }
         }
     }

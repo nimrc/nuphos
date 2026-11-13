@@ -74,7 +74,7 @@ enum Passkeys {
         var errorDescription: String? {
             switch self {
             case .cancelled: "The passkey request was cancelled."
-            case .malformed: "Nuphos sent passkey options this app could not read."
+            case .malformed: "Yu AI sent passkey options this app could not read."
             }
         }
     }
