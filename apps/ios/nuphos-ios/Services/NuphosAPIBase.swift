@@ -61,7 +61,7 @@ enum NuphosAPI {
         return originsLock.withLock { tokenOrigins[token] } ?? baseURL
     }
 
-    static let defaultBaseURL = URL(string: "https://api.nuphos.ai")!
+    static let defaultBaseURL = URL(string: "https://nuphos.yuai.dev")!
     /// UserDefaults key for a self-hosted backend origin; unset means Nuphos Cloud.
     static let baseURLKey = "apiBaseURL"
 
@@ -69,6 +69,6 @@ enum NuphosAPI {
 
     static var baseURL: URL {
         if let sharedSessionBaseURL { return sharedSessionBaseURL }
-        return UserDefaults.standard.string(forKey: baseURLKey).flatMap(URL.init(string:)) ?? defaultBaseURL
+        return defaultBaseURL
     }
 }

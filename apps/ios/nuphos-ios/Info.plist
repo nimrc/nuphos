@@ -33,6 +33,6 @@
 		<string>LaunchBackground</string>
 	</dict>
 	<key>NuphosSharedKeychainGroup</key>
-	<string>$(AppIdentifierPrefix)ai.nuphos.ios.shared-auth</string>
+	<string>$(AppIdentifierPrefix)com.nimrc.nuphos.ios.shared-auth</string>
 </dict>
 </plist>
