@@ -13,12 +13,10 @@ final class Analytics {
     private var currentScreen: (name: String, teamID: String?)?
 
     private var enabled: Bool {
-        #if DEBUG
+        // Yu Bot test build: upstream analytics disabled. Every entry point is gated on
+        // this, so PostHogSDK.setup is never called and nothing goes to Nuphos' project
+        // in any build configuration.
         return false
-        #else
-        // Self-hosted users must never be sent to Nuphos Cloud analytics.
-        return NuphosAPI.baseURL == NuphosAPI.defaultBaseURL
-        #endif
     }
 
     func identify(_ user: NuphosUser) {

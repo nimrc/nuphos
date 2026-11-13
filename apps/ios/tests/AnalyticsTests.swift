@@ -24,11 +24,15 @@ import PostHog
         precondition(sdk.configs.isEmpty && sdk.events.isEmpty, "Self-hosted must never start Cloud telemetry")
         NuphosAPI.baseURL = NuphosAPI.defaultBaseURL
         analytics.identify(alice)
-        #if DEBUG
+        // Yu Bot test build: analytics are disabled in every configuration, so Release
+        // must stay offline too. The upstream Release expectations below are kept, unused.
+        #if true
         analytics.screen("agent")
         analytics.track("login")
-        precondition(sdk.configs.isEmpty && sdk.events.isEmpty, "Debug builds must stay offline")
-        print("Analytics Debug isolation passed")
+        analytics.setActive(false)
+        analytics.setActive(true)
+        precondition(sdk.configs.isEmpty && sdk.events.isEmpty && sdk.resets == 0, "Analytics never start in any build")
+        print("Analytics disabled (Yu Bot) passed")
         #else
         precondition(sdk.configs.count == 1)
         let config = sdk.configs[0]
