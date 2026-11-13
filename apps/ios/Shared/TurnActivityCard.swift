@@ -10,7 +10,7 @@ struct TurnCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 6) {
                 TurnCardMark(size: 16)
-                Text("Yu Bot").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                Text(String(localized: "Yu Bot", table: "TurnActivity")).font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
                 Spacer(minLength: 8)
                 TurnCardStatus(card: card).font(.subheadline.weight(.medium))
             }
@@ -32,7 +32,7 @@ struct TurnCardRows: View {
                 Link(destination: SessionLink.url(teamId: session.teamId, sessionId: session.id) ?? SessionLink.conversations) {
                     HStack(spacing: 8) {
                         TurnPhaseIcon(phase: session.phase)
-                        Text(session.title.isEmpty ? "Untitled" : session.title).font(.headline).lineLimit(1)
+                        Text(session.title.isEmpty ? String(localized: "Untitled", table: "TurnActivity") : session.title).font(.headline).lineLimit(1)
                         Spacer(minLength: 8)
                         Text(session.phase.title)
                             .font(.subheadline.weight(.medium))
@@ -41,7 +41,7 @@ struct TurnCardRows: View {
                 }
             }
             if card.more > 0 {
-                Text("+\(card.more) more").font(.subheadline).foregroundStyle(.secondary)
+                Text(String(localized: "+\(card.more) more", table: "TurnActivity")).font(.subheadline).foregroundStyle(.secondary)
             }
         }
     }
@@ -63,7 +63,7 @@ struct TurnCardStatus: View {
 
     var body: some View {
         if card.active > 0 {
-            Text("\(card.active) running").foregroundStyle(.secondary)
+            Text(String(localized: "\(card.active) running", table: "TurnActivity")).foregroundStyle(.secondary)
         } else if card.finished {
             TurnPhaseIcon(phase: .done)
         }
@@ -92,13 +92,13 @@ struct TurnPhaseIcon: View {
 }
 
 extension TurnActivityAttributes.Phase {
-    var title: LocalizedStringKey {
+    var title: String {
         switch self {
-        case .running: "Running"
-        case .approval: "Needs approval"
-        case .done: "Done"
-        case .stopped: "Stopped"
-        case .unavailable: "Unavailable"
+        case .running: String(localized: "Running", table: "TurnActivity")
+        case .approval: String(localized: "Needs approval", table: "TurnActivity")
+        case .done: String(localized: "Done", table: "TurnActivity")
+        case .stopped: String(localized: "Stopped", table: "TurnActivity")
+        case .unavailable: String(localized: "Unavailable", table: "TurnActivity")
         }
     }
 

@@ -1,0 +1,15 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Yu Bot": {},
+    "Untitled": {},
+    "+%lld more": {},
+    "%lld running": {},
+    "Running": {},
+    "Needs approval": {},
+    "Done": {},
+    "Stopped": {},
+    "Unavailable": {}
+  },
+  "version": "1.0"
+}
