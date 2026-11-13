@@ -24,11 +24,11 @@ enum SSEClient {
 
         var errorDescription: String? {
             switch self {
-            case .badStatus(let code, let body): body.flatMap(SSEClient.errorMessage) ?? "Yu AI returned status \(code)."
-            case .notEventStream(let type): "Expected an event stream, got \(type ?? "nothing")."
-            case .queued: "Your message waits for the turn ahead."
-            case .idleTimeout: "The connection went quiet for too long."
-            case .frameTimeout: "The runtime went quiet; the reply was closed."
+            case .badStatus(let code, let body): body.flatMap(SSEClient.errorMessage) ?? AgentChatAPI.statusMessage(code)
+            case .notEventStream(let type): String(localized: "The server opened an unexpected stream (\(type ?? "nothing")).")
+            case .queued: String(localized: "Your message waits for the turn ahead.")
+            case .idleTimeout: String(localized: "The connection went quiet for too long.")
+            case .frameTimeout: String(localized: "The runtime went quiet; the reply was closed.")
             }
         }
     }

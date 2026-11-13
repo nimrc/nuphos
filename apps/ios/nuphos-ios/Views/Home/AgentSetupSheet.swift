@@ -123,7 +123,7 @@ struct AgentSetupView: View {
                     .onChange(of: name) { _, value in if value.count > 80 { name = String(value.prefix(80)) } }
             }
         } footer: {
-            Text("You'll sign in with your own \(account(provider)) account. Your plan's usage limits apply.")
+            Text(String(localized: "You'll sign in with your own \(account(provider)) account. Your plan's usage limits apply."))
         }
     }
 
@@ -181,7 +181,7 @@ struct AgentSetupView: View {
                     } header: {
                         Text("Verification Code")
                     } footer: {
-                        Text("1. Copy this code.\n2. Open the sign-in page and sign in with your \(vendor(runtime.provider)) account.\n3. Enter the code when asked. This page updates once you're signed in.")
+                        Text(String(localized: "1. Copy this code.\n2. Open the sign-in page and sign in with your \(vendor(runtime.provider)) account.\n3. Enter the code when asked. This page updates once you're signed in."))
                     }
                 }
                 if let url = login.url {
@@ -294,7 +294,7 @@ struct AgentSetupView: View {
             if let url = login.url {
                 Section {
                     Button { openURL(url) } label: {
-                        Text("Open \(url.host() ?? "Sign-In Page")").frame(maxWidth: .infinity)
+                        Text(String(localized: "Open \(url.host() ?? "Sign-In Page")")).frame(maxWidth: .infinity)
                     }
                     .prominentButton()
                     .controlSize(.large)
@@ -333,7 +333,7 @@ struct AgentSetupView: View {
 
     private func headline(_ runtime: RuntimeInstance) -> String {
         if agentStarting { return "A new runtime takes a moment to start." }
-        guard let login else { return "Use your own \(account(runtime.provider)) account. Your plan's usage limits apply." }
+        guard let login else { return String(localized: "Use your own \(account(runtime.provider)) account. Your plan's usage limits apply.") }
         switch login.state {
         case "connected": return "\(runtime.label) is ready to use."
         case "starting", "awaiting_authorization":

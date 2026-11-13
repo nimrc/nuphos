@@ -95,7 +95,8 @@ struct TransferCard: View {
         Button { Task { await open(file) } } label: { label(file, lone: lone) }
             .buttonStyle(.plain)
             .disabled(opening != nil)
-            .accessibilityLabel("Open \(file.fileName)")
+            .accessibilityLabel(Text(file.accessibilityDescription))
+            .accessibilityHint("Opens the attachment")
     }
 
     @ViewBuilder

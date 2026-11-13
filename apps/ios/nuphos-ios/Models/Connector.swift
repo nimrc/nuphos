@@ -12,14 +12,14 @@ struct Connector: Identifiable, Hashable, Sendable {
         /// Mirrors the desktop's `CONNECTOR_CATEGORIES` labels and order.
         var title: String {
             switch self {
-            case .infrastructure: "Infrastructure"
-            case .observability: "Observability"
-            case .networking: "Networking"
-            case .compliance: "Compliance"
-            case .sourceControl: "Source control"
-            case .projectManagement: "Project management"
-            case .document: "Document"
-            case .email: "Email"
+            case .infrastructure: String(localized: "Infrastructure")
+            case .observability: String(localized: "Observability")
+            case .networking: String(localized: "Networking")
+            case .compliance: String(localized: "Compliance")
+            case .sourceControl: String(localized: "Source control")
+            case .projectManagement: String(localized: "Project management")
+            case .document: String(localized: "Document")
+            case .email: String(localized: "Email")
             }
         }
     }
@@ -86,9 +86,9 @@ extension Connector {
             key: "aws", title: "AWS", logo: "logo-aws", category: .infrastructure,
             bind: .form(
                 path: "aws-accounts",
-                fields: [.init(key: "roleArn", title: "Role ARN", placeholder: "arn:aws:iam::123456789012:role/Nuphos")]
+                fields: [.init(key: "roleArn", title: String(localized: "Role ARN"), placeholder: String(localized: "arn:aws:iam::123456789012:role/Nuphos"))]
             ),
-            note: "The role must already trust the Nuphos connector — Nuphos assumes it before saving the binding.",
+            note: String(localized: "The role must already trust the Nuphos connector — Nuphos assumes it before saving the binding."),
             labelKeys: ["alias", "accountId"], detailKeys: ["roleArn"]
         ),
         .init(key: "gcp", title: "Google Cloud / Firebase", logo: "logo-gcp", category: .infrastructure, bind: .desktopOnly,
@@ -96,12 +96,12 @@ extension Connector {
         .init(
             key: "azure", title: "Azure", logo: "logo-azure", category: .infrastructure,
             bind: .form(path: "azure-accounts", fields: [
-                .init(key: "label", title: "Label", placeholder: "Production"),
-                .init(key: "tenantId", title: "Tenant ID", placeholder: "00000000-0000-0000-0000-000000000000"),
-                .init(key: "clientId", title: "Client ID", placeholder: "00000000-0000-0000-0000-000000000000"),
-                .init(key: "subscriptionId", title: "Subscription ID", placeholder: "00000000-0000-0000-0000-000000000000"),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Production")),
+                .init(key: "tenantId", title: String(localized: "Tenant ID"), placeholder: String(localized: "00000000-0000-0000-0000-000000000000")),
+                .init(key: "clientId", title: String(localized: "Client ID"), placeholder: String(localized: "00000000-0000-0000-0000-000000000000")),
+                .init(key: "subscriptionId", title: String(localized: "Subscription ID"), placeholder: String(localized: "00000000-0000-0000-0000-000000000000")),
             ]),
-            note: "The app registration needs a federated credential for this team before it can be bound.",
+            note: String(localized: "The app registration needs a federated credential for this team before it can be bound."),
             detailKeys: ["subscriptionId"]
         ),
         .init(key: "cloudflare", title: "Cloudflare", logo: "logo-cloudflare", category: .infrastructure, bind: .desktopOnly,
@@ -109,15 +109,15 @@ extension Connector {
         .init(
             key: "linode", title: "Linode", logo: "logo-linode", category: .infrastructure,
             bind: .form(path: "linode-accounts", fields: [
-                .init(key: "label", title: "Label", placeholder: "Akamai"),
-                .init(key: "token", title: "API token", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Akamai")),
+                .init(key: "token", title: String(localized: "API token"), kind: .secret),
             ])
         ),
         .init(
             key: "hetzner", title: "Hetzner Cloud", logo: "logo-hetzner", category: .infrastructure,
             bind: .form(path: "hetzner-accounts", fields: [
-                .init(key: "label", title: "Label", placeholder: "Hetzner"),
-                .init(key: "token", title: "API token", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Hetzner")),
+                .init(key: "token", title: String(localized: "API token"), kind: .secret),
             ])
         ),
         .init(key: "tencent", title: "Tencent Cloud", logo: "logo-tencent", category: .infrastructure, bind: .desktopOnly,
@@ -129,41 +129,41 @@ extension Connector {
         .init(
             key: "zeabur", title: "Zeabur", logo: "logo-zeabur", category: .infrastructure,
             bind: .form(path: "zeabur-providers", fields: [
-                .init(key: "token", title: "API token", kind: .secret),
+                .init(key: "token", title: String(localized: "API token"), kind: .secret),
             ]),
             labelKeys: ["name"], detailKeys: ["kind"]
         ),
-        .init(key: "onprem", title: "Clusters", logo: "logo-kubernetes", category: .infrastructure, bind: .desktopOnly,
+        .init(key: "onprem", title: String(localized: "Clusters"), logo: "logo-kubernetes", category: .infrastructure, bind: .desktopOnly,
               detailKeys: ["contextName"]),
 
         // MARK: Observability
         .init(
             key: "betterstack", title: "Better Stack", logo: "logo-betterstack", category: .observability,
             bind: .form(path: "betterstack-integrations", fields: [
-                .init(key: "label", title: "Label", placeholder: "Better Stack"),
-                .init(key: "uptimeApiToken", title: "Uptime API token", kind: .secret, required: false),
-                .init(key: "telemetryApiToken", title: "Telemetry API token", kind: .secret, required: false),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Better Stack")),
+                .init(key: "uptimeApiToken", title: String(localized: "Uptime API token"), kind: .secret, required: false),
+                .init(key: "telemetryApiToken", title: String(localized: "Telemetry API token"), kind: .secret, required: false),
             ]),
-            note: "Provide at least one of the two tokens."
+            note: String(localized: "Provide at least one of the two tokens.")
         ),
         .init(
             key: "uptimeKuma", title: "Uptime Kuma", logo: "logo-uptime-kuma", category: .observability,
             bind: .form(path: "uptime-kuma-instances", fields: [
-                .init(key: "label", title: "Label", placeholder: "Uptime Kuma"),
-                .init(key: "baseUrl", title: "Base URL", placeholder: "https://status.example.com", kind: .url),
-                .init(key: "authToken", title: "Auth token", kind: .secret, required: false),
-                .init(key: "username", title: "Username", required: false),
-                .init(key: "password", title: "Password", kind: .secret, required: false),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Uptime Kuma")),
+                .init(key: "baseUrl", title: String(localized: "Base URL"), placeholder: String(localized: "https://status.example.com"), kind: .url),
+                .init(key: "authToken", title: String(localized: "Auth token"), kind: .secret, required: false),
+                .init(key: "username", title: String(localized: "Username"), required: false),
+                .init(key: "password", title: String(localized: "Password"), kind: .secret, required: false),
             ]),
-            note: "Provide either an auth token or a username and password.",
+            note: String(localized: "Provide either an auth token or a username and password."),
             detailKeys: ["baseUrl"]
         ),
         .init(
             key: "grafana", title: "Grafana", logo: "logo-grafana", category: .observability,
             bind: .form(path: "grafana-instances", fields: [
-                .init(key: "name", title: "Name", placeholder: "Grafana"),
-                .init(key: "grafanaUrl", title: "Grafana URL", placeholder: "https://grafana.example.com", kind: .url),
-                .init(key: "saToken", title: "Service account token", kind: .secret),
+                .init(key: "name", title: String(localized: "Name"), placeholder: String(localized: "Grafana")),
+                .init(key: "grafanaUrl", title: String(localized: "Grafana URL"), placeholder: String(localized: "https://grafana.example.com"), kind: .url),
+                .init(key: "saToken", title: String(localized: "Service account token"), kind: .secret),
             ]),
             labelKeys: ["name"], detailKeys: ["grafanaUrl"]
         ),
@@ -174,9 +174,9 @@ extension Connector {
         .init(
             key: "tailscale", title: "Tailscale", logo: "logo-tailscale", category: .networking,
             bind: .form(path: "tailscale-clients", fields: [
-                .init(key: "label", title: "Label", placeholder: "Tailnet"),
-                .init(key: "clientId", title: "OAuth client ID"),
-                .init(key: "clientSecret", title: "OAuth client secret", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Tailnet")),
+                .init(key: "clientId", title: String(localized: "OAuth client ID")),
+                .init(key: "clientSecret", title: String(localized: "OAuth client secret"), kind: .secret),
             ]),
             detailKeys: ["clientId"]
         ),
@@ -185,26 +185,26 @@ extension Connector {
         .init(
             key: "vanta", title: "Vanta", logo: "logo-vanta", category: .compliance,
             bind: .form(path: "vanta-integrations", fields: [
-                .init(key: "label", title: "Label", placeholder: "Vanta"),
-                .init(key: "clientId", title: "Client ID"),
-                .init(key: "clientSecret", title: "Client secret", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Vanta")),
+                .init(key: "clientId", title: String(localized: "Client ID")),
+                .init(key: "clientSecret", title: String(localized: "Client secret"), kind: .secret),
             ])
         ),
         .init(
             key: "secureframe", title: "Secureframe", logo: "logo-secureframe", category: .compliance,
             bind: .form(path: "secureframe-integrations", fields: [
-                .init(key: "label", title: "Label", placeholder: "Secureframe"),
-                .init(key: "apiKey", title: "API key", kind: .secret),
-                .init(key: "apiSecret", title: "API secret", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Secureframe")),
+                .init(key: "apiKey", title: String(localized: "API key"), kind: .secret),
+                .init(key: "apiSecret", title: String(localized: "API secret"), kind: .secret),
             ]),
             detailKeys: ["region"]
         ),
         .init(
             key: "sonarqube", title: "SonarQube", logo: "logo-sonarqube", category: .compliance,
             bind: .form(path: "sonarqube-integrations", fields: [
-                .init(key: "label", title: "Label", placeholder: "SonarQube"),
-                .init(key: "baseUrl", title: "Base URL", placeholder: "https://sonarcloud.io", kind: .url),
-                .init(key: "token", title: "Token", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "SonarQube")),
+                .init(key: "baseUrl", title: String(localized: "Base URL"), placeholder: String(localized: "https://sonarcloud.io"), kind: .url),
+                .init(key: "token", title: String(localized: "Token"), kind: .secret),
             ]),
             detailKeys: ["baseUrl"]
         ),
@@ -231,17 +231,17 @@ extension Connector {
         .init(
             key: "notion", title: "Notion", logo: "logo-notion", category: .document,
             bind: .form(path: "notion-integrations", fields: [
-                .init(key: "label", title: "Label", placeholder: "Notion"),
-                .init(key: "token", title: "Integration token", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Notion")),
+                .init(key: "token", title: String(localized: "Integration token"), kind: .secret),
             ]),
             detailKeys: ["workspaceName"]
         ),
         .init(
             key: "upstash", title: "Upstash", logo: "logo-upstash", category: .document,
             bind: .form(path: "upstash-accounts", fields: [
-                .init(key: "label", title: "Label", placeholder: "Upstash"),
-                .init(key: "email", title: "Account email", kind: .email),
-                .init(key: "apiKey", title: "Management API key", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Upstash")),
+                .init(key: "email", title: String(localized: "Account email"), kind: .email),
+                .init(key: "apiKey", title: String(localized: "Management API key"), kind: .secret),
             ]),
             detailKeys: ["email"]
         ),
@@ -250,8 +250,8 @@ extension Connector {
         .init(
             key: "resend", title: "Resend", logo: "logo-resend", category: .email,
             bind: .form(path: "resend-integrations", fields: [
-                .init(key: "label", title: "Label", placeholder: "Resend"),
-                .init(key: "apiKey", title: "API key", kind: .secret),
+                .init(key: "label", title: String(localized: "Label"), placeholder: String(localized: "Resend")),
+                .init(key: "apiKey", title: String(localized: "API key"), kind: .secret),
             ]),
             detailKeys: ["permission"]
         ),

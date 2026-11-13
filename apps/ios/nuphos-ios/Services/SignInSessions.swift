@@ -64,14 +64,15 @@ enum SignInSessions {
 
     /// "Active now" for this device, else "Last active 3 hours ago".
     static func activity(_ session: SignInSession, now: Date = .now) -> String {
-        if session.isCurrent { return "Active now" }
+        if session.isCurrent { return String(localized: "Active now") }
         let iso = ISO8601DateFormatter()
         iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         guard let raw = session.lastUsedAt, let date = iso.date(from: raw) ?? ISO8601DateFormatter().date(from: raw) else {
-            return "Last active: unknown"
+            return String(localized: "Last active: unknown")
         }
+        // The device's own language and wording, not a hard-coded English one.
         let relative = RelativeDateTimeFormatter()
-        relative.locale = Locale(identifier: "en_US")
-        return "Last active \(relative.localizedString(for: min(date, now), relativeTo: now))"
+        let when = relative.localizedString(for: min(date, now), relativeTo: now)
+        return String(localized: "Last active \(when)")
     }
 }

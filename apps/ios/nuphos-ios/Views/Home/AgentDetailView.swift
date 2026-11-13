@@ -47,7 +47,7 @@ struct AgentDetailView: View {
                         }
                     }
                 } else {
-                    Text(quota?.reason ?? "Unavailable").foregroundStyle(.secondary)
+                    Text(quotaReason(quota?.reason)).foregroundStyle(.secondary)
                 }
             }
             Section {
@@ -80,6 +80,15 @@ struct AgentDetailView: View {
                 ? "This stops the runtime and permanently deletes its files and sign-in. Your agents' history stays in Yu AI."
                 : "This disconnects the runtime. Your agents stay in Yu AI.")
         }
+    }
+
+    /// The server explains why there are no figures, in English. The one
+    /// reason this build knows by name is translated; anything else is shown
+    /// as the server wrote it.
+    private func quotaReason(_ reason: String?) -> String {
+        guard let reason else { return String(localized: "Unavailable") }
+        if reason == "omp does not report usage" { return String(localized: "omp does not report usage") }
+        return reason
     }
 
     private func update(_ patch: [String: JSONValue]) {

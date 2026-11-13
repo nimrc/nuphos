@@ -133,7 +133,7 @@ struct PlanDetailView: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Theme.body)
                     .padding(.top, 2)
-                Text(plan.title.isEmpty ? "Untitled plan" : plan.title)
+                Text(plan.title.isEmpty ? String(localized: "Untitled plan") : plan.title)
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(Theme.heading)
                     .textSelection(.enabled)
@@ -151,7 +151,7 @@ struct PlanDetailView: View {
                 }
                 if let createdAt = plan.createdAt {
                     if plans.member(plan.createdBy) != nil { Text("·") }
-                    Text(HistoryTime.format(createdAt) == "now" ? "just now" : "\(HistoryTime.format(createdAt)) ago")
+                    Text(ChatTime.label(for: createdAt))
                 }
             }
             .font(.system(size: 12))

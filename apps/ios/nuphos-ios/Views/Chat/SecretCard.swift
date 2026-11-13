@@ -53,8 +53,7 @@ struct SecretCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 6) {
                 Image(systemName: "lock.fill").font(Theme.Text.caption).foregroundStyle(Theme.muted)
-                Text("Secret needed: ").foregroundStyle(Theme.heading)
-                    + Text(name).font(Theme.Text.mono(.subheadline)).foregroundStyle(Theme.heading)
+                Text(String(localized: "Secret needed: \(name)")).foregroundStyle(Theme.heading)
             }
             .font(Theme.Text.secondary.weight(.medium))
             if !reason.isEmpty {

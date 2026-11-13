@@ -15,7 +15,7 @@ final class VoiceDictation {
         case microphoneDenied
 
         var errorDescription: String? {
-            "Allow microphone access for Yu Bot in Settings to use voice input."
+            String(localized: "Allow microphone access for Yu Bot in Settings to use voice input.")
         }
     }
 
@@ -126,10 +126,10 @@ enum Whisper {
         case 200: break
         case 401: throw NuphosAPI.Failure.unauthorized
         default:
-            throw Failure(errorDescription: json?["error"]?["message"]?.stringValue ?? "Yu AI couldn't be reached. Try again.")
+            throw Failure(errorDescription: json?["error"]?["message"]?.stringValue ?? String(localized: "Yu AI couldn't be reached. Try again."))
         }
         guard var text = json?["text"]?.stringValue else {
-            throw Failure(errorDescription: "The recording couldn't be transcribed.")
+            throw Failure(errorDescription: String(localized: "The recording couldn't be transcribed."))
         }
         // Whisper writes Mandarin in Simplified Chinese by default; convert it to Traditional.
         if json?["language"]?.stringValue == "chinese" {
