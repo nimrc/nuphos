@@ -97,7 +97,7 @@ struct ProfileSheet: View {
                 .listRowBackground(Theme.surface)
 
                 Section("Privacy") {
-                    Link("Privacy policy", destination: URL(string: "https://nuphos.ai/privacy")!)
+                    Link("Privacy policy", destination: URL(string: "https://yuai.dev/privacy")!)
                     if session.aiConsentAccepted {
                         Button("Withdraw AI data sharing permission") {
                             Task {
