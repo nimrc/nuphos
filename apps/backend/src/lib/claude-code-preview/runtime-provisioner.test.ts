@@ -345,6 +345,23 @@ describe('reconcileHostedRuntimes', () => {
     expect(runtimeFeedRequests()).toBe(1)
   })
 
+  test('an operator image replaces the recorded one, for existing runtimes too', async () => {
+    await addAgent()
+    const kube = fakeKube()
+
+    await reconcile(kube)
+    provisioner.images = { 'claude-code': 'registry.example.com/runtime:custom-2' }
+    kube.applied.length = 0
+    try {
+      await reconcile(kube, 'claude-code', { hasActiveRuntimeTurn: () => Promise.resolve(false) })
+      expect(
+        ofKind<Deployment>(kube, 'Deployment')[0]?.spec.template.spec.containers[0]?.image,
+      ).toBe('registry.example.com/runtime:custom-2')
+    } finally {
+      provisioner.images = {}
+    }
+  })
+
   test('an unchanged template never asks the runtime whether it is busy', async () => {
     await addAgent()
     const kube = fakeKube()
