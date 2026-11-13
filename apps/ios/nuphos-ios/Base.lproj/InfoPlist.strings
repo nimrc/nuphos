@@ -1,0 +1,3 @@
+/* System prompts (e.g. web sign-in consent) and the Home Screen read these names. */
+"CFBundleName" = "Yu Bot";
+"CFBundleDisplayName" = "Yu Bot";
