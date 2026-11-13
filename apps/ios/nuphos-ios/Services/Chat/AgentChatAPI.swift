@@ -439,32 +439,17 @@ enum AgentChatAPI {
         [Conflict.runtimeLoginRequired, .runtimeDisabled, .runtimeNotFound, .runtimeOffline].compactMap(\.errorDescription)
     )
 
-    /// What to say when the body carries no message of its own. The server's
-    /// own sentence is English and not part of the app's catalog, so a known
-    /// status gets an app-side line instead.
-    static func statusMessage(_ status: Int) -> String {
-        switch status {
-        case 400: String(localized: "That request wasn't understood. Try again.")
-        case 401, 403: String(localized: "You don't have permission to do that.")
-        case 404: String(localized: "That conversation is no longer available.")
-        case 408, 504: String(localized: "Yu AI took too long to answer. Try again.")
-        case 429: String(localized: "Too many requests. Try again in a moment.")
-        case 500...599: String(localized: "Yu AI is having trouble right now. Try again in a moment.")
-        default: String(localized: "Something went wrong. Try again.")
-        }
-    }
-
     /// Parses an Atlas error body into a typed conflict.
     static func conflict(status: Int, body: String?) -> Conflict {
         if status == 413 { return .other(code: "payload_too_large", message: ChatPayload.tooLargeMessage, status: status) }
         var code: String?
-        var message = body ?? statusMessage(status)
+        var message = body ?? HTTPStatusMessage.text(status)
         var stored: Int?
         if let body, let data = body.data(using: .utf8),
            let json = try? JSONDecoder().decode(JSONValue.self, from: data) {
             let error = json["error"] ?? json
             code = error["code"]?.stringValue
-            message = error["message"]?.stringValue ?? statusMessage(status)
+            message = error["message"]?.stringValue ?? HTTPStatusMessage.text(status)
             stored = error["details"]?["storedMessageCount"]?.numberValue.map(Int.init)
         }
         switch code {

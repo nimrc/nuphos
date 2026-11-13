@@ -46,7 +46,7 @@ struct ConversationTriggers: View {
                             Text(trigger.schedule).font(.caption).foregroundStyle(.secondary)
                             if !trigger.enabled { Text("Paused").font(.caption).foregroundStyle(.secondary) }
                             else if let date = trigger.nextRun {
-                                Text("Next: \(date.formatted(date: .abbreviated, time: .shortened))").font(.caption).foregroundStyle(.secondary)
+                                Text("Next: \(AppLocale.dateTime(date))").font(.caption).foregroundStyle(.secondary)
                             } else {
                                 Text(trigger.triggerType == "webhook" ? "Waiting for webhook" : "No upcoming runs").font(.caption).foregroundStyle(.secondary)
                             }

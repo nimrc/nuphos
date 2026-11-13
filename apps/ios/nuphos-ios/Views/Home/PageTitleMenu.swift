@@ -46,7 +46,19 @@ struct PageTitleMenu: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Switch page")
-        .accessibilityValue(Text("\(Text(selection.title))\(inboxCount > 0 ? ", \(inboxCount) in Inbox" : "")"))
+        // Page, Inbox count, then the selected state; a Menu's Picker can put
+        // its selected trait first, so it is removed and spoken in the value.
+        .accessibilityValue(Text(verbatim: pageDescription))
+        .accessibilityRemoveTraits(.isSelected)
+    }
+
+    /// One announcement in reading order: what page this is, how many open
+    /// questions wait in the Inbox, and that it is the chosen page.
+    private var pageDescription: String {
+        if inboxCount > 0, selection != .inbox {
+            return String(localized: "\(selection.localizedTitle), \(inboxCount) in Inbox, selected")
+        }
+        return String(localized: "\(selection.localizedTitle), selected")
     }
 
     private var font: Font {

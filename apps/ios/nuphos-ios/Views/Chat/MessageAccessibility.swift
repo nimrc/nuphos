@@ -6,7 +6,7 @@ import SwiftUI
 enum MessageAccessibility {
     static func time(_ date: Date?) -> String {
         guard let date else { return "" }
-        return date.formatted(date: .omitted, time: .shortened)
+        return AppLocale.time(date)
     }
 
     static func label(mine: Bool, date: Date?, text: String) -> Text {

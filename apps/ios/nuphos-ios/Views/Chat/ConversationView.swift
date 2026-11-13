@@ -725,7 +725,7 @@ struct TimestampLabel: View {
             .foregroundStyle(Theme.muted)
             .frame(maxWidth: .infinity)
             .padding(.top, 4)
-            .accessibilityLabel(date.formatted(date: .abbreviated, time: .shortened))
+            .accessibilityLabel(AppLocale.dateTime(date))
             .accessibilityAddTraits(.isHeader)
     }
 }

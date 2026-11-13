@@ -24,7 +24,7 @@ enum ChatTime {
             return String(localized: "\(hours) hr ago", comment: "Chat timestamp, 1–3 hours")
         }
 
-        let time = date.formatted(date: .omitted, time: .shortened)
+        let time = AppLocale.time(date)
         let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: date), to: calendar.startOfDay(for: now)).day ?? 0
 
         switch days {
@@ -36,10 +36,10 @@ enum ChatTime {
             return String(localized: "2 days ago \(time)", comment: "Chat timestamp, two days back")
         default:
             if calendar.isDate(date, equalTo: now, toGranularity: .year) {
-                let day = date.formatted(.dateTime.month(.twoDigits).day(.twoDigits))
+                let day = date.formatted(.dateTime.month(.twoDigits).day(.twoDigits).locale(AppLocale.current))
                 return String(localized: "\(time), \(day)", comment: "Chat timestamp, same year: time, month/day")
             }
-            let day = date.formatted(.dateTime.month(.twoDigits).day(.twoDigits).year())
+            let day = date.formatted(.dateTime.month(.twoDigits).day(.twoDigits).year().locale(AppLocale.current))
             return String(localized: "\(time) \(day)", comment: "Chat timestamp, other year: time month/day/year")
         }
     }

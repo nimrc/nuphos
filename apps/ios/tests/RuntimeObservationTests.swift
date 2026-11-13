@@ -3,6 +3,7 @@ import Foundation
 @main
 struct RuntimeObservationTests {
     static func main() throws {
+        AppLocaleTests.run()
         let oldUnread = ConversationUnread.forAccount("old-synthetic-token")
         oldUnread.receive(team: "shared", session: "same", activity: 9, read: 0, displayed: false)
         precondition(oldUnread.contains(team: "shared", session: "same"))

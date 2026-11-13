@@ -24,7 +24,7 @@ enum SSEClient {
 
         var errorDescription: String? {
             switch self {
-            case .badStatus(let code, let body): body.flatMap(SSEClient.errorMessage) ?? AgentChatAPI.statusMessage(code)
+            case .badStatus(let code, let body): body.flatMap(SSEClient.errorMessage) ?? HTTPStatusMessage.text(code)
             case .notEventStream(let type): String(localized: "The server opened an unexpected stream (\(type ?? "nothing")).")
             case .queued: String(localized: "Your message waits for the turn ahead.")
             case .idleTimeout: String(localized: "The connection went quiet for too long.")

@@ -47,6 +47,11 @@ struct AgentPage: View {
         @Bindable var store = store
 
         content
+            .toolbar {
+                if page == .chats {
+                    ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
+                }
+            }
             // On the switch, so the empty and error states refresh too.
             .refreshable {
                 // An alert shown before the pull has settled leaves the spinner running for good.
@@ -417,10 +422,71 @@ struct AgentPage: View {
         }
     }
 
+    /// True while a creation is running or the cloud runtime has not loaded.
+    /// The same condition the old header "+" used.
+    private var newBotDisabled: Bool { store.creatingBot || !store.runtimesLoaded }
+
+    /// The obvious create entry: the first row of the Bots list, so it also
+    /// carries the empty state.
+    private var newBotRow: some View {
+        VStack(spacing: 8) {
+            Button { showNewBot = true } label: {
+                HStack(spacing: 8) {
+                    if store.creatingBot {
+                        ProgressView().tint(.white)
+                    } else {
+                        Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
+                    }
+                    Text("New Bot").font(.system(size: 17, weight: .semibold))
+                }
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(newBotDisabled ? Theme.muted.opacity(0.45) : Theme.brand)
+                )
+                .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .disabled(newBotDisabled)
+            .accessibilityLabel("New Bot")
+            .accessibilityHint("Creates a Bot with its own chat")
+
+            if store.botsList.isEmpty {
+                Text("Give each Bot its own chat")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.muted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .listSectionSeparator(.hidden, edges: .top)
+    }
+
+    /// The same create action in the navigation bar, top right.
+    private var newBotBarButton: some View {
+        Button { showNewBot = true } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 20, weight: .medium))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .foregroundStyle(Theme.brand)
+        .disabled(newBotDisabled)
+        .accessibilityLabel("New Bot")
+        .accessibilityHint("Creates a Bot with its own chat")
+    }
+
     private var list: some View {
         List(selection: selection) {
             if page == .chats {
                 Section {
+                    newBotRow
+
                     ForEach(store.botsList) { row in
                         Group {
                             if row.isChannel {
@@ -442,17 +508,7 @@ struct AgentPage: View {
                         .listSectionSeparator(.hidden, edges: .top)
                     }
                 } header: {
-                    sectionHeader("Bots") {
-                        Button { showNewBot = true } label: {
-                            // A 44pt hit area without making the header taller.
-                            Image(systemName: "plus")
-                                .padding(14)
-                                .contentShape(Rectangle())
-                                .padding(-14)
-                        }
-                        .disabled(store.creatingBot || !store.runtimesLoaded)
-                        .accessibilityLabel("New Bot")
-                    }
+                    sectionHeader("Bots")
                 }
             } else {
                 Section {

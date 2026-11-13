@@ -18,6 +18,17 @@ enum HomePage: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The same title as plain localized text, for composing one spoken line.
+    var localizedTitle: String {
+        switch self {
+        case .chats: String(localized: "Bots")
+        case .agent: String(localized: "Tasks")
+        case .inbox: String(localized: "Inbox")
+        case .runtimes: String(localized: "Runtimes")
+        case .connectors: String(localized: "Connectors")
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .chats: "bubble.left.and.bubble.right"

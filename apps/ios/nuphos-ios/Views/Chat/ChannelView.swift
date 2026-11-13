@@ -502,7 +502,7 @@ private struct ReplyFailedLine: View {
 
     private var resets: String? {
         guard event.cause == "usage_limit", let date = event.resetsAt, date > .now else { return nil }
-        return "Usage returns " + date.formatted(.dateTime.weekday(.abbreviated).hour().minute()) + "."
+        return "Usage returns " + date.formatted(.dateTime.weekday(.abbreviated).hour().minute().locale(AppLocale.current)) + "."
     }
 
     var body: some View {

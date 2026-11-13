@@ -130,7 +130,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld 个 runtime"
+            "value": "%lld 个 Runtime"
           }
         }
       }
@@ -172,7 +172,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已经收到邀请？先在邮件中接受邀请，再刷新 workspace。"
+            "value": "已经收到邀请？先在邮件中接受邀请，再刷新 Workspace。"
           }
         }
       }
@@ -272,7 +272,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "可加入的 workspace"
+            "value": "可加入的 Workspace"
           }
         }
       }
@@ -292,7 +292,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择 credential"
+            "value": "选择 Credential"
           }
         }
       }
@@ -352,7 +352,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在 agent 中继续"
+            "value": "在 Agent 中继续"
           }
         }
       }
@@ -382,7 +382,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载 credential"
+            "value": "无法加载 Credential"
           }
         }
       }
@@ -392,7 +392,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载 agent"
+            "value": "无法加载 Agent"
           }
         }
       }
@@ -412,7 +412,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载 runtime"
+            "value": "无法加载 Runtime"
           }
         }
       }
@@ -422,7 +422,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载此 agent"
+            "value": "无法加载此 Agent"
           }
         }
       }
@@ -432,7 +432,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "创建 workspace 来使用 agent 和 runtime，或加入你的组织已开放的 workspace。"
+            "value": "创建 Workspace 来使用 Agent 和 Runtime，或加入你的组织已开放的 Workspace。"
           }
         }
       }
@@ -442,7 +442,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "创建或加入 workspace，即可开始和 agent 对话。"
+            "value": "创建或加入 Workspace，即可开始和 Agent 对话。"
           }
         }
       }
@@ -452,7 +452,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "创建 workspace"
+            "value": "创建 Workspace"
           }
         }
       }
@@ -522,7 +522,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "筛选 agent"
+            "value": "筛选 Agent"
           }
         }
       }
@@ -553,7 +553,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在加载 credential…"
+            "value": "正在加载 Credential…"
           }
         }
       }
@@ -563,7 +563,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在加载 agent…"
+            "value": "正在加载 Agent…"
           }
         }
       }
@@ -643,7 +643,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "我的 agent"
+            "value": "我的 Agent"
           }
         }
       }
@@ -663,7 +663,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "我的 workspace"
+            "value": "我的 Workspace"
           }
         }
       }
@@ -673,7 +673,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "新建 agent"
+            "value": "新建 Agent"
           }
         }
       }
@@ -683,7 +683,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "尚未连接 credential"
+            "value": "尚未连接 Credential"
           }
         }
       }
@@ -693,7 +693,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有匹配的 agent。"
+            "value": "没有匹配的 Agent。"
           }
         }
       }
@@ -703,7 +703,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "还没有 agent"
+            "value": "还没有 Agent"
           }
         }
       }
@@ -743,7 +743,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "打开 agent"
+            "value": "打开 Agent"
           }
         }
       }
@@ -853,7 +853,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在准备 runtime"
+            "value": "正在准备 Runtime"
           }
         }
       }
@@ -883,7 +883,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "刷新 workspace"
+            "value": "刷新 Workspace"
           }
         }
       }
@@ -973,7 +973,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "搜索 agent"
+            "value": "搜索 Agent"
           }
         }
       }
@@ -993,7 +993,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "设置 workspace"
+            "value": "设置 Workspace"
           }
         }
       }
@@ -1063,7 +1063,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "从下方输入栏开始一个 agent。"
+            "value": "从下方输入栏开始一个 Agent。"
           }
         }
       }
@@ -1103,7 +1103,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "团队 agent"
+            "value": "团队 Agent"
           }
         }
       }
@@ -1113,7 +1113,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "agent 仍在生成方案——步骤、费用和风险就绪后才能批准。"
+            "value": "Agent 仍在生成方案——步骤、费用和风险就绪后才能批准。"
           }
         }
       }
@@ -1199,7 +1199,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "workspace 名称"
+            "value": "Workspace 名称"
           }
         }
       }
@@ -1230,7 +1230,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "workspace 的云端 runtime 正在启动，稍后会出现在这里。"
+            "value": "Workspace 的云端 Runtime 正在启动，稍后会出现在这里。"
           }
         }
       }
@@ -1310,7 +1310,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "runtime 名称"
+            "value": "Runtime 名称"
           }
         }
       }
@@ -1340,7 +1340,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "移除 runtime"
+            "value": "移除 Runtime"
           }
         }
       }
@@ -1410,7 +1410,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "未知 runtime"
+            "value": "未知 Runtime"
           }
         }
       }
@@ -1900,7 +1900,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "未命名 agent"
+            "value": "未命名 Agent"
           }
         }
       }
@@ -2365,7 +2365,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "该角色必须已信任 Nuphos connector——保存绑定前 Nuphos 会先代入该角色。"
+            "value": "该角色必须已信任 Nuphos Connector——保存绑定前 Nuphos 会先代入该角色。"
           }
         }
       }
@@ -2375,7 +2375,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "该应用注册需要先为本团队配置联合 credential，才能绑定。"
+            "value": "该应用注册需要先为本团队配置联合 Credential，才能绑定。"
           }
         }
       }
@@ -2425,7 +2425,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "个人 credential"
+            "value": "个人 Credential"
           }
         }
       }
@@ -2645,7 +2645,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "需要填写密钥："
+            "value": "需要填写密钥：%@"
           }
         }
       }
@@ -2796,7 +2796,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "runtime 长时间没有响应，这条回复已结束。"
+            "value": "Runtime 长时间没有响应，这条回复已结束。"
           }
         }
       }
@@ -2856,7 +2856,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "添加 connector"
+            "value": "添加 Connector"
           }
         }
       }
@@ -2896,7 +2896,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "agent 选项"
+            "value": "Agent 选项"
           }
         }
       }
@@ -2946,7 +2946,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "归档 bot"
+            "value": "归档 Bot"
           }
         }
       }
@@ -2966,7 +2966,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "让 agent 在这段对话中安排重复执行的工作。"
+            "value": "让 Agent 在这段对话中安排重复执行的工作。"
           }
         }
       }
@@ -2987,7 +2987,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "使用 AI agent 前"
+            "value": "使用 AI Agent 前"
           }
         }
       }
@@ -2997,7 +2997,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "bot 头像"
+            "value": "Bot 头像"
           }
         }
       }
@@ -3007,7 +3007,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "继续即表示你同意我们的[服务条款](https://yu-bot.airhost.site/terms/)和[隐私政策](https://yu-bot.airhost.site/privacy/)。"
+            "value": "继续即表示你同意我们的[服务条款](https://yu-Bot.airhost.site/terms/)和[隐私政策](https://yu-Bot.airhost.site/privacy/)。"
           }
         }
       }
@@ -3057,7 +3057,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择 credential"
+            "value": "选择 Credential"
           }
         }
       }
@@ -3157,7 +3157,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载 connector"
+            "value": "无法加载 Connector"
           }
         }
       }
@@ -3217,7 +3217,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "视你的 runtime 和模型而定，接收方可能是 Anthropic（Claude）、OpenAI（Codex）、xAI（Grok）、Google（Antigravity）、OpenCode runtime 所用的模型服务商（未登录时是 OpenCode Zen）或 Amazon Web Services。开启追踪时，Yu AI 会保存 AI 执行过程记录，其中可能包含对话和工具内容，用于诊断和改善服务。"
+            "value": "视你的 Runtime 和模型而定，接收方可能是 Anthropic（Claude）、OpenAI（Codex）、xAI（Grok）、Google（Antigravity）、OpenCode Runtime 所用的模型服务商（未登录时是 OpenCode Zen）或 Amazon Web Services。开启追踪时，Yu AI 会保存 AI 执行过程记录，其中可能包含对话和工具内容，用于诊断和改善服务。"
           }
         }
       }
@@ -3387,7 +3387,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "为 agent 显示角色头像；关闭后显示 runtime 图标。"
+            "value": "为 Agent 显示角色头像；关闭后显示 Runtime 图标。"
           }
         }
       }
@@ -3427,7 +3427,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "仅此 agent"
+            "value": "仅此 Agent"
           }
         }
       }
@@ -3497,7 +3497,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在加载 runtime…"
+            "value": "正在加载 Runtime…"
           }
         }
       }
@@ -3507,7 +3507,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "管理电脑与 runtime"
+            "value": "管理电脑与 Runtime"
           }
         }
       }
@@ -3527,7 +3527,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "新建 agent"
+            "value": "新建 Agent"
           }
         }
       }
@@ -3557,7 +3557,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "还没有 connector"
+            "value": "还没有 Connector"
           }
         }
       }
@@ -3598,7 +3598,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "只分享你有权分享的信息。你可以拒绝，仍可管理账户或申请删除账户。你可以在「账户 → 隐私」中撤回 AI 数据共享授权。撤回后本 App 不再发起新的 AI 使用，但不会撤销已完成的传输，也不会停止正在运行的工作，包括在其他设备上或由定时 agent 启动的工作。"
+            "value": "只分享你有权分享的信息。你可以拒绝，仍可管理账户或申请删除账户。你可以在「账户 → AI 数据共享」中撤回授权。撤回后本 App 不再发起新的 AI 使用，但不会撤销已完成的传输，也不会停止正在运行的工作，包括在其他设备上或由定时 Agent 启动的工作。"
           }
         }
       }
@@ -3688,7 +3688,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "预览 agent"
+            "value": "预览 Agent"
           }
         }
       }
@@ -4088,7 +4088,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在启动 runtime…"
+            "value": "正在启动 Runtime…"
           }
         }
       }
@@ -4099,7 +4099,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "切换 agent"
+            "value": "切换 Agent"
           }
         }
       }
@@ -4109,7 +4109,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "切换 runtime"
+            "value": "切换 Runtime"
           }
         }
       }
@@ -4130,7 +4130,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "对话所有者可以为这段对话选择 credential。"
+            "value": "对话所有者可以为这段对话选择 Credential。"
           }
         }
       }
@@ -4180,7 +4180,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "此 runtime 在你的电脑上。移动后，这段对话里的人必须能使用这台电脑才能回复，其他人仍可阅读。"
+            "value": "此 Runtime 在你的电脑上。移动后，这段对话里的人必须能使用这台电脑才能回复，其他人仍可阅读。"
           }
         }
       }
@@ -4290,7 +4290,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "使用 agent 时，你的提示词、对话记录、上传的图片和文件，以及连接工具中的相关结果，会发送给完成请求所需的服务商。"
+            "value": "使用 Agent 时，你的提示词、对话记录、上传的图片和文件，以及连接工具中的相关结果，会发送给完成请求所需的服务商。"
           }
         }
       }
@@ -4330,7 +4330,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "我们会在 30 天内永久删除你的账户及相关个人数据。workspace 归属和共享数据的处理由我们协调。法律要求保留的记录和由团队共同持有的数据，在必要时会继续保留。"
+            "value": "我们会在 30 天内永久删除你的账户及相关个人数据。Workspace 归属和共享数据的处理由我们协调。法律要求保留的记录和由团队共同持有的数据，在必要时会继续保留。"
           }
         }
       }
@@ -4340,7 +4340,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "agent 需要你决定时，会出现在这里。答复后就会从 Inbox 消失。"
+            "value": "Agent 需要你决定时，会出现在这里。答复后就会从 Inbox 消失。"
           }
         }
       }
@@ -4430,7 +4430,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yu AI 会在传往 runtime 的途中加密，密钥由 runtime 保存，Yu AI 不保留副本。"
+            "value": "Yu AI 会在传往 Runtime 的途中加密，密钥由 Runtime 保存，Yu AI 不保留副本。"
           }
         }
       }
@@ -4462,6 +4462,61 @@
           "stringUnit": {
             "state": "translated",
             "value": "附件图片，%@"
+          }
+        }
+      }
+    },
+    "%@, selected": {
+      "comment": "Page picker: the current page and its selected state",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@，已选中"
+          }
+        }
+      }
+    },
+    "%@, %lld in Inbox, selected": {
+      "comment": "Page picker: current page, open questions in the Inbox, selected state",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@，Inbox 中 %2$lld 条，已选中"
+          }
+        }
+      }
+    },
+    "New Bot": {
+      "comment": "The create entry on the Bots page.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新建 Bot"
+          }
+        }
+      }
+    },
+    "Creates a Bot with its own chat": {
+      "comment": "VoiceOver hint for the create entries.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建一个 Bot，并和它开始对话"
+          }
+        }
+      }
+    },
+    "Give each Bot its own chat": {
+      "comment": "Line under the create entry when no Bots exist.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "给每个 Bot 单独开一个对话"
           }
         }
       }

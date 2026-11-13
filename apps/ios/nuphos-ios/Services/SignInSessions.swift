@@ -72,6 +72,7 @@ enum SignInSessions {
         }
         // The device's own language and wording, not a hard-coded English one.
         let relative = RelativeDateTimeFormatter()
+        relative.locale = AppLocale.current
         let when = relative.localizedString(for: min(date, now), relativeTo: now)
         return String(localized: "Last active \(when)")
     }
