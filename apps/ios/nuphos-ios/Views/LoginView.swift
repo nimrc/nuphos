@@ -67,7 +67,8 @@ struct LoginView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     VStack(spacing: 16) {
-                        Image("NuphosMark").resizable().scaledToFit().foregroundStyle(Theme.heading).frame(width: 48, height: 48)
+                        Image("bot-avatar-01-vermeer-girl").resizable().scaledToFit()
+                            .frame(width: 64, height: 64).background(Color(hex: 0xF3EEE4)).clipShape(Circle())
                             .accessibilityHidden(true)
                         VStack(spacing: 8) {
                             Text("Welcome to Yu Bot").font(.title.bold())
