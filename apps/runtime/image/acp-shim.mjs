@@ -51,7 +51,9 @@ export const OMP_TEMPLATES_DIR = '/etc/nuphos-runtime/omp'
  * omp (omp.sh) reads its providers and model roles from ~/.omp/agent, and a models.yml
  * `baseUrl` is literal. So an image ships templates and each start writes them into the
  * agent's home with this session's values (the backend URL, for one), replacing what a
- * previous start wrote. Without templates omp keeps whatever it has.
+ * previous start wrote. A template naming a variable this env lacks is skipped, so the first
+ * start, before any session, writes no half-filled file. Without templates omp keeps whatever
+ * it has.
  */
 export function seedOmpAgentDir(env, templatesDir = OMP_TEMPLATES_DIR) {
   const dir = join(env.HOME || homedir(), '.omp', 'agent')
@@ -59,10 +61,12 @@ export function seedOmpAgentDir(env, templatesDir = OMP_TEMPLATES_DIR) {
   for (const file of ['models.yml', 'config.yml']) {
     const template = join(templatesDir, file)
     if (!existsSync(template)) continue
-    const text = readFileSync(template, 'utf8').replace(
-      /\$\{([A-Z_][A-Z0-9_]*)\}/g,
-      (_, name) => env[name] ?? '',
-    )
+    let missing = false
+    const text = readFileSync(template, 'utf8').replace(/\$\{([A-Z_][A-Z0-9_]*)\}/g, (_, name) => {
+      if (!env[name]) missing = true
+      return env[name] ?? ''
+    })
+    if (missing) continue
     mkdirSync(dir, { recursive: true })
     writeFileSync(join(dir, file), text, { mode: 0o600 })
   }

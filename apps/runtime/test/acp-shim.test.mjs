@@ -522,6 +522,12 @@ test('omp gets its settings from the image templates, filled with the session en
     await assert.rejects(stat(join(home, '.omp', 'agent', 'config.yml')))
     seedOmpAgentDir({ HOME: home, NUPHOS_BACKEND_URL: 'http://other:3000' }, templates)
     assert.match(await readFile(models, 'utf8'), /http:\/\/other:3000\/llm/)
+    // The shim's first start has no session env: the last good file stays, none is half-filled.
+    seedOmpAgentDir({ HOME: home }, templates)
+    assert.match(await readFile(models, 'utf8'), /http:\/\/other:3000\/llm/)
+    const fresh = join(root, 'fresh')
+    seedOmpAgentDir({ HOME: fresh }, templates)
+    await assert.rejects(stat(join(fresh, '.omp', 'agent', 'models.yml')))
   } finally {
     await rm(root, { recursive: true, force: true })
   }
