@@ -254,7 +254,7 @@ struct AgentPage: View {
         switch store.phase {
         case .loaded where store.selectedTeam == nil:
             ContentUnavailableView {
-                Label("Welcome to Nuphos", systemImage: "person.2")
+                Label("Welcome to Yu Bot", systemImage: "person.2")
             } description: {
                 Text("Create or join a workspace to start chatting with an agent.")
             } actions: {

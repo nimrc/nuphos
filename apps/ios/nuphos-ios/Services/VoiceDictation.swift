@@ -15,7 +15,7 @@ final class VoiceDictation {
         case microphoneDenied
 
         var errorDescription: String? {
-            "Allow microphone access for Nuphos in Settings to use voice input."
+            "Allow microphone access for Yu Bot in Settings to use voice input."
         }
     }
 

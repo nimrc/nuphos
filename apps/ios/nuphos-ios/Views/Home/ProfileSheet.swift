@@ -119,6 +119,11 @@ struct ProfileSheet: View {
                     } label: {
                         Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                     }
+                } footer: {
+                    Text("Yu Bot is based on Nuphos, an open source project. Not affiliated with Zeabur Inc.")
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 12)
                 }
                 .listRowBackground(Theme.surface)
             }
@@ -141,7 +146,7 @@ struct ProfileSheet: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .confirmationDialog("Sign out of Nuphos?", isPresented: $confirmSignOut, titleVisibility: .visible) {
+            .confirmationDialog("Sign out of Yu Bot?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) {
                     dismiss()
                     session.signOut()

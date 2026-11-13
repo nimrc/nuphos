@@ -10,7 +10,7 @@ struct TurnCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 6) {
                 TurnCardMark(size: 16)
-                Text("Nuphos").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                Text("Yu Bot").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
                 Spacer(minLength: 8)
                 TurnCardStatus(card: card).font(.subheadline.weight(.medium))
             }

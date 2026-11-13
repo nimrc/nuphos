@@ -356,7 +356,7 @@ final class AuthSession {
 
     func setAIConsent(accepted: Bool) async throws {
         guard let token, let version = aiConsentVersion, version == AccountAPI.aiConsentVersion else {
-            throw NuphosAPI.Failure.http(409, message: "Please update Nuphos to read the latest AI notice.")
+            throw NuphosAPI.Failure.http(409, message: "Please update Yu Bot to read the latest AI notice.")
         }
         let expected = generation
         let result: AccountAPI.Consent = try await AccountAPI.request("ai-consent", method: "PUT", token: token, body: ["version": version, "accepted": accepted])
