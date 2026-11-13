@@ -1,0 +1,26 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "share": "disabled",
+  "enabled_providers": ["yuai"],
+  "model": "yuai/deepseek-v4.1-flash",
+  "small_model": "yuai/deepseek-v4.1-flash",
+  "provider": {
+    "yuai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Yu AI",
+      "options": {
+        "baseURL": "{env:NUPHOS_BACKEND_URL}/llm/yuai/v1",
+        "apiKey": "{env:NUPHOS_TOKEN}"
+      },
+      "models": {
+        "deepseek-v4.1-flash": {
+          "name": "DeepSeek V4.1 Flash",
+          "tool_call": true,
+          "reasoning": true,
+          "limit": { "context": 128000, "output": 8192 }
+        }
+      }
+    }
+  }
+}

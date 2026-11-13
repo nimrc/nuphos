@@ -21,6 +21,7 @@ import { otelConfig } from './config/otel'
 import { platformConfig } from './config/platform'
 import { storageConfig } from './config/storage'
 import { voiceConfig } from './config/voice'
+import { yuaiConfig } from './config/yuai'
 
 export const config = {
   ...coreConfig(),
@@ -40,5 +41,6 @@ export const config = {
   dashboards: dashboardsConfig(),
   box: boxConfig(),
   voice: voiceConfig(),
+  yuai: yuaiConfig(),
   meetings: meetingsConfig(),
 }

@@ -37,7 +37,17 @@ spec:
         {{- include "nuphos.labels" . | nindent 8 }}
         {{- include "nuphos.selectorLabels" (list . "backend") | nindent 8 }}
     spec:
+      {{- if .Values.provisioner.enabled }}
+      # The provisioner creates each team's cloud runtime in provisioner.namespace.
+      serviceAccountName: {{ include "nuphos.fullname" . }}-backend
+      automountServiceAccountToken: true
+      {{- else }}
       automountServiceAccountToken: false
+      {{- end }}
+      {{- with .Values.backend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -111,7 +121,23 @@ spec:
             - name: CLAUDE_CODE_RUNTIME_KUBECTL
               value: 'false'
             - name: CLAUDE_CODE_RUNTIME_PROVISIONER_ENABLED
-              value: 'false'
+              value: {{ .Values.provisioner.enabled | quote }}
+            {{- if .Values.provisioner.enabled }}
+            # Cloud runtimes then reach the backend at nuphos-backend.<namespace>.svc instead of
+            # going out through the public URL and back in.
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CLAUDE_CODE_RUNTIME_NAMESPACE
+              value: {{ .Values.provisioner.namespace | quote }}
+            - name: CLAUDE_CODE_RUNTIME_NODE_SELECTOR
+              value: {{ include "nuphos.keyValues" .Values.provisioner.nodeSelector | quote }}
+            - name: CLAUDE_CODE_RUNTIME_NODE_TOLERATIONS
+              value: {{ include "nuphos.keyValues" .Values.provisioner.tolerations | quote }}
+            - name: CLAUDE_CODE_RUNTIME_CPU_LIMIT
+              value: {{ .Values.provisioner.cpuLimit | quote }}
+            {{- end }}
             - name: STORAGE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
