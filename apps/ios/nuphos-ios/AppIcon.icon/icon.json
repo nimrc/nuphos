@@ -1,11 +1,17 @@
 {
   "fill" : { "solid" : "srgb:0.42745,0.15686,0.85098,1.00000" },
-  "fill-specializations" : [
-    { "appearance" : "dark", "value" : { "solid" : "srgb:0.11765,0.08235,0.18824,1.00000" } }
-  ],
   "groups" : [
     {
-      "layers" : [ { "name" : "mark", "image-name" : "mark.svg", "glass" : true } ],
+      "layers" : [
+        {
+          "name" : "mark",
+          "image-name" : "mark.svg",
+          "glass" : true,
+          "fill-specializations" : [
+            { "appearance" : "dark", "value" : { "solid" : "srgb:0.76078,0.61961,1.00000,1.00000" } }
+          ]
+        }
+      ],
       "shadow" : { "kind" : "neutral", "opacity" : 0.5 },
       "translucency" : { "enabled" : true, "value" : 0.5 },
       "specular" : true
