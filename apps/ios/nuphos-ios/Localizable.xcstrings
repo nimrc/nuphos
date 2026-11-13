@@ -4510,6 +4510,28 @@
         }
       }
     },
+    "Creating the Bot": {
+      "comment": "VoiceOver hint while a Bot's first chat is being made.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在创建 Bot"
+          }
+        }
+      }
+    },
+    "In progress": {
+      "comment": "VoiceOver value while a Bot's first chat is being made.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在进行"
+          }
+        }
+      }
+    },
     "Give each Bot its own chat": {
       "comment": "Line under the create entry when no Bots exist.",
       "localizations": {

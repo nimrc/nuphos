@@ -4,6 +4,7 @@ import SwiftUI
 /// the composer capsule pinned to the bottom when there is no column beside it.
 struct AgentPage: View {
     @Environment(AgentStore.self) private var store
+    @Environment(\.colorScheme) private var colorScheme
     @Binding var page: HomePage
     /// Driven by the search button in the toolbar.
     @Binding var isSearching: Bool
@@ -422,36 +423,63 @@ struct AgentPage: View {
         }
     }
 
-    /// True while a creation is running or the cloud runtime has not loaded.
-    /// The same condition the old header "+" used.
-    private var newBotDisabled: Bool { store.creatingBot || !store.runtimesLoaded }
+    /// Creating is not disabled: the brand fill stays and taps are refused.
+    /// Not ready is the only disabled state, and the only light fill.
+    private var newBotState: NewBotButtonState {
+        #if DEBUG
+        // `-preview-new-bot creating|not-ready|ready`: pin a state for screenshots.
+        let args = CommandLine.arguments
+        if let i = args.firstIndex(of: "-preview-new-bot"), i + 1 < args.count {
+            switch args[i + 1] {
+            case "ready": return .ready
+            case "creating": return .creating
+            case "not-ready", "notReady": return .notReady
+            default: break
+            }
+        }
+        #endif
+        return .resolve(creating: store.creatingBot, runtimesLoaded: store.runtimesLoaded)
+    }
+
+    private var newBotAppearance: NewBotButtonAppearance {
+        .resolve(newBotState, scheme: colorScheme == .dark ? .dark : .light)
+    }
 
     /// The obvious create entry: the first row of the Bots list, so it also
     /// carries the empty state.
     private var newBotRow: some View {
         VStack(spacing: 8) {
-            Button { showNewBot = true } label: {
+            Button {
+                guard newBotAppearance.acceptsTaps else { return }
+                showNewBot = true
+            } label: {
                 HStack(spacing: 8) {
-                    if store.creatingBot {
-                        ProgressView().tint(.white)
+                    if newBotState == .creating, let spinner = newBotAppearance.spinner {
+                        ProgressView()
+                            .tint(spinner.color)
+                            .accessibilityHidden(true)
                     } else {
-                        Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
+                        Image(systemName: "plus")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(newBotAppearance.glyph.color)
                     }
-                    Text("New Bot").font(.system(size: 17, weight: .semibold))
+                    Text("New Bot")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(newBotAppearance.label.color)
                 }
-                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(newBotDisabled ? Theme.muted.opacity(0.45) : Theme.brand)
+                        .fill(newBotAppearance.fill.color)
                 )
                 .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(.plain)
-            .disabled(newBotDisabled)
+            .disabled(newBotAppearance.readsAsDisabled)
             .accessibilityLabel("New Bot")
-            .accessibilityHint("Creates a Bot with its own chat")
+            .accessibilityHint(newBotState == .creating ? Text("Creating the Bot") : Text("Creates a Bot with its own chat"))
+            .accessibilityValue(newBotState == .creating ? Text("In progress") : Text(""))
 
             if store.botsList.isEmpty {
                 Text("Give each Bot its own chat")
@@ -467,18 +495,23 @@ struct AgentPage: View {
         .listSectionSeparator(.hidden, edges: .top)
     }
 
-    /// The same create action in the navigation bar, top right.
+    /// The same create action in the navigation bar, top right. Creating keeps
+    /// it looking active and only refuses the tap; not ready disables it.
     private var newBotBarButton: some View {
-        Button { showNewBot = true } label: {
+        Button {
+            guard newBotAppearance.acceptsTaps else { return }
+            showNewBot = true
+        } label: {
             Image(systemName: "plus")
                 .font(.system(size: 20, weight: .medium))
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }
         .foregroundStyle(Theme.brand)
-        .disabled(newBotDisabled)
+        .disabled(newBotAppearance.readsAsDisabled)
         .accessibilityLabel("New Bot")
-        .accessibilityHint("Creates a Bot with its own chat")
+        .accessibilityHint(newBotState == .creating ? Text("Creating the Bot") : Text("Creates a Bot with its own chat"))
+        .accessibilityValue(newBotState == .creating ? Text("In progress") : Text(""))
     }
 
     private var list: some View {

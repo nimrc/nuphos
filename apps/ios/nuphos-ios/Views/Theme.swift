@@ -9,9 +9,9 @@ import AppKit
 /// and a dark value; views never force a color scheme.
 enum Theme {
     /// Page background: #F7F7F7 light, #141414 dark.
-    static let canvas = adaptive(light: 0xF7F7F7, dark: 0x141414)
+    static let canvas = adaptive(ThemePalette.canvas)
     /// Grouped rows / cards on top of the canvas.
-    static let surface = adaptive(light: 0xFFFFFF, dark: 0x202024)
+    static let surface = adaptive(ThemePalette.surface)
     /// The chat transcript reads like a page: #FFFFFF light, #141414 dark.
     static let chatCanvas = adaptive(light: 0xFFFFFF, dark: 0x141414)
     /// Chips and cards inside the transcript, which `surface` cannot be
@@ -20,7 +20,7 @@ enum Theme {
     /// The user's own chat bubble: a shade off the canvas in either scheme.
     static let bubble = adaptive(light: 0xE9E9EC, dark: 0x2A2A2E)
     /// Brand violet (`--landing-brand`), brighter in the dark so it keeps contrast.
-    static let brand = adaptive(light: 0x7D36EC, dark: 0x8B4DFF)
+    static let brand = adaptive(ThemePalette.brand)
     /// Brand used as text/tint on the surfaces.
     static let brandText = adaptive(light: 0x6D28D9, dark: 0xA469FF)
     /// Unread reply dot — desktop's `bg-zViolet-500`, lifted in the dark
@@ -30,12 +30,23 @@ enum Theme {
     static let violet500 = Color(hex: 0x6300FF)
     static let violet700 = Color(hex: 0x3E14A2)
 
-    static let heading = adaptive(light: 0x18181B, dark: 0xFFFFFF)
-    static let body = adaptive(light: 0x52525B, dark: 0xA1A1AA)
-    static let muted = adaptive(light: 0x84848C, dark: 0x71717A)
+    static let heading = adaptive(ThemePalette.heading)
+    static let body = adaptive(ThemePalette.body)
+    static let muted = adaptive(ThemePalette.muted)
     /// Desktop `--color-warning`, darkened in light mode for contrast.
     static let warning = adaptive(light: 0xA04606, dark: 0xF5A623)
     static let hairline = adaptive(light: 0x18181B, dark: 0xFFFFFF, lightAlpha: 0.08, darkAlpha: 0.10)
+
+    /// Label and glyph on the brand fill.
+    static let onBrand = adaptive(ThemePalette.onBrand)
+    /// The New Bot "not ready" fill: `muted` at 45% over `surface`, opaque.
+    static let newBotNotReadyFill = adaptive(ThemePalette.newBotNotReadyFill)
+    /// Label and plus glyph on `newBotNotReadyFill`.
+    static let newBotNotReadyForeground = adaptive(ThemePalette.newBotNotReadyForeground)
+
+    private static func adaptive(_ color: PaletteColor) -> Color {
+        adaptive(light: color.light.hex, dark: color.dark.hex)
+    }
 
     private static func adaptive(
         light: UInt32, dark: UInt32,
@@ -129,6 +140,11 @@ extension Theme {
         }
         #endif
     }
+}
+
+extension RGBColor {
+    /// The SwiftUI colour for an appearance resolved by `NewBotButtonAppearance`.
+    var color: Color { Color(hex: hex) }
 }
 
 extension Color {
