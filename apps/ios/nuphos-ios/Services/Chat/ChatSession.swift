@@ -1374,7 +1374,7 @@ final class ChatSession {
             debugLog("stream closed without terminal frame (frames so far: \(resumeFrom))")
             reconnects += 1
             phaseLabel = "Reconnecting…"
-            if reconnects > 20 { return .failed("Lost the connection to Nuphos.") }
+            if reconnects > 20 { return .failed("Lost the connection to Yu AI.") }
             try? await Task.sleep(for: backoff(reconnects, base: 0.5, max: 5))
         }
         return .aborted

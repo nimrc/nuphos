@@ -18,6 +18,7 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
         static let grok = Self(rawValue: "grok")
         static let antigravity = Self(rawValue: "antigravity")
         static let opencode = Self(rawValue: "opencode")
+        static let omp = Self(rawValue: "omp")
         static let hermes = Self(rawValue: "hermes")
     }
     enum Status: String, Codable, Sendable { case active, disabled }
@@ -48,8 +49,8 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
 
         var title: String {
             switch self {
-            case .myComputers: "My computers"
-            case .cloud: "Cloud"
+            case .myComputers: String(localized: "My computers")
+            case .cloud: String(localized: "Cloud")
             }
         }
     }
@@ -117,6 +118,10 @@ extension RuntimeInstance.Provider {
         return "\(provider) · \(instance)"
     }
 
+    /// Providers whose runtime needs its own provider sign-in. omp is bound to Yu AI
+    /// and has no sign-in at all, so nothing in the app offers one for it.
+    static func supportsSignIn(_ raw: String?) -> Bool { raw != "omp" }
+
     static func name(_ raw: String?) -> String {
         switch raw {
         case "codex": "Codex"
@@ -124,6 +129,7 @@ extension RuntimeInstance.Provider {
         case "grok": "Grok Build"
         case "antigravity": "Antigravity"
         case "opencode": "OpenCode"
+        case "omp": "omp"
         case "hermes": "Hermes Agent"
         case "nuphos": "Nuphos"
         default: raw?.isEmpty == false ? "Unknown runtime" : "Runtime"

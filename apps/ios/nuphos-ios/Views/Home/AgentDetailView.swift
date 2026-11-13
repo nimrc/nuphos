@@ -51,7 +51,9 @@ struct AgentDetailView: View {
                 }
             }
             Section {
-                if current.status == .active {
+                // omp is bound to Yu AI and has no sign-in of its own, so it offers none.
+                if current.status == .active,
+                   RuntimeInstance.Provider.supportsSignIn(current.provider.rawValue) {
                     NavigationLink(quota?.needsSignIn == true ? "Sign In" : "Sign In Again") {
                         AgentSetupView(team: team, runtime: current)
                     }
@@ -75,8 +77,8 @@ struct AgentDetailView: View {
             Button("Remove Runtime", role: .destructive) { remove() }
         } message: {
             Text(current.kind == "managed"
-                ? "This stops the runtime and permanently deletes its files and sign-in. Your agents' history stays in Nuphos."
-                : "This disconnects the runtime. Your agents stay in Nuphos.")
+                ? "This stops the runtime and permanently deletes its files and sign-in. Your agents' history stays in Yu AI."
+                : "This disconnects the runtime. Your agents stay in Yu AI.")
         }
     }
 

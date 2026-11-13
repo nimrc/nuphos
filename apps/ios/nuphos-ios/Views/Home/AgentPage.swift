@@ -251,17 +251,18 @@ struct AgentPage: View {
         switch store.phase {
         case .loaded where store.selectedTeam == nil:
             ContentUnavailableView {
-                Label("Welcome to Nuphos", systemImage: "person.2")
+                Label("Welcome to Yu Bot", systemImage: "person.2")
             } description: {
                 Text("Create or join a workspace to start chatting with an agent.")
             } actions: {
                 Button("Set up workspace") { showWorkspaceSetup = true }.prominentButton()
             }
         case .loaded where store.runtimesLoaded && store.runtimes.isEmpty:
+            // Every workspace gets its cloud runtime from the server; only wait for it.
             ContentUnavailableView {
-                Label("Connect your first runtime", systemImage: "cpu")
+                Label("Preparing your runtime", systemImage: "cpu")
             } description: {
-                Text("Open Nuphos on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one.")
+                Text("Your workspace's cloud runtime is starting. It appears here in a moment.")
             }
         case .idle, .loading:
             ProgressView("Loading agents…")

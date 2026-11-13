@@ -42,7 +42,7 @@ struct AgentSetupView: View {
 
     private static let providers: [(RuntimeInstance.Provider, vendor: String)] = [
         (.claudeCode, "Anthropic"), (.codex, "OpenAI"), (.grok, "xAI"), (.antigravity, "Google"), (.opencode, "OpenCode"),
-        (.hermes, "Nous Research"),
+        (.hermes, "Nous Research"), (.omp, "omp.sh"),
     ]
 
     private var connected: Bool { login?.state == "connected" }
@@ -242,7 +242,7 @@ struct AgentSetupView: View {
             } header: {
                 Text(step.message ?? "")
             } footer: {
-                if step.secret == true { Text("Nuphos encrypts it on its way to the runtime, which keeps it; Nuphos does not keep a copy.") }
+                if step.secret == true { Text("Yu AI encrypts it on its way to the runtime, which keeps it; Yu AI does not keep a copy.") }
             }
         } else {
             if let instructions = step.instructions, !instructions.isEmpty {
@@ -281,7 +281,7 @@ struct AgentSetupView: View {
 
     /// Whose account the sign-in uses; OpenCode and Hermes Agent sign in to whichever model provider you pick.
     private func account(_ provider: RuntimeInstance.Provider) -> String {
-        [.opencode, .hermes].contains(provider) ? "model provider" : vendor(provider)
+        [.opencode, .hermes, .omp].contains(provider) ? "model provider" : vendor(provider)
     }
 
     private func vendor(_ provider: RuntimeInstance.Provider) -> String {

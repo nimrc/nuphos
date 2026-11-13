@@ -55,7 +55,7 @@ private struct RuntimePicker: View {
                 } else if !store.runtimesLoaded {
                     ProgressView("Loading runtimes…").tint(Theme.muted)
                 } else if choices.isEmpty {
-                    ContentUnavailableView("No runtimes", systemImage: "cpu", description: Text("Open Nuphos on your computer to add a Box or connect your own computer."))
+                    ContentUnavailableView("Preparing your runtime", systemImage: "cpu", description: Text("Your workspace's cloud runtime is starting. It appears here in a moment."))
                 } else { boxList }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -168,7 +168,7 @@ struct SelectorBoxHeader: View {
                     Text(box.label).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.heading).lineLimit(1)
                     if current { Text("Current").font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.muted) }
                 }
-                Text("\(box.agents.count) \(box.agents.count == 1 ? "runtime" : "runtimes")")
+                Text("\(box.agents.count) runtimes")
                     .font(.system(size: 12)).foregroundStyle(Theme.muted)
                 if let metrics {
                     // A split view's sidebar, such as iPhone Duo's inner display,
@@ -251,10 +251,11 @@ struct SelectorAgentRow: View {
             Text("Disabled").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
         } else if runtime.local?.online == false {
             Text("Offline · open Nuphos on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
-        } else if runtime.local?.signedIn == false || quota?.needsSignIn == true {
+        } else if runtime.local?.signedIn == false
+                    || (quota?.needsSignIn == true && RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue)) {
             Text("Signed out · sign in on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
         }
-        if let quota { QuotaLine(quota: quota) }
+        if let quota { QuotaLine(quota: quota, offersSignIn: RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue)) }
     }
 }
 
@@ -352,6 +353,8 @@ struct ModelSettingsSheet: View {
 /// or the reason there's nothing to show.
 private struct QuotaLine: View {
     let quota: RuntimeQuota
+    /// omp has no sign-in, so a "sign in required" reason would be a dead end on its row.
+    var offersSignIn = true
 
     var body: some View {
         if let window = quota.tightest {
@@ -363,7 +366,7 @@ private struct QuotaLine: View {
                     .foregroundStyle(window.labelTint ?? Theme.muted)
             }
             .accessibilityElement(children: .combine)
-        } else if quota.needsSignIn {
+        } else if quota.needsSignIn, offersSignIn {
             Text("\(Image(systemName: "exclamationmark.circle.fill")) Sign in required")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(Theme.warning)

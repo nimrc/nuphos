@@ -1,6 +1,8 @@
 import { faOpenai } from '@fortawesome/free-brands-svg-icons'
+import { Pi } from 'lucide-react'
 
 import type { AgentProvider } from '../../../types/runtime'
+import type { LucideProps } from 'lucide-react'
 import type { ReactElement, SVGProps } from 'react'
 
 export function ClaudeIcon(props: SVGProps<SVGSVGElement>) {
@@ -66,6 +68,8 @@ const PROVIDER_ICON: Record<AgentProvider, (props: SVGProps<SVGSVGElement>) => R
   grok: GrokIcon,
   antigravity: AntigravityIcon,
   opencode: OpenCodeIcon,
+  // oh-my-pi (omp.sh).
+  omp: (props) => <Pi {...(props as LucideProps)} />,
   hermes: HermesIcon,
 }
 

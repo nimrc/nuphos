@@ -153,7 +153,7 @@ struct TwoFactorView: View {
 
     private func setupSection(_ setup: AccountAPI.MfaSetup) -> some View {
         Group {
-            Section("1. Add Nuphos to your authenticator app") {
+            Section("1. Add this account to your authenticator app") {
                 if let url = URL(string: setup.otpauthUrl) {
                     // On a phone, the authenticator is usually on this same device.
                     Link("Open in authenticator app", destination: url)

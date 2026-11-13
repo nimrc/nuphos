@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Nuphos</string>
+	<string>Yu Bot</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
@@ -26,6 +26,6 @@
 		</dict>
 	</dict>
 	<key>NuphosSharedKeychainGroup</key>
-	<string>$(AppIdentifierPrefix)ai.nuphos.ios.shared-auth</string>
+	<string>$(AppIdentifierPrefix)com.nimrc.nuphos.ios.shared-auth</string>
 </dict>
 </plist>

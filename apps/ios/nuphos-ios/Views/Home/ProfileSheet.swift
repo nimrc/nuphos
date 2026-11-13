@@ -14,8 +14,8 @@ struct ProfileSheet: View {
     @AppStorage(BotAvatars.enabledKey, store: BotAvatars.defaults) private var botAvatars = true
 
     @State private var confirmSignOut = false
-    @State private var showAppIcons = false
     @State private var privacyError: String?
+    @State private var yuaiBalance: Double?
     @AppStorage(Whisper.promptKey) private var whisperPrompt = Whisper.defaultPrompt
 
     var body: some View {
@@ -39,6 +39,17 @@ struct ProfileSheet: View {
                                     .frame(minHeight: 44)
                             }
                         }
+                    }
+                    .listRowBackground(Theme.surface)
+                }
+
+                if let yuaiBalance {
+                    Section("Yu AI balance") {
+                        Text(yuaiBalance, format: .currency(code: "USD"))
+                            .font(.system(size: 22, weight: .semibold))
+                            .monospacedDigit()
+                            .foregroundStyle(Theme.heading)
+                            .padding(.vertical, 4)
                     }
                     .listRowBackground(Theme.surface)
                 }
@@ -79,16 +90,13 @@ struct ProfileSheet: View {
                 } header: {
                     Text("Voice input")
                 } footer: {
-                    Text("The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Voice input is included with a Nuphos subscription; recordings are transcribed by OpenAI Whisper.")
+                    Text("The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Recordings are transcribed by OpenAI Whisper.")
                 }
                 .listRowBackground(Theme.surface)
                 #endif
 
                 Section {
                     Toggle("Bot avatars", isOn: $botAvatars)
-                    #if os(iOS)
-                    NavigationLink("App icon") { AppIconPicker() }
-                    #endif
                 } header: {
                     Text("Appearance")
                 } footer: {
@@ -97,7 +105,7 @@ struct ProfileSheet: View {
                 .listRowBackground(Theme.surface)
 
                 Section("Privacy") {
-                    Link("Privacy policy", destination: URL(string: "https://nuphos.ai/privacy")!)
+                    Link("Privacy policy", destination: URL(string: "https://yu-bot.airhost.site/privacy/")!)
                     if session.aiConsentAccepted {
                         Button("Withdraw AI data sharing permission") {
                             Task {
@@ -119,19 +127,22 @@ struct ProfileSheet: View {
                     } label: {
                         Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                     }
+                } footer: {
+                    Text("Yu Bot is based on Nuphos, an open source project. Not affiliated with Zeabur Inc.")
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 12)
                 }
                 .listRowBackground(Theme.surface)
             }
             .scrollContentBackground(.hidden)
             .background(Theme.canvas)
-            #if os(iOS)
-            .navigationDestination(isPresented: $showAppIcons) { AppIconPicker() }
-            #endif
-            #if DEBUG
-            .onAppear { if ProcessInfo.processInfo.arguments.contains("-show-app-icons") { showAppIcons = true } }
-            #endif
             .sheet(isPresented: $editing) { EditProfileSheet(user: currentUser) }
-            .refreshable { await session.refreshUser() }
+            .task { await loadYuaiBalance() }
+            .refreshable {
+                await session.refreshUser()
+                await loadYuaiBalance()
+            }
             .navigationTitle("Account")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -141,7 +152,7 @@ struct ProfileSheet: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .confirmationDialog("Sign out of Nuphos?", isPresented: $confirmSignOut, titleVisibility: .visible) {
+            .confirmationDialog("Sign out of Yu Bot?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) {
                     dismiss()
                     session.signOut()
@@ -150,6 +161,12 @@ struct ProfileSheet: View {
             }
         }
         .tint(Theme.heading)
+    }
+
+    /// Hidden when the backend has no Yu AI, or the user no Yu AI account.
+    private func loadYuaiBalance() async {
+        guard let token = session.token else { return }
+        yuaiBalance = try? await AccountAPI.yuaiBalance(token: token)
     }
 
     private var header: some View {

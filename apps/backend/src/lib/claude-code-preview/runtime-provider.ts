@@ -5,6 +5,7 @@ export const OPENAB_PROVIDERS = [
   'grok',
   'antigravity',
   'opencode',
+  'omp',
   'hermes',
 ] as const
 
@@ -26,6 +27,8 @@ const PROVIDERS: Record<
     shim: true,
   },
   opencode: { label: 'OpenCode', errorPrefix: 'opencode', short: 'opencode', shim: true },
+  // oh-my-pi (omp.sh), `omp acp`; this fork binds it to Yu AI (apps/runtime/yuai-omp).
+  omp: { label: 'omp', errorPrefix: 'omp', short: 'omp', shim: true },
   hermes: { label: 'Hermes Agent', errorPrefix: 'hermes', short: 'hermes', shim: true },
 }
 

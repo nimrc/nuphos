@@ -40,12 +40,6 @@ struct LoginView: View {
                     case .mfa: mfaScreen
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Server settings", systemImage: "gearshape") { showingServer = true }
-                            .labelStyle(.iconOnly).disabled(signingIn)
-                    }
-                }
         }
         .tint(Theme.heading)
         .sheet(isPresented: $showingServer) { LoginServerSettings() }
@@ -73,10 +67,11 @@ struct LoginView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     VStack(spacing: 16) {
-                        Image("NuphosMark").resizable().scaledToFit().frame(width: 48, height: 48)
+                        Image("bot-avatar-01-vermeer-girl").resizable().scaledToFit()
+                            .frame(width: 64, height: 64).background(Color(hex: 0xF3EEE4)).clipShape(Circle())
                             .accessibilityHidden(true)
                         VStack(spacing: 8) {
-                            Text("Welcome to Nuphos").font(.title.bold())
+                            Text("Welcome to Yu Bot").font(.title.bold())
                                 .multilineTextAlignment(.center)
                             Text("Sign in or create an account.")
                                 .font(.subheadline).foregroundStyle(.secondary)
@@ -88,56 +83,13 @@ struct LoginView: View {
                     }
                     Spacer(minLength: 24)
                     VStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Email address").font(.subheadline.weight(.medium))
-                            emailField
-                                .padding(.horizontal, 16).frame(minHeight: 52)
-                                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 12))
-                        }
-                        if usePassword {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Password").font(.subheadline.weight(.medium))
-                                SecureField("Password", text: $credential).textContentType(.password)
-                                    .focused($focused, equals: .password).submitLabel(.go)
-                                    .onSubmit { if canContinue { Task { await signIn(password: true) } } }
-                                    .accessibilityIdentifier("login.password-field")
-                                    .padding(.horizontal, 16).frame(minHeight: 52)
-                                    .background(Theme.surface, in: RoundedRectangle(cornerRadius: 12))
-                            }
-                        }
-                        Button {
-                            focused = nil
-                            Task { usePassword ? await signIn(password: true) : await sendCode() }
-                        } label: {
-                            HStack {
-                                if signingIn { ProgressView() }
-                                Text(signingIn ? "Please wait…" : usePassword ? "Sign in" : "Continue")
-                            }
-                            .frame(maxWidth: .infinity, minHeight: 20)
-                            .foregroundStyle(canContinue && !signingIn ? loginButtonLabel : Theme.body)
-                        }
-                        .buttonStyle(LoginPrimaryButtonStyle())
-                        .disabled(!canContinue).accessibilityIdentifier("login.submit")
                         if let message = displayedError {
                             Text(message).font(.footnote).foregroundStyle(.red)
                                 .accessibilityIdentifier("login.error")
                         }
-                        Button(usePassword ? "Use an email code instead" : "Use a password") {
-                            usePassword.toggle(); credential = ""; clearFeedback()
-                            focused = usePassword ? (validEmail ? .password : .email) : nil
-                        }
-                        .font(.subheadline).buttonStyle(.plain).foregroundStyle(Theme.body)
-                        .frame(minHeight: 44).accessibilityIdentifier("login.password")
-                        if !providers.isEmpty {
-                            HStack(spacing: 16) {
-                                Rectangle().fill(.quaternary).frame(height: 1)
-                                Text("or").font(.footnote).foregroundStyle(.secondary).fixedSize()
-                                Rectangle().fill(.quaternary).frame(height: 1)
-                            }.frame(height: 20).padding(.vertical, 4)
-                        }
                         loginOptions
                     }.disabled(signingIn)
-                    Text("By continuing, you agree to our [Terms of Service](https://nuphos.ai/terms) and [Privacy Policy](https://nuphos.ai/privacy).")
+                    Text("By continuing, you agree to our [Terms of Service](https://yu-bot.airhost.site/terms/) and [Privacy Policy](https://yu-bot.airhost.site/privacy/).")
                         .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }
                 .padding(24)
@@ -152,31 +104,6 @@ struct LoginView: View {
 
     private var loginOptions: some View {
         VStack(spacing: 12) {
-            if providers.contains(.apple) {
-                #if os(iOS)
-                NativeAppleSignInButton(dark: colorScheme == .dark) {
-                    clearFeedback()
-                    Task { await session.signIn(provider: .apple) }
-                }
-                .id(colorScheme).frame(height: 52)
-                #else
-                Button("Continue with Apple") { Task { await session.signIn(provider: .apple) } }
-                    .buttonStyle(.borderedProminent)
-                #endif
-            }
-            if providers.contains(.google) {
-                Button {
-                    clearFeedback()
-                    Task { await session.signIn(provider: .google) }
-                } label: {
-                    HStack(spacing: 12) {
-                        Image("GoogleSignIn").resizable().renderingMode(.original).scaledToFit().frame(width: 20, height: 20)
-                        Text("Continue with Google")
-                    }.frame(maxWidth: .infinity, minHeight: 20)
-                        .foregroundStyle(loginButtonLabel)
-                }
-                .buttonStyle(.borderedProminent).accessibilityIdentifier("login.google")
-            }
             if providers.contains(.oidc) {
                 Button {
                     clearFeedback()
@@ -518,12 +445,12 @@ private struct LoginServerSettings: View {
                 } header: {
                     Text("Server address")
                 } footer: {
-                    Text("Leave this unchanged to use Nuphos Cloud. Enter your server address to use a self-hosted instance.")
+                    Text("Leave this unchanged to use Yu AI Cloud. Enter your server address to use a self-hosted instance.")
                 }
                 if let error { Section { Text(error).foregroundStyle(.red) } }
                 if !savedURL.isEmpty {
                     Section {
-                        Button("Use Nuphos Cloud") { savedURL = ""; dismiss() }
+                        Button("Use Yu AI Cloud") { savedURL = ""; dismiss() }
                     }
                 }
             }

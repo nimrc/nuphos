@@ -7,6 +7,7 @@ export const AGENT_PROVIDERS = [
   'grok',
   'antigravity',
   'opencode',
+  'omp',
   'hermes',
 ] as const
 
@@ -19,6 +20,7 @@ export const AGENT_PROVIDER: Record<AgentProvider, { label: string; account: str
   grok: { label: 'Grok Build', account: 'xAI' },
   antigravity: { label: 'Antigravity', account: 'Google' },
   opencode: { label: 'OpenCode', account: 'a model provider' },
+  omp: { label: 'omp', account: 'a model provider' },
   hermes: { label: 'Hermes Agent', account: 'a model provider' },
 }
 

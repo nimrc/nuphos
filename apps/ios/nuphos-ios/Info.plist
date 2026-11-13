@@ -24,15 +24,15 @@
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Nuphos records your voice only while you dictate a message, then sends it to OpenAI to transcribe.</string>
+	<string>Yu Bot records your voice only while you dictate a message, then sends it to OpenAI to transcribe.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Nuphos saves the images and videos you choose to share from an agent to your photo library.</string>
+	<string>Yu Bot saves the images and videos you choose to share from an agent to your photo library.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
 		<string>LaunchBackground</string>
 	</dict>
 	<key>NuphosSharedKeychainGroup</key>
-	<string>$(AppIdentifierPrefix)ai.nuphos.ios.shared-auth</string>
+	<string>$(AppIdentifierPrefix)com.nimrc.nuphos.ios.shared-auth</string>
 </dict>
 </plist>

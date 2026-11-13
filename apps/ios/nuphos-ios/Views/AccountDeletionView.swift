@@ -22,7 +22,7 @@ struct AccountDeletionView: View {
                 Text("Request permanent account deletion").font(.headline)
                 Text("We will permanently delete your account and associated personal data within 30 days. Our team will coordinate any workspace ownership and shared-data handling. Records required by law and data jointly held by your team may be retained where necessary.")
                 Text("This submits a deletion request; it does not instantly erase your account. You can continue using your account while the request is processed. Signing in again does not cancel the request.")
-                Link("Privacy policy", destination: URL(string: "https://nuphos.ai/privacy")!)
+                Link("Privacy policy", destination: URL(string: "https://yu-bot.airhost.site/privacy/")!)
             }
             if let request {
                 Section("Request received") {

@@ -55,7 +55,7 @@ struct ChatComposerBar<Controls: View>: View {
     private var prompt: LocalizedStringKey {
         if isStreaming { return sendsDuringTurn ? "Send a message…" : "Queue a message…" }
         if let recipient { return "Message \(recipient)" }
-        return "Ask Nuphos anything…"
+        return "Ask Yu Bot anything…"
     }
 
     private var hasText: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }

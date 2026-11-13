@@ -43,7 +43,7 @@ struct SelectorBox: Identifiable {
             if let index = groups.firstIndex(where: { $0.id == id }) { groups[index].agents.append(agent) }
             else {
                 let device = devices.first { $0.deviceId == agent.local?.deviceId }
-                groups.append(.init(id: id, label: device?.label ?? agent.local?.deviceLabel ?? (id == "cloud" ? "Cloud" : agent.label), device: device, agents: [agent]))
+                groups.append(.init(id: id, label: device?.label ?? agent.local?.deviceLabel ?? (id == "cloud" ? String(localized: "Cloud") : agent.label), device: device, agents: [agent]))
             }
         }
         return groups

@@ -1,410 +1,1266 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "" : {
-
-    },
-    "Agents" : {
-
-    },
-    "Continue in agent" : {
-
-    },
-    "Couldn't load agents" : {
-
-    },
-    "Couldn't load this agent" : {
-
-    },
-    "Filter agents" : {
-
-    },
-    "Loading agents…" : {
-
-    },
-    "My agents" : {
-
-    },
-    "New task" : {
-
-    },
-    "No agents match your search." : {
-
-    },
-    "No agents yet" : {
-
-    },
-    "Open agent" : {
-
-    },
-    "Search agents" : {
-
-    },
-    "Start an agent from the bar below." : {
-
-    },
-    "Team agents" : {
-
-    },
-    "·" : {
-
-    },
-    "@%@" : {
-
-    },
-    "%@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@"
+  "sourceLanguage": "en",
+  "strings": {
+    "": {},
+    "%@ %@": {
+      "comment": "Chat timestamp, other year: time month/day/year",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
           }
         }
       }
     },
-    "%@ %@" : {
-      "comment" : "Chat timestamp, other year: time month/day/year",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
+    "%@ ago": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@前"
           }
         }
       }
     },
-    "%@ ago" : {
-
-    },
-    "%@, %@" : {
-      "comment" : "Chat timestamp, same year: time, month/day",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, %2$@"
+    "%@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
           }
         }
       }
     },
-    "%lld" : {
-
-    },
-    "%lld approval%@ recorded." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld approval%2$@ recorded."
+    "%@, %@": {
+      "comment": "Chat timestamp, same year: time, month/day",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
           }
         }
       }
     },
-    "%lld hr ago" : {
-      "comment" : "Chat timestamp, 1–3 hours",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld hr ago"
+    "%lld": {},
+    "%lld approval%@ recorded.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld approval%2$@ recorded."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld 条审批记录"
+          }
+        }
+      }
+    },
+    "%lld hr ago": {
+      "comment": "Chat timestamp, 1–3 hours",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld hr ago"
                 }
               },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld hrs ago"
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld hrs ago"
                 }
               }
             }
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld小时前"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 小时前"
           }
         }
       }
     },
-    "%lld min ago" : {
-      "comment" : "Chat timestamp, minutes",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld分钟前"
+    "%lld min ago": {
+      "comment": "Chat timestamp, minutes",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 分钟前"
           }
         }
       }
     },
-    "2 days ago %@" : {
-      "comment" : "Chat timestamp, two days back",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "前天 %@"
+    "%lld runtimes": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld runtime"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld runtimes"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个运行时"
           }
         }
       }
     },
-    "Account" : {
-
-    },
-    "Approval" : {
-
-    },
-    "Approval gate met." : {
-
-    },
-    "Approve" : {
-
-    },
-    "Approve once" : {
-
-    },
-    "Archived" : {
-
-    },
-    "Ask Nuphos anything…" : {
-
-    },
-    "Attach" : {
-
-    },
-    "Authorization required" : {
-
-    },
-    "Authorization required — %@" : {
-
-    },
-    "Cancel" : {
-
-    },
-    "Choose Credentials" : {
-
-    },
-    "Clear" : {
-
-    },
-    "Clear search" : {
-
-    },
-    "Connect cloud accounts and integrations in Nuphos to use them here." : {
-
-    },
-    "Cost" : {
-
-    },
-    "Couldn't approve plan" : {
-
-    },
-    "Couldn't load Credentials" : {
-
-    },
-    "Couldn't load plan" : {
-
-    },
-    "Decisions" : {
-
-    },
-    "Deny" : {
-
-    },
-    "Done" : {
-
-    },
-    "Files" : {
-
-    },
-    "Credentials" : {
-
-    },
-    "just now" : {
-
-    },
-    "Just now" : {
-      "comment" : "Chat timestamp, under a minute",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刚刚"
+    "2 days ago %@": {
+      "comment": "Chat timestamp, two days back",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前天 %@"
           }
         }
       }
     },
-    "Loading Credentials…" : {
-
-    },
-    "Loading plan…" : {
-
-    },
-    "Mark as unplanned" : {
-
-    },
-    "Mark plan %@ as unplanned?" : {
-
-    },
-    "Memory recalled · %lld" : {
-
-    },
-    "Memory updated" : {
-
-    },
-    "Mitigations" : {
-
-    },
-    "Monthly" : {
-
-    },
-    "No Credentials connected" : {
-
-    },
-    "No matches" : {
-
-    },
-    "OK" : {
-
-    },
-    "One-time" : {
-
-    },
-    "Opens nuphos.ai in a secure browser window." : {
-
-    },
-    "Other members required: %lld" : {
-
-    },
-    "Page" : {
-
-    },
-    "Permission mode" : {
-
-    },
-    "Permissions" : {
-
-    },
-    "Photos" : {
-
-    },
-    "Plan #%@" : {
-
-    },
-    "Plan #%lld" : {
-
-    },
-    "Plan %@" : {
-
-    },
-    "Plan actions" : {
-
-    },
-    "Queue a message…" : {
-
-    },
-    "Queue message" : {
-
-    },
-    "Reject" : {
-
-    },
-    "Remove %@" : {
-
-    },
-    "Request changes" : {
-
-    },
-    "Requester only" : {
-
-    },
-    "Risk" : {
-
-    },
-    "Save" : {
-
-    },
-    "Savings" : {
-
-    },
-    "Send" : {
-
-    },
-    "Show" : {
-
-    },
-    "Sign in" : {
-
-    },
-    "Sign in with your Nuphos account to continue." : {
-
-    },
-    "Sign out" : {
-
-    },
-    "Sign out of Nuphos?" : {
-
-    },
-    "Signing in…" : {
-
-    },
-    "Steps" : {
-
-    },
-    "Stop" : {
-
-    },
-    "Switch page" : {
-
-    },
-    "The agent is still building this plan — steps, cost and risk arrive before it can be approved." : {
-
-    },
-    "The plan is kept for reference but will no longer be run." : {
-
-    },
-    "Try again" : {
-
-    },
-    "Unplan" : {
-
-    },
-    "Waiting for %lld more required approval%@." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Waiting for %1$lld more required approval%2$@."
+    "@%@": {},
+    "Account": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账户"
           }
         }
       }
     },
-    "Waiting on a newer request." : {
-
-    },
-    "Welcome to Nuphos" : {
-
-    },
-    "What should change?" : {
-
-    },
-    "Worst case" : {
-
-    },
-    "Yesterday %@" : {
-      "comment" : "Chat timestamp, previous day",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "昨天 %@"
+    "Agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能体"
           }
         }
       }
-    }
+    },
+    "Already invited? Accept the invitation from your email, then refresh your workspaces.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已经收到邀请？先在邮件中接受邀请，再刷新工作区。"
+          }
+        }
+      }
+    },
+    "Approval": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "审批"
+          }
+        }
+      }
+    },
+    "Approval gate met.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已满足审批条件"
+          }
+        }
+      }
+    },
+    "Approve": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "批准"
+          }
+        }
+      }
+    },
+    "Approve once": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅批准这一次"
+          }
+        }
+      }
+    },
+    "Archived": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已归档"
+          }
+        }
+      }
+    },
+    "Ask Yu Bot anything…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向 Yu Bot 提问…"
+          }
+        }
+      }
+    },
+    "Attach": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加附件"
+          }
+        }
+      }
+    },
+    "Authorization required": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要授权"
+          }
+        }
+      }
+    },
+    "Authorization required — %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要授权 —— %@"
+          }
+        }
+      }
+    },
+    "Available workspaces": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可加入的工作区"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        }
+      }
+    },
+    "Choose Credentials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择凭据"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除"
+          }
+        }
+      }
+    },
+    "Clear search": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除搜索"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭"
+          }
+        }
+      }
+    },
+    "Cloud": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "云端"
+          }
+        }
+      }
+    },
+    "Connect cloud accounts and integrations to your team first, then use them here.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先在团队中连接云端账户和集成，再回到这里使用。"
+          }
+        }
+      }
+    },
+    "Continue in agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在智能体中继续"
+          }
+        }
+      }
+    },
+    "Cost": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "费用"
+          }
+        }
+      }
+    },
+    "Couldn't approve plan": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法批准方案"
+          }
+        }
+      }
+    },
+    "Couldn't load Credentials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载凭据"
+          }
+        }
+      }
+    },
+    "Couldn't load agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载智能体"
+          }
+        }
+      }
+    },
+    "Couldn't load plan": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载方案"
+          }
+        }
+      }
+    },
+    "Couldn't load runtimes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载运行时"
+          }
+        }
+      }
+    },
+    "Couldn't load this agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载此智能体"
+          }
+        }
+      }
+    },
+    "Create a workspace for your agents and runtimes, or join one your organization has made available.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建工作区来使用智能体和运行时，或加入你的组织已开放的工作区。"
+          }
+        }
+      }
+    },
+    "Create or join a workspace to start chatting with an agent.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建或加入工作区，即可开始和智能体对话。"
+          }
+        }
+      }
+    },
+    "Create workspace": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建工作区"
+          }
+        }
+      }
+    },
+    "Credentials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "凭据"
+          }
+        }
+      }
+    },
+    "Current": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前"
+          }
+        }
+      }
+    },
+    "Decisions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "决策"
+          }
+        }
+      }
+    },
+    "Deny": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拒绝"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        }
+      }
+    },
+    "Files": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件"
+          }
+        }
+      }
+    },
+    "Filter agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "筛选智能体"
+          }
+        }
+      }
+    },
+    "Join %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入 %@"
+          }
+        }
+      }
+    },
+    "Just now": {
+      "comment": "Chat timestamp, under a minute",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刚刚"
+          }
+        }
+      }
+    },
+    "Loading Credentials…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载凭据…"
+          }
+        }
+      }
+    },
+    "Loading agents…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载智能体…"
+          }
+        }
+      }
+    },
+    "Loading plan…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载方案…"
+          }
+        }
+      }
+    },
+    "Mark as unplanned": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标记为不执行"
+          }
+        }
+      }
+    },
+    "Mark plan %@ as unplanned?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将方案 %@ 标记为不执行？"
+          }
+        }
+      }
+    },
+    "Memory recalled · %lld": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已回忆 %lld 条记忆"
+          }
+        }
+      }
+    },
+    "Memory updated": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记忆已更新"
+          }
+        }
+      }
+    },
+    "Mitigations": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应对措施"
+          }
+        }
+      }
+    },
+    "Monthly": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每月"
+          }
+        }
+      }
+    },
+    "My agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我的智能体"
+          }
+        }
+      }
+    },
+    "My computers": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我的电脑"
+          }
+        }
+      }
+    },
+    "My workspace": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我的工作区"
+          }
+        }
+      }
+    },
+    "No Credentials connected": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未连接凭据"
+          }
+        }
+      }
+    },
+    "No agents match your search.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有匹配的智能体。"
+          }
+        }
+      }
+    },
+    "No agents yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有智能体"
+          }
+        }
+      }
+    },
+    "No matches": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有匹配项"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "好"
+          }
+        }
+      }
+    },
+    "One-time": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一次性"
+          }
+        }
+      }
+    },
+    "Open agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开智能体"
+          }
+        }
+      }
+    },
+    "Opens nuphos.ai in a secure browser window.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将在安全浏览器窗口中打开 nuphos.ai。"
+          }
+        }
+      }
+    },
+    "Other members required: %lld": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还需其他成员 %lld 个批准"
+          }
+        }
+      }
+    },
+    "Page": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "页面"
+          }
+        }
+      }
+    },
+    "Permission mode": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "权限模式"
+          }
+        }
+      }
+    },
+    "Permissions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "权限"
+          }
+        }
+      }
+    },
+    "Photos": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "照片"
+          }
+        }
+      }
+    },
+    "Plan #%@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "方案 #%@"
+          }
+        }
+      }
+    },
+    "Plan #%lld": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "方案 #%lld"
+          }
+        }
+      }
+    },
+    "Plan %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "方案 %@"
+          }
+        }
+      }
+    },
+    "Plan actions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "方案操作"
+          }
+        }
+      }
+    },
+    "Preparing your runtime": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备运行时"
+          }
+        }
+      }
+    },
+    "Queue a message…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "排队一条消息…"
+          }
+        }
+      }
+    },
+    "Queue message": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入排队"
+          }
+        }
+      }
+    },
+    "Refresh workspaces": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新工作区"
+          }
+        }
+      }
+    },
+    "Reject": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拒绝"
+          }
+        }
+      }
+    },
+    "Remove %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除 %@"
+          }
+        }
+      }
+    },
+    "Request changes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要求修改"
+          }
+        }
+      }
+    },
+    "Requester only": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅发起人"
+          }
+        }
+      }
+    },
+    "Risk": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "风险"
+          }
+        }
+      }
+    },
+    "Runtimes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行时"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        }
+      }
+    },
+    "Savings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "预计节省"
+          }
+        }
+      }
+    },
+    "Search agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索智能体"
+          }
+        }
+      }
+    },
+    "Send": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送"
+          }
+        }
+      }
+    },
+    "Set up workspace": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置工作区"
+          }
+        }
+      }
+    },
+    "Show": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示"
+          }
+        }
+      }
+    },
+    "Sign in": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录"
+          }
+        }
+      }
+    },
+    "Sign in with your Yu AI account to continue.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 Yu AI 账户登录以继续。"
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出登录"
+          }
+        }
+      }
+    },
+    "Sign out of Yu Bot?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要退出 Yu Bot 吗？"
+          }
+        }
+      }
+    },
+    "Signing in…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在登录…"
+          }
+        }
+      }
+    },
+    "Start an agent from the bar below.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从下方输入栏开始一个智能体。"
+          }
+        }
+      }
+    },
+    "Steps": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "步骤"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止"
+          }
+        }
+      }
+    },
+    "Switch page": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切换页面"
+          }
+        }
+      }
+    },
+    "Team agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "团队智能体"
+          }
+        }
+      }
+    },
+    "The agent is still building this plan — steps, cost and risk arrive before it can be approved.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能体仍在生成方案——步骤、费用和风险就绪后才能批准。"
+          }
+        }
+      }
+    },
+    "The plan is kept for reference but will no longer be run.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "方案会保留供查阅，但不再执行。"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试"
+          }
+        }
+      }
+    },
+    "Unplan": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消执行"
+          }
+        }
+      }
+    },
+    "Waiting for %lld more required approval%@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Waiting for %1$lld more required approval%2$@."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还需 %1$lld 个批准。"
+          }
+        }
+      }
+    },
+    "Waiting on a newer request.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在等待更新的请求。"
+          }
+        }
+      }
+    },
+    "Welcome to Yu Bot": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "欢迎使用 Yu Bot"
+          }
+        }
+      }
+    },
+    "What should change?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要修改什么？"
+          }
+        }
+      }
+    },
+    "Workspace name": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作区名称"
+          }
+        }
+      }
+    },
+    "Worst case": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最坏情况"
+          }
+        }
+      }
+    },
+    "Yesterday %@": {
+      "comment": "Chat timestamp, previous day",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "昨天 %@"
+          }
+        }
+      }
+    },
+    "Your workspace's cloud runtime is starting. It appears here in a moment.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作区的云端运行时正在启动，稍后会出现在这里。"
+          }
+        }
+      }
+    },
+    "Yu AI balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu AI 余额"
+          }
+        }
+      }
+    },
+    "just now": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刚刚"
+          }
+        }
+      }
+    },
+    "·": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        }
+      }
+    },
+    "New task": {},
+    "Ask Nuphos anything…": {},
+    "Connect cloud accounts and integrations in Nuphos to use them here.": {},
+    "Sign in with your Nuphos account to continue.": {},
+    "Sign out of Nuphos?": {},
+    "Welcome to Nuphos": {}
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

@@ -4,12 +4,12 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)ai.nuphos.ios.share</string>
-		<string>$(AppIdentifierPrefix)ai.nuphos.ios.shared-auth</string>
+		<string>$(AppIdentifierPrefix)com.nimrc.nuphos.ios.share</string>
+		<string>$(AppIdentifierPrefix)com.nimrc.nuphos.ios.shared-auth</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.ai.nuphos.ios</string>
+		<string>group.com.nimrc.nuphos.ios</string>
 	</array>
 </dict>
 </plist>

@@ -47,11 +47,12 @@ private struct SplashView: View {
         ZStack {
             Theme.canvas.ignoresSafeArea()
             VStack(spacing: 20) {
-                Image("NuphosMark")
+                Image("bot-avatar-01-vermeer-girl")
                     .resizable()
                     .scaledToFit()
-                    .foregroundStyle(Theme.heading)
                     .frame(width: 72, height: 72)
+                    .background(Color(hex: 0xF3EEE4))
+                    .clipShape(Circle())
                 ProgressView().tint(Theme.muted)
             }
         }

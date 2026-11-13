@@ -410,7 +410,7 @@
           "fileName": "shot-1.png",
           "contentType": "image/png",
           "status": "ready",
-          "downloadUrl": "file://$FIXTURE_DIR/../../nuphos-ios/Assets.xcassets/AppIcon-E3.appiconset/icon-1024.png"
+          "downloadUrl": "file://$FIXTURE_DIR/images/shot-1.png"
         }
       ]
     }
@@ -427,7 +427,7 @@
           "fileName": "shot-2.png",
           "contentType": "image/png",
           "status": "ready",
-          "downloadUrl": "file://$FIXTURE_DIR/../../nuphos-ios/Assets.xcassets/AppIcon-D2.appiconset/icon-1024.png"
+          "downloadUrl": "file://$FIXTURE_DIR/images/shot-2.png"
         }
       ]
     }
@@ -444,7 +444,7 @@
           "fileName": "crash.png",
           "contentType": "image/png",
           "status": "ready",
-          "downloadUrl": "file://$FIXTURE_DIR/../../nuphos-ios/Assets.xcassets/AppIcon-B1.appiconset/icon-1024.png"
+          "downloadUrl": "file://$FIXTURE_DIR/images/crash.png"
         }
       ]
     }

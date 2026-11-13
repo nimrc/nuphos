@@ -1,0 +1,16 @@
+# Seeded into ~/.omp/agent/models.yml by acp-shim on every start; ${VAR} is the session's value.
+# Yu AI through the backend, which pays with the turn's user's own key; NUPHOS_TOKEN (an env var
+# name, read per request) is the session token that names that user.
+providers:
+  yuai:
+    baseUrl: ${NUPHOS_BACKEND_URL}/llm/yuai/v1
+    apiKey: NUPHOS_TOKEN
+    api: openai-completions
+    authHeader: true
+    models:
+      - id: deepseek-v4.1-flash
+        name: DeepSeek V4.1 Flash
+        reasoning: true
+        input: [text, image]
+        contextWindow: 128000
+        maxTokens: 8192
