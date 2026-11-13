@@ -261,14 +261,11 @@ struct AgentPage: View {
                 Button("Set up workspace") { showWorkspaceSetup = true }.prominentButton()
             }
         case .loaded where store.runtimesLoaded && store.runtimes.isEmpty:
+            // Every workspace gets its cloud runtime from the server; only wait for it.
             ContentUnavailableView {
-                Label("Connect your first runtime", systemImage: "cpu")
+                Label("Preparing your runtime", systemImage: "cpu")
             } description: {
-                Text(store.selectedTeam?.isAdministrator == true ? "Create a cloud runtime and sign in with your AI provider." : "Ask a workspace administrator to connect a cloud runtime, or open Nuphos on your computer to connect your own local runtime.")
-            } actions: {
-                if store.selectedTeam?.isAdministrator == true {
-                    Button("Set up runtime") { showAgentSetup = true }.prominentButton()
-                }
+                Text("Your workspace's cloud runtime is starting. It appears here in a moment.")
             }
         case .idle, .loading:
             ProgressView("Loading agents…")

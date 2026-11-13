@@ -48,8 +48,8 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
 
         var title: String {
             switch self {
-            case .myComputers: "My computers"
-            case .cloud: "Cloud"
+            case .myComputers: String(localized: "My computers")
+            case .cloud: String(localized: "Cloud")
             }
         }
     }

@@ -25,7 +25,6 @@ private struct RuntimePicker: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var expanded: String?
     @State private var initialized = false
-    @State private var showSetup = false
     @State private var managing = false
     @State private var pendingLocal: RuntimeInstance?
 
@@ -42,8 +41,7 @@ private struct RuntimePicker: View {
         return listed.filter { $0.kind == "managed" }
     }
     private var boxes: [SelectorBox] { SelectorBox.grouped(choices, devices: store.agentDevices) }
-    private var administrator: Bool { store.selectedTeam?.isAdministrator == true }
-    private var browsing: Bool { !showSetup && !managing && scenePhase == .active }
+    private var browsing: Bool { !managing && scenePhase == .active }
 
     var body: some View {
         NavigationStack {
@@ -57,7 +55,7 @@ private struct RuntimePicker: View {
                 } else if !store.runtimesLoaded {
                     ProgressView("Loading runtimes…").tint(Theme.muted)
                 } else if choices.isEmpty {
-                    ContentUnavailableView("No runtimes", systemImage: "cpu", description: Text("Set up a cloud runtime here, or open Nuphos on your computer to connect a runtime."))
+                    ContentUnavailableView("Preparing your runtime", systemImage: "cpu", description: Text("Your workspace's cloud runtime is starting. It appears here in a moment."))
                 } else { boxList }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -68,11 +66,7 @@ private struct RuntimePicker: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close", systemImage: "xmark") { dismiss() }.labelStyle(.iconOnly).foregroundStyle(Theme.muted)
                 }
-                if administrator {
-                    ToolbarItem(placement: .primaryAction) { Button("Add runtime", systemImage: "plus") { showSetup = true } }
-                }
             }
-            .navigationDestination(isPresented: $showSetup) { if let team = store.selectedTeam { AgentSetupView(team: team) } }
             .navigationDestination(isPresented: $managing) { RuntimesPage().navigationTitle("Runtimes") }
             .alert("Move to \(pendingLocal?.label ?? "")?", isPresented: Binding(get: { pendingLocal != nil }, set: { if !$0 { pendingLocal = nil } }), presenting: pendingLocal) { runtime in
                 Button("Move") { onMove(runtime); dismiss() }
@@ -93,7 +87,7 @@ private struct RuntimePicker: View {
             .onChange(of: store.runtimes) { _, _ in openCurrentBox() }
         }
         .tint(Theme.heading)
-        .onChange(of: showSetup || managing) { _, open in if open { detent = .large } }
+        .onChange(of: managing) { _, open in if open { detent = .large } }
     }
 
     private var boxList: some View {
@@ -174,7 +168,7 @@ struct SelectorBoxHeader: View {
                     Text(box.label).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.heading).lineLimit(1)
                     if current { Text("Current").font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.muted) }
                 }
-                Text("\(box.agents.count) \(box.agents.count == 1 ? "runtime" : "runtimes")")
+                Text("\(box.agents.count) runtimes")
                     .font(.system(size: 12)).foregroundStyle(Theme.muted)
                 if let metrics {
                     // A split view's sidebar, such as iPhone Duo's inner display,
