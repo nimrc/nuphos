@@ -10,6 +10,28 @@ private struct NewBotButtonStyle: ButtonStyle {
     }
 }
 
+/// A bare indeterminate spinner for the navigation bar. `ProgressView`'s
+/// circular style fades most of its arc toward the background; on the bar
+/// that dropped the dark-mode arc to 2.93:1, below the 3:1 glyph floor. This
+/// draws the state's colour at full opacity, so the measured colour is the
+/// one shown.
+private struct BareNavigationSpinner: View {
+    let color: Color
+
+    var body: some View {
+        TimelineView(.animation) { context in
+            let angle = context.date.timeIntervalSinceReferenceDate
+                .truncatingRemainder(dividingBy: 1) * 360
+            Circle()
+                .trim(from: 0, to: 0.72)
+                .stroke(color, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                .rotationEffect(.degrees(angle))
+        }
+        .frame(width: 20, height: 20)
+        .accessibilityHidden(true)
+    }
+}
+
 /// The Agent page: the conversation history for the selected team, with
 /// the composer capsule pinned to the bottom when there is no column beside it.
 struct AgentPage: View {
@@ -520,9 +542,9 @@ struct AgentPage: View {
         .listSectionSeparator(.hidden, edges: .top)
     }
 
-    /// The bar button draws its own filled disc, so it must not sit on the
-    /// system toolbar glass: that material lightens the fill in dark mode and
-    /// would stop the disc matching the row's fill.
+    /// The bar entry sits straight on the navigation bar rather than inside
+    /// the system toolbar glass, so the bare glyph keeps the bar background
+    /// the contrast test measures.
     @ToolbarContentBuilder
     private var newBotToolbarItem: some ToolbarContent {
         if #available(iOS 26, *) {
@@ -533,29 +555,25 @@ struct AgentPage: View {
         }
     }
 
-    /// The same create action in the navigation bar, top right. It draws the
-    /// same `NewBotButtonAppearance` pair as the row: its fill is the button
-    /// background, its glyph or spinner is the foreground, and the state's
-    /// tap and accessibility flags apply unchanged in the bar.
+    /// The same create action in the navigation bar, top right. A navigation
+    /// bar takes a bare glyph, so it draws `barGlyph` (or the bare
+    /// `barSpinner` while creating) straight on the bar — no disc and no row
+    /// fill — while still reading the one shared `NewBotButtonAppearance` for
+    /// its state, colour and behaviour.
     private var newBotBarButton: some View {
         Button {
             guard newBotAppearance.acceptsTaps else { return }
             showNewBot = true
         } label: {
-            ZStack {
-                Circle()
-                    .fill(newBotAppearance.fill.color)
-                if newBotAppearance.announcesProgress, let spinner = newBotAppearance.spinner {
-                    ProgressView()
-                        .tint(spinner.color)
-                        .accessibilityHidden(true)
+            Group {
+                if let spinner = newBotAppearance.barSpinner {
+                    BareNavigationSpinner(color: spinner.color)
                 } else {
                     Image(systemName: "plus")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(newBotAppearance.glyph.color)
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(newBotAppearance.barGlyph.color)
                 }
             }
-            .frame(width: 32, height: 32)
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())
         }

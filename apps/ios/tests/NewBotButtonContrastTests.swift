@@ -10,9 +10,10 @@ import Foundation
 /// `NewBotButtonAppearance`; none is copied from the design note.
 ///
 /// The list row draws `fill` as a rounded rectangle behind `label`/`glyph`.
-/// The navigation-bar entry draws the same `fill` as a disc and the same
-/// `glyph`/`spinner` inside it, so both entries measure the same pair, and
-/// the source check below stops them gaining separate colours.
+/// The navigation-bar entry draws no fill at all: a navigation bar takes a
+/// bare `barGlyph`/`barSpinner` straight on the bar, so that glyph is measured
+/// against the bar background. Both entries read one `NewBotButtonAppearance`,
+/// and the source check below stops them gaining separate state or colours.
 enum NewBotButtonContrastTests {
     private static let textFloor = 4.5
     private static let graphicFloor = 3.0
@@ -42,25 +43,32 @@ enum NewBotButtonContrastTests {
                 precondition(label >= textFloor, "\(stateName(state)) label is \(label):1 in \(scheme); text needs \(textFloor):1")
                 precondition(rowGlyph >= graphicFloor, "\(stateName(state)) row plus glyph is \(rowGlyph):1 in \(scheme); a graphic needs \(graphicFloor):1")
 
-                // Navigation bar: the same fill is the disc behind the plus,
-                // and the disc itself sits on the bar background.
-                let navGlyph = appearance.glyph.contrastRatio(against: appearance.fill)
-                let discOnBar = appearance.fill.contrastRatio(against: bar)
+                // Navigation bar: the bare glyph sits straight on the bar —
+                // no disc and no row fill — so measure it against the bar.
+                let barGlyph = appearance.barGlyph.contrastRatio(against: bar)
                 print(String(
-                    format: "  navplus  %-8@ disc #%06X on bar #%06X %.2f:1  glyph #%06X on disc %.2f:1 (graphic, floor %.1f)",
+                    format: "  navplus  %-8@ bare+#%06X on bar #%06X %.2f:1 (glyph, floor %.1f)",
                     stateName(state) as NSString,
-                    appearance.fill.hex, bar.hex, discOnBar,
-                    appearance.glyph.hex, navGlyph, graphicFloor
+                    appearance.barGlyph.hex, bar.hex, barGlyph, graphicFloor
                 ))
-                precondition(navGlyph >= graphicFloor, "\(stateName(state)) navigation plus glyph is \(navGlyph):1 in \(scheme); a graphic needs \(graphicFloor):1")
+                precondition(barGlyph >= graphicFloor, "\(stateName(state)) bare navigation plus is \(barGlyph):1 on the bar in \(scheme); a glyph needs \(graphicFloor):1")
+
+                if let spinner = appearance.barSpinner {
+                    let barSpinner = spinner.contrastRatio(against: bar)
+                    print(String(
+                        format: "           bare spinner #%06X on bar #%06X %.2f:1 (glyph, floor %.1f)",
+                        spinner.hex, bar.hex, barSpinner, graphicFloor
+                    ))
+                    precondition(barSpinner >= graphicFloor, "\(stateName(state)) bare navigation spinner is \(barSpinner):1 on the bar in \(scheme); a glyph needs \(graphicFloor):1")
+                }
 
                 if let spinner = appearance.spinner {
                     let spinnerOnFill = spinner.contrastRatio(against: appearance.fill)
                     print(String(
-                        format: "           spinner #%06X %.2f:1 on fill (graphic, floor %.1f)",
-                        spinner.hex, spinnerOnFill, graphicFloor
+                        format: "           row spinner #%06X on fill #%06X %.2f:1 (glyph, floor %.1f)",
+                        spinner.hex, appearance.fill.hex, spinnerOnFill, graphicFloor
                     ))
-                    precondition(spinnerOnFill >= graphicFloor, "\(stateName(state)) spinner is \(spinnerOnFill):1 in \(scheme); a graphic needs \(graphicFloor):1")
+                    precondition(spinnerOnFill >= graphicFloor, "\(stateName(state)) row spinner is \(spinnerOnFill):1 in \(scheme); a glyph needs \(graphicFloor):1")
                 }
             }
         }
@@ -85,6 +93,16 @@ enum NewBotButtonContrastTests {
             precondition(creating.spinner == ThemePalette.onBrand.value(for: scheme))
             precondition(!creating.acceptsTaps && !creating.readsAsDisabled && creating.announcesProgress)
             precondition(creating.fill == ready.fill, "creating must not grey the button out")
+
+            // The navigation bar draws the same states as bare colours on the
+            // bar: brand for ready and creating, muted for not ready, and the
+            // bare spinner while creating. White is never used on the bar.
+            precondition(ready.barGlyph == ThemePalette.brand.value(for: scheme))
+            precondition(creating.barGlyph == ThemePalette.brand.value(for: scheme))
+            precondition(notReady.barGlyph == ThemePalette.muted.value(for: scheme))
+            precondition(ready.barSpinner == nil && notReady.barSpinner == nil)
+            precondition(creating.barSpinner == ThemePalette.brand.value(for: scheme))
+            precondition(ready.barGlyph != ThemePalette.onBrand.value(for: scheme), "white cannot sit on the navigation bar")
 
             // Not ready is the only light fill, and never white text.
             precondition(notReady.fill == ThemePalette.newBotNotReadyFill.value(for: scheme))
@@ -116,9 +134,10 @@ enum NewBotButtonContrastTests {
     }
 
     /// Both the list row and the navigation-bar plus read the one appearance
-    /// value annotated as `NewBotButtonAppearance`, and use its fill, glyph,
-    /// spinner and flags. The bar must not name a colour of its own (the
-    /// build-8 defect was a hardcoded `Theme.brand` plus).
+    /// value annotated as `NewBotButtonAppearance`, and use its colours and
+    /// flags. The bar must not name a colour of its own (the build-8 defect
+    /// was a hardcoded `Theme.brand` plus) and must not paint a disc (build
+    /// 9's defect).
     private static func bothEntriesUseTheSameAppearance() {
         let source = agentPageSource()
 
@@ -136,26 +155,33 @@ enum NewBotButtonContrastTests {
         precondition(!row.isEmpty && !bar.isEmpty, "Could not find both New Bot entry points in AgentPage")
 
         for (name, entry) in [("row", row), ("navigation bar", bar)] {
-            for token in ["newBotAppearance.fill.color", "newBotAppearance.glyph.color",
-                          "newBotAppearance.acceptsTaps", "newBotAppearance.readsAsDisabled",
+            for token in ["newBotAppearance.acceptsTaps", "newBotAppearance.readsAsDisabled",
                           "newBotAccessibilityHint", "newBotAccessibilityValue"] {
                 precondition(entry.contains(token), "The \(name) entry does not read \(token) from the shared appearance")
             }
             precondition(entry.contains(".disabled(newBotAppearance.readsAsDisabled)"),
                          "The \(name) entry does not disable itself from the shared appearance")
-            precondition(entry.contains("newBotAppearance.spinner"),
-                         "The \(name) entry cannot draw the creating spinner from the shared appearance")
         }
-        precondition(row.contains("newBotAppearance.label.color"), "The row lost its appearance label colour")
+        for token in ["newBotAppearance.fill.color", "newBotAppearance.label.color",
+                      "newBotAppearance.glyph.color", "newBotAppearance.spinner"] {
+            precondition(row.contains(token), "The row does not read \(token) from the shared appearance")
+        }
+        for token in ["newBotAppearance.barGlyph.color", "newBotAppearance.barSpinner"] {
+            precondition(bar.contains(token), "The navigation bar does not read \(token) from the shared appearance")
+        }
 
-        // The bar draws the same fill as the row; any literal brand colour or
-        // foreground style there is the defect returning.
-        precondition(!bar.contains("Theme.brand"), "The navigation bar plus hardcodes Theme.brand again")
-        precondition(!bar.contains(".foregroundStyle(Theme."), "The navigation bar plus hardcodes a Theme foreground colour")
+        // A navigation bar takes a bare glyph: no disc, no row fill, and no
+        // colour of its own.
+        precondition(!bar.contains("Theme."), "The navigation bar plus hardcodes a Theme colour again")
         precondition(!bar.contains("Color(") && !bar.contains("Color."), "The navigation bar plus builds a colour of its own")
-        precondition(bar.contains("Circle()") && bar.contains(".fill(newBotAppearance.fill.color)"),
-                     "The navigation bar plus does not draw the shared fill behind the glyph")
-        precondition(bar.contains("if newBotAppearance.announcesProgress"), "The navigation bar plus does not switch to the creating spinner from the shared appearance")
+        precondition(!bar.contains("Circle("), "The navigation bar plus draws a disc again")
+        precondition(!bar.contains(".fill("), "The navigation bar plus paints a fill again")
+        precondition(!bar.contains(".background("), "The navigation bar plus draws a background again")
+        precondition(!bar.contains("newBotAppearance.fill"), "The bare navigation plus must not use the row fill")
+        precondition(!bar.contains("newBotAppearance.glyph"), "The row's on-fill glyph colour is white and cannot sit on the bar")
+        precondition(bar.contains("Image(systemName: \"plus\")"), "The navigation bar lost its plus glyph")
+        precondition(bar.contains("BareNavigationSpinner(color: spinner.color)"), "The navigation bar plus does not draw the full-opacity bare spinner from the shared appearance")
+        precondition(!bar.contains("ProgressView()"), "The navigation bar spinner faded its arc below the glyph floor again")
 
         // Accessibility follows the appearance, not a second state read.
         precondition(!source.contains("newBotState == .creating ? Text("), "An entry describes creating from the raw state instead of the appearance")
