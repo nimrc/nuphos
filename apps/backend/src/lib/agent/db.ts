@@ -51,6 +51,7 @@ export {
   setConversationParent,
   updateBotSelf,
   claimBotAvatar,
+  setBotLeader,
 } from './db/maintenance'
 export {
   addInputRequest,

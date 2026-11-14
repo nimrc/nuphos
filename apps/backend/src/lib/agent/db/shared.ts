@@ -73,6 +73,8 @@ export type AgentConversation = ConversationInputRequests & {
   avatar?: string
   /** A Bot's own standing instructions, written by the Bot through `update_self`. */
   instructions?: string
+  /** The owner's lead Bot in this team, which hands work to their other Bots. At most one per owner and team. */
+  leader?: true
   firstMessage: string
   messageCount: number
   transcriptUpdatedAt?: Date

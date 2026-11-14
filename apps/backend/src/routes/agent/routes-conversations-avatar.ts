@@ -8,6 +8,7 @@ import { startConversationTurn } from '@/lib/agent/conversation-turn'
 import {
   claimBotAvatar,
   getReadableConversation,
+  setBotLeader,
   setConversationAvatar,
   updateBotSelf,
 } from '@/lib/agent/db'
@@ -88,6 +89,22 @@ agent.patch('/conversations/:sessionId/profile', async (c) => {
     throw new AppError(404, 'not_found', 'Bot not found')
 
   return c.json({ name, avatar, instructions })
+})
+
+const leaderBody = z.object({ leader: z.boolean(), teamId: z.string().optional() }).strict()
+
+// The owner picks the Bot that leads their other Bots in this team; one at a time.
+agent.put('/conversations/:sessionId/leader', async (c) => {
+  const body = leaderBody.safeParse(await c.req.json().catch(() => ({})))
+
+  if (!body.success) throw new AppError(400, 'invalid_request', 'leader must be true or false')
+  const teamId = await resolveVerifiedTeamId(c, readTeamIdCandidate(c, body.data.teamId))
+
+  if (!teamId) throw new AppError(403, 'forbidden', 'Workspace membership is required')
+  if (!(await setBotLeader(c.req.param('sessionId'), c.get('userId'), teamId, body.data.leader)))
+    throw new AppError(404, 'not_found', 'Bot not found')
+
+  return c.json({ leader: body.data.leader })
 })
 
 // "+" on Bots. It is placed on the runtime the client would start a new chat on, so its

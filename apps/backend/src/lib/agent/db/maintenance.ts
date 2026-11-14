@@ -46,7 +46,8 @@ export async function setConversationAvatar(
 ): Promise<boolean> {
   const result = await agentConversations().updateOne(
     avatar === null ? { sessionId } : { sessionId, avatar: { $exists: true } },
-    avatar === null ? { $unset: { avatar: '' } } : { $set: { avatar } },
+    // A Task leads no Bots.
+    avatar === null ? { $unset: { avatar: '', leader: '' } } : { $set: { avatar } },
   )
 
   return result.matchedCount > 0
@@ -84,6 +85,43 @@ export async function updateBotSelf(
   )
 
   return result.matchedCount > 0
+}
+
+/**
+ * Makes a Bot its owner's leader in this team, taking it from any other, or
+ * stops it leading. False when the owner has no such Bot.
+ */
+export async function setBotLeader(
+  sessionId: string,
+  userId: string,
+  teamId: string,
+  leader: boolean,
+): Promise<boolean> {
+  const bot = await agentConversations().findOne(
+    {
+      sessionId,
+      userId,
+      teamId,
+      kind: { $ne: 'channel' },
+      avatar: { $exists: true },
+      archivedAt: { $exists: false },
+    },
+    { projection: { _id: 1 } },
+  )
+
+  if (!bot) return false
+  if (!leader) {
+    await agentConversations().updateOne({ sessionId }, { $unset: { leader: '' } })
+
+    return true
+  }
+  await agentConversations().updateMany(
+    { userId, teamId, leader: true, sessionId: { $ne: sessionId } },
+    { $unset: { leader: '' } },
+  )
+  await agentConversations().updateOne({ sessionId }, { $set: { leader: true } })
+
+  return true
 }
 
 // Nests a conversation under another one, or stops nesting it when
