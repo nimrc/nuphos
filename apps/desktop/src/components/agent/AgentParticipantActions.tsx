@@ -1,4 +1,4 @@
-import { Crown } from 'lucide-react'
+import { Star } from 'lucide-react'
 
 import { t } from '../../i18n'
 import { Button } from '../ui/button'
@@ -21,7 +21,7 @@ export function AgentParticipantActions({
     <>
       {lead ? (
         <span className="flex items-center gap-1 px-1.5 text-[12px] text-tertiary">
-          <Crown className="h-3 w-3 text-warning" aria-hidden="true" />
+          <Star className="h-3 w-3 text-warning" fill="currentColor" aria-hidden="true" />
           {t('Lead')}
         </span>
       ) : (

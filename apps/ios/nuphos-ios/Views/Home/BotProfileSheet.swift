@@ -113,7 +113,7 @@ struct BotProfileSheet: View {
                     if editable {
                         Section {
                             Toggle(isOn: Binding(get: { leader }, set: { setLeader($0) })) {
-                                Label("Leader", systemImage: "crown")
+                                Label("Leader", systemImage: "star")
                             }
                             .disabled(changingLeader)
                             .accessibilityIdentifier("bot-profile.leader")
@@ -123,7 +123,7 @@ struct BotProfileSheet: View {
                         .listRowBackground(Theme.surface)
                     } else if leader {
                         Section {
-                            Label("Leader", systemImage: "crown.fill")
+                            Label("Leader", systemImage: "star.fill")
                         } footer: {
                             Text("This Bot hands work to its owner's other Bots and manages them.")
                         }
