@@ -118,10 +118,11 @@ enum ThemePalette {
     static let primaryButtonDisabledForeground = body
 
     /// The composer bar's own surface. Glass could not hold the 4.5:1 floor
-    /// for Attach and Mic over a pure-white attachment, even with an opaque
-    /// floor behind it (the glass lifted #141414 to #404040), so the composer
-    /// is an opaque canvas bar. This is deliberately a separate token from
-    /// `canvas` so the contrast test pins the composer, not the page.
+    /// for Attach and Mic over arbitrary content: a pure-white attachment
+    /// lifted the dark bar to #7E7E7E (1.58:1), and a near-black one dropped
+    /// the light bar to #909090 (2.42:1). Both composers are opaque canvas
+    /// bars. This remains a separate token even though it resolves to `canvas`,
+    /// so the composer surface is explicit in the palette and the test can pin it.
     static let composerBarFill = canvas
 
     /// The Bots list's thread-count capsule: `muted` at 12% over `canvas`,
