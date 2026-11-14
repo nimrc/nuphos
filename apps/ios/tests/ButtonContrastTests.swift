@@ -60,6 +60,30 @@ enum ButtonContrastTests {
             }
             checkBrandTint(disabledFill, brand: ThemePalette.brand.value(for: scheme), scheme)
 
+            // The dark composer bar is opaque canvas, not glass: a pure-white
+            // attachment under the old glass lifted Attach and Mic to #7E7E7E
+            // (1.58:1). The dark bar's own surface must hold 4.5:1 and stay at
+            // or below the #393939 ceiling even in that worst case. The light
+            // composer keeps its glass; #52525B clears 4.5:1 on white/glass.
+            let composerBar = ThemePalette.composerBarFill.value(for: scheme)
+            let composerBarLabel = scheme == .dark ? "opaque canvas bar" : "light glass seat"
+            check(body, composerBar, textFloor, "composer Attach/Mic", composerBarLabel, scheme)
+            if scheme == .dark {
+                precondition(
+                    composerBar == canvas,
+                    "dark composer bar must stay on the canvas token"
+                )
+                let ceiling = RGBColor(hex: 0x393939)
+                print(String(
+                    format: "  composer bar #%06X stays at or below #393939 (%@)",
+                    composerBar.hex, composerBar.relativeLuminance <= ceiling.relativeLuminance ? "yes" : "NO"
+                ))
+                precondition(
+                    composerBar.relativeLuminance <= ceiling.relativeLuminance,
+                    "composer bar is #\(String(format: "%06X", composerBar.hex)); must stay at or below #393939 even over a pure-white attachment"
+                )
+            }
+
             // Capsule and chip controls in the transcript.
             check(body, ThemePalette.threadCapsuleFill.value(for: scheme),
                   textFloor, "thread capsule label", "capsule fill", scheme)

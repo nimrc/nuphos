@@ -33,6 +33,7 @@ struct ChatComposerBar<Controls: View>: View {
     @ViewBuilder var controls: () -> Controls
 
     @Environment(AuthSession.self) private var auth
+    @Environment(\.colorScheme) private var colorScheme
     @FocusState private var focused: Bool
     /// From focus until the keyboard it raised has finished hiding, so the
     /// page lowers this composer along with its own keyboard.
@@ -145,7 +146,11 @@ struct ChatComposerBar<Controls: View>: View {
         .onTapGesture { if dictation == nil { focused = true } }
         .gesture(pullDown)
         .accessibilityAction(.escape) { focused = false }
-        .glass(interactive: true, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        // In the dark the composer is an opaque canvas bar, not glass: a
+        // pure-white photo under the glass lifted Attach and Mic to #7E7E7E
+        // (1.58:1). Opaque canvas holds them at 7.19:1 even over that photo.
+        // The light composer keeps its glass unchanged.
+        .composerSurface(isDark: colorScheme == .dark, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .animation(.snappy(duration: 0.28), value: expanded)
         .animation(.snappy(duration: 0.25), value: attachments)
         .animation(.easeOut(duration: 0.15), value: hasText)
