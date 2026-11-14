@@ -8,7 +8,8 @@ import { useRuntimeRegistry } from '@/lib/test/doubles/runtime-registry'
 
 import { ensureDefaultRuntime } from './default-runtime'
 
-type Team = { _id: ObjectId; ownerID: ObjectId; defaultRuntimeProvider?: string }
+type Team = { _id: ObjectId; ownerID: ObjectId; defaultRuntimeClaimedAt?: Date }
+type Claim = { _id: ObjectId; $or: [unknown, { defaultRuntimeClaimedAt: { $lt: Date } }] }
 
 const OWNER = new ObjectId()
 const TEAM = new ObjectId()
@@ -22,14 +23,13 @@ const original = { ...provisioner }
 useDb({
   db: () => ({
     collection: () => ({
-      // An atomic claim, like Mongo's: only a team without the field matches.
-      findOneAndUpdate: async (
-        filter: { _id: ObjectId; defaultRuntimeProvider: { $ne: string } },
-        update: { $set: Partial<Team> },
-      ) => {
+      // An atomic claim, like Mongo's: only an unclaimed team, or one claimed too long ago, matches.
+      findOneAndUpdate: async (filter: Claim, update: { $set: Partial<Team> }) => {
+        const held = team.defaultRuntimeClaimedAt
+
         if (
           !filter._id.equals(team._id) ||
-          team.defaultRuntimeProvider === filter.defaultRuntimeProvider.$ne
+          (held && held >= filter.$or[1].defaultRuntimeClaimedAt.$lt)
         )
           return null
         const before = { ...team }
@@ -38,9 +38,9 @@ useDb({
 
         return before
       },
-      updateOne: async (_: unknown, update: { $set?: Partial<Team>; $unset?: object }) => {
-        if (update.$set) Object.assign(team, update.$set)
-        else delete team.defaultRuntimeProvider
+      updateOne: async (filter: { defaultRuntimeClaimedAt: Date }) => {
+        if (team.defaultRuntimeClaimedAt === filter.defaultRuntimeClaimedAt)
+          delete team.defaultRuntimeClaimedAt
 
         return { modifiedCount: 1 }
       },
@@ -91,9 +91,23 @@ test('creates one runtime for the owner, however many listings race', async () =
   ])
 })
 
-test('a team whose runtime was deleted on purpose gets no new one', async () => {
+test('a deleted runtime is replaced on the next listing, once its record is gone', async () => {
   await ensureDefaultRuntime(TEAM.toHexString())
+  // Still deleting: the record stays until the runtime is torn down.
+  await ensureDefaultRuntime(TEAM.toHexString())
+  expect(created).toHaveLength(1)
   hosted = []
+  await ensureDefaultRuntime(TEAM.toHexString())
+
+  expect(created).toHaveLength(2)
+  expect(team.defaultRuntimeClaimedAt).toBeUndefined()
+})
+
+test('a claim left by a listing that died stops blocking once it is stale', async () => {
+  team.defaultRuntimeClaimedAt = new Date()
+  await ensureDefaultRuntime(TEAM.toHexString())
+  expect(created).toEqual([])
+  team.defaultRuntimeClaimedAt = new Date(Date.now() - 120_000)
   await ensureDefaultRuntime(TEAM.toHexString())
 
   expect(created).toHaveLength(1)
