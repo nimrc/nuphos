@@ -170,7 +170,7 @@ struct ChannelView: View {
                 }
             }
         } label: {
-            Image(systemName: channel.leadId == nil ? "crown" : "crown.fill")
+            Image(systemName: channel.leadId == nil ? "star" : "star.fill")
         }
         .accessibilityLabel("Lead")
         .accessibilityValue(lead?.title ?? String(localized: "No lead"))
