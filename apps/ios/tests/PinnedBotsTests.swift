@@ -10,6 +10,10 @@ enum PinnedBotsTests {
         legacyPinsFollowTheFirstSelectedTeam()
         deadTeamCannotTakeTheLegacyPins()
         emptyTeamIdCannotTakeTheLegacyPins()
+        mismatchedValidatedTeamDoesNotAdoptLegacyPins()
+        verifiedTeamMergesLegacyPinsInsteadOfDroppingThem()
+        supersededLoadCannotCommit()
+        pruneFeedsItsPolicyFromTheStore()
         loadDropsDuplicatesAndEmptyIds()
         pruneDropsBotsThatNoLongerExist()
         searchFilteredListDoesNotDeletePins()
@@ -113,7 +117,7 @@ enum PinnedBotsTests {
                      "an unverified team's own list consumed the legacy pins")
 
         // The list arrives and that id is not in it: still nothing moves.
-        pins.adoptLegacyPinsIfPossible(teamIsValid: false, defaults: defaults)
+        pins.adoptLegacyPinsIfPossible(validatedTeamId: "team-gone", teamIsValid: false, defaults: defaults)
         precondition(pins.order.ids.isEmpty, "a team missing from the list kept the legacy pins")
         precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) != nil,
                      "a team missing from the list deleted the legacy pins")
@@ -123,7 +127,7 @@ enum PinnedBotsTests {
         // The server drops the dead team and selects a real one.
         pins.select(teamId: "team-real", canAdoptLegacy: false, defaults: defaults)
         precondition(pins.order.ids.isEmpty)
-        pins.adoptLegacyPinsIfPossible(teamIsValid: true, defaults: defaults)
+        pins.adoptLegacyPinsIfPossible(validatedTeamId: "team-real", teamIsValid: true, defaults: defaults)
         precondition(pins.order.ids == ["bot-old"], "the real team did not inherit the legacy pins")
         precondition(PinnedBotsStorage.stored(teamId: "team-real", defaults: defaults).ids == ["bot-old"],
                      "the legacy pins were not saved for the real team")
@@ -148,10 +152,163 @@ enum PinnedBotsTests {
                      "an empty team id was written a key")
 
         var pins = PinnedBotsSession(teamId: "")
-        pins.adoptLegacyPinsIfPossible(teamIsValid: true, defaults: defaults)
+        pins.adoptLegacyPinsIfPossible(validatedTeamId: "", teamIsValid: true, defaults: defaults)
         precondition(pins.order.ids.isEmpty, "the session adopted the legacy pins for no team")
         precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) != nil,
                      "the session deleted the legacy pins for no team")
+    }
+
+    /// The two onChange handlers may run in either order. The phase handler
+    /// validated team B while the session still holds dead team A's id; that
+    /// pass must not migrate into A. The next pass, once `select` has caught
+    /// up with B, adopts the pins into B.
+    private static func mismatchedValidatedTeamDoesNotAdoptLegacyPins() {
+        let suite = "nuphos.pinnedBots.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        defaults.set(["bot-old"], forKey: PinnedBotsStorage.legacyKey)
+        var pins = PinnedBotsSession()
+        pins.select(teamId: "team-a", canAdoptLegacy: false, defaults: defaults)
+        precondition(pins.teamId == "team-a")
+
+        // The team list loaded and selected team B; this handler validated B
+        // before the selection handler moved the session off dead team A.
+        pins.adoptLegacyPinsIfPossible(validatedTeamId: "team-b", teamIsValid: true, defaults: defaults)
+        precondition(pins.order.ids.isEmpty, "the validated team's legacy pins were adopted by another team")
+        precondition(defaults.object(forKey: PinnedBotsStorage.key(for: "team-a")) == nil,
+                     "the mismatched pass wrote the legacy pins into the session's dead team")
+        precondition(defaults.object(forKey: PinnedBotsStorage.key(for: "team-b")) == nil,
+                     "the mismatched pass wrote to a team the session had not selected")
+        precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) != nil,
+                     "the mismatched pass deleted the legacy pins")
+
+        // The selection handler catches up; the next pass may migrate.
+        pins.select(teamId: "team-b", canAdoptLegacy: false, defaults: defaults)
+        pins.adoptLegacyPinsIfPossible(validatedTeamId: "team-b", teamIsValid: true, defaults: defaults)
+        precondition(pins.order.ids == ["bot-old"], "the matching pass did not adopt the legacy pins")
+        precondition(PinnedBotsStorage.stored(teamId: "team-b", defaults: defaults).ids == ["bot-old"],
+                     "the matching pass did not save the legacy pins")
+        precondition(defaults.object(forKey: PinnedBotsStorage.key(for: "team-a")) == nil,
+                     "the legacy pins were written into the dead team after all")
+        precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) == nil,
+                     "the matching pass left the legacy pins behind")
+    }
+
+    /// A team that already has pins — including an empty scoped key made
+    /// before the team list validated — must merge the old pins, not drop
+    /// them. The old list goes away only after the merged order is written.
+    private static func verifiedTeamMergesLegacyPinsInsteadOfDroppingThem() {
+        let suite = "nuphos.pinnedBots.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        defaults.set(["bot-old", "bot-new"], forKey: PinnedBotsStorage.legacyKey)
+        defaults.set(["bot-new"], forKey: PinnedBotsStorage.key(for: "team-a"))
+        var pins = PinnedBotsSession()
+        pins.select(teamId: "team-a", canAdoptLegacy: false, defaults: defaults)
+        precondition(pins.order.ids == ["bot-new"], "the team's own pin did not load before adoption")
+
+        pins.adoptLegacyPinsIfPossible(validatedTeamId: "team-a", teamIsValid: true, defaults: defaults)
+        precondition(pins.order.ids == ["bot-new", "bot-old"],
+                     "the team's pin was not kept first with the missing legacy pin appended: \(pins.order.ids)")
+        precondition(PinnedBotsStorage.stored(teamId: "team-a", defaults: defaults).ids == ["bot-new", "bot-old"],
+                     "the merged order was not saved to the team key")
+        precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) == nil,
+                     "the legacy list survived after the merged order was written")
+
+        // An empty scoped key is not proof of migration: the viewer pinned a
+        // Bot before the team list validated, so the old pins still merge in.
+        defaults.set(["bot-old"], forKey: PinnedBotsStorage.legacyKey)
+        defaults.set([], forKey: PinnedBotsStorage.key(for: "team-b"))
+        var empty = PinnedBotsSession()
+        empty.select(teamId: "team-b", canAdoptLegacy: false, defaults: defaults)
+        precondition(empty.order.ids.isEmpty)
+        empty.adoptLegacyPinsIfPossible(validatedTeamId: "team-b", teamIsValid: true, defaults: defaults)
+        precondition(empty.order.ids == ["bot-old"], "an empty scoped key threw the legacy pins away")
+        precondition(PinnedBotsStorage.stored(teamId: "team-b", defaults: defaults).ids == ["bot-old"],
+                     "the legacy pins were not written to the empty team key")
+        precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) == nil,
+                     "the legacy list survived after the empty key was filled")
+
+        // `load` on a verified team follows the same rule.
+        defaults.set(["bot-old"], forKey: PinnedBotsStorage.legacyKey)
+        defaults.set([], forKey: PinnedBotsStorage.key(for: "team-c"))
+        let loaded = PinnedBotsStorage.load(teamId: "team-c", canAdoptLegacy: true, defaults: defaults)
+        precondition(loaded.ids == ["bot-old"], "load discarded the legacy pins for an empty scoped key")
+        precondition(PinnedBotsStorage.stored(teamId: "team-c", defaults: defaults).ids == ["bot-old"],
+                     "load did not save the legacy pins into the empty key")
+        precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) == nil,
+                     "load left the legacy list after writing the empty key")
+    }
+
+    /// Two overlapping loads, or A -> B -> A, must not let an older response
+    /// land last and restore the old list together with "complete". The pure
+    /// generation token decides that without a server; the source check keeps
+    /// `loadChannels` actually using it in its commit guard.
+    private static func supersededLoadCannotCommit() {
+        var generation = LoadGeneration()
+        let first = generation.begin()
+        let second = generation.begin()
+        precondition(!generation.isCurrent(first), "a superseded load was allowed to commit")
+        precondition(generation.isCurrent(second), "the newest load was not allowed to commit")
+
+        // A -> B -> A: the first A answer is superseded by the second A load.
+        let third = generation.begin()
+        precondition(!generation.isCurrent(first), "the first of two A loads was allowed to commit")
+        precondition(!generation.isCurrent(second), "B's load was allowed to commit after A selected again")
+        precondition(generation.isCurrent(third), "the newest A load was not allowed to commit")
+
+        // A workspace reset invalidates every load in flight.
+        generation.invalidate()
+        precondition(!generation.isCurrent(third), "a load from the previous workspace was allowed to commit")
+        let fourth = generation.begin()
+        precondition(generation.isCurrent(fourth))
+        precondition(!generation.isCurrent(third))
+
+        guard let store = try? String(contentsOfFile: "nuphos-ios/Services/AgentStore.swift", encoding: .utf8) else {
+            preconditionFailure("AgentStore.swift not readable from the test")
+        }
+        precondition(store.contains("let generation = channelsGeneration.begin()"),
+                     "loadChannels does not begin a load generation")
+        precondition(store.contains("channelsGeneration.isCurrent(generation)"),
+                     "loadChannels' commit guard does not check the load generation")
+        precondition(store.contains("channelsComplete = complete"),
+                     "loadChannels does not record completeness from the committed response")
+    }
+
+    /// The view must feed the prune policy from the store. A constant here
+    /// would let a truncated or filtered list delete pins no matter what the
+    /// store knows.
+    private static func pruneFeedsItsPolicyFromTheStore() {
+        guard let page = try? String(contentsOfFile: "nuphos-ios/Views/Home/AgentPage.swift", encoding: .utf8) else {
+            preconditionFailure("AgentPage.swift not readable from the test")
+        }
+        let storeValues = [
+            "search: store.search",
+            "loadedQuery: store.channelsQuery",
+            "botsListIsEmpty: store.botsList.isEmpty",
+            "loadedTeamId: store.channelsTeamId",
+            "currentTeamId: currentTeamId",
+            "pinsTeamId: pins.teamId",
+            "listIsComplete: store.channelsComplete"
+        ]
+        for value in storeValues {
+            precondition(page.contains(value), "the prune policy does not feed \(value) from the store")
+        }
+        let listIsCompleteReads = page.components(separatedBy: "listIsComplete: store.channelsComplete").count - 1
+        precondition(listIsCompleteReads >= 2,
+                     "the prune policy and prune call do not both read completeness from the store")
+        precondition(!page.contains("listIsComplete: true"), "the prune policy hard-codes a complete list")
+        precondition(!page.contains("listIsComplete: false"), "the prune policy hard-codes an incomplete list")
+
+        guard let store = try? String(contentsOfFile: "nuphos-ios/Services/AgentStore.swift", encoding: .utf8) else {
+            preconditionFailure("AgentStore.swift not readable from the test")
+        }
+        precondition(store.contains("private(set) var channelsComplete = false"),
+                     "the store does not keep a load-completeness value")
+        precondition(store.contains("channelsComplete = complete"),
+                     "the store never publishes the completeness of a committed load")
     }
 
     private static func loadDropsDuplicatesAndEmptyIds() {

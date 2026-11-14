@@ -190,13 +190,20 @@ struct AgentPage: View {
                 // that no longer exists.
                 let known = isKnownTeam(teamId)
                 pins.select(teamId: teamId, canAdoptLegacy: known)
-                pins.adoptLegacyPinsIfPossible(teamIsValid: known)
+                pins.adoptLegacyPinsIfPossible(validatedTeamId: teamId, teamIsValid: known)
                 schedulePinPrune()
             }
             .onChange(of: store.teamsPhase) { _, _ in
                 // The team list may have arrived after the pins were read for
-                // a cached id. A real team now takes the pre-team pins.
-                pins.adoptLegacyPinsIfPossible(teamIsValid: isKnownTeam(store.selectedTeam?.id))
+                // a cached id. A real team now takes the pre-team pins, but
+                // only when this pass validated the same id the session
+                // already holds: the two onChange handlers may run in either
+                // order, and the other one migrates on its own pass.
+                let validatedTeamId = store.selectedTeam?.id
+                pins.adoptLegacyPinsIfPossible(
+                    validatedTeamId: validatedTeamId,
+                    teamIsValid: isKnownTeam(validatedTeamId)
+                )
                 schedulePinPrune()
             }
             .onChange(of: PushNotifications.shared.pendingTarget) { _, _ in openPushTarget() }

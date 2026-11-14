@@ -62,6 +62,10 @@ final class AgentStore {
     /// list; the row itself stays drawn from what did load.
     private(set) var channelsComplete = false
 
+    /// Sequences `loadChannels` so an older answer cannot land after a newer
+    /// one and restore the previous list together with "complete".
+    private var channelsGeneration = LoadGeneration()
+
     /// The page limit `loadChannels` asks each scope for. Hitting it means the
     /// list may have more rows than were loaded.
     static let channelsPageLimit = 100
@@ -73,6 +77,7 @@ final class AgentStore {
         // or the query or team changes under it, the previous answer stays on
         // screen but its completeness must not, or a pin made while the list is
         // stale could be pruned against a list that never had it.
+        let generation = channelsGeneration.begin()
         channelsComplete = false
         guard let team = selectedTeam else { return }
         let query = search
@@ -97,7 +102,8 @@ final class AgentStore {
         if !PinnedBotsListing.pageIsComplete(
             rowCount: botPage.conversations.count, limit: limit, hasMore: botPage.hasMore
         ) { complete = false }
-        guard team.id == selectedTeam?.id, query == search, !Task.isCancelled else { return }
+        guard team.id == selectedTeam?.id, query == search,
+              channelsGeneration.isCurrent(generation), !Task.isCancelled else { return }
         channels = rows.sorted { $0.lastActiveAt > $1.lastActiveAt }
         bots = botPage.conversations
         channelsQuery = query
@@ -509,6 +515,7 @@ final class AgentStore {
         credentials.reset()
         channels = []
         bots = []
+        channelsGeneration.invalidate()
         channelsLoaded = false
         channelsTeamId = nil
         channelsQuery = ""

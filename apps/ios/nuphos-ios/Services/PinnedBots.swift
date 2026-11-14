@@ -211,7 +211,7 @@ enum PinnedBotsStorage {
 
     static func key(for teamId: String) -> String { "\(legacyKey).\(teamId)" }
 
-    /// The team's own list.
+    /// The team's own list, with the pre-team list merged in when allowed.
     ///
     /// `canAdoptLegacy` decides whether the old list may move into this team.
     /// It must be false until the team list has loaded and this id is one of
@@ -221,31 +221,21 @@ enum PinnedBotsStorage {
     /// they would never reach a real team. Until then this reads the team's own
     /// key (nothing, for a team that never had pins) and leaves the legacy
     /// list where it is for the team that does qualify.
+    ///
+    /// An existing scoped list may be empty — the viewer pinned a Bot before
+    /// the team list validated — so it is merged with the old list rather than
+    /// treated as proof that the old pins are no longer needed.
     static func load(
         teamId: String,
         canAdoptLegacy: Bool,
         defaults: UserDefaults = .standard
     ) -> PinnedBotsOrder {
-        let scopedKey = key(for: teamId)
-        if let scoped = defaults.stringArray(forKey: scopedKey) {
-            // One verified team has taken the old list; no other team may
-            // read it. Until the team list confirms this id, the id can name
-            // a dead team, and deleting the old list here would strand the
-            // pins that a real team still has to inherit.
-            if canAdoptLegacy, defaults.object(forKey: legacyKey) != nil {
-                defaults.removeObject(forKey: legacyKey)
-            }
-            return PinnedBotsOrder(scoped)
-        }
-        guard canAdoptLegacy, !teamId.isEmpty,
-              let legacy = defaults.stringArray(forKey: legacyKey) else { return PinnedBotsOrder() }
-        let order = PinnedBotsOrder(legacy)
-        defaults.set(order.ids, forKey: scopedKey)
-        defaults.removeObject(forKey: legacyKey)
-        return order
+        let order = PinnedBotsOrder(defaults.stringArray(forKey: key(for: teamId)) ?? [])
+        guard canAdoptLegacy, !teamId.isEmpty else { return order }
+        return adoptLegacyIfPossible(teamId: teamId, into: order, defaults: defaults)
     }
 
-    /// A team's stored list, never migrating: for callers that want to know
+    /// The team's stored list, never migrating: for callers that want to know
     /// what is saved rather than what may be adopted.
     static func stored(teamId: String, defaults: UserDefaults = .standard) -> PinnedBotsOrder {
         PinnedBotsOrder(defaults.stringArray(forKey: key(for: teamId)) ?? [])
@@ -253,6 +243,28 @@ enum PinnedBotsStorage {
 
     static func save(_ order: PinnedBotsOrder, teamId: String, defaults: UserDefaults = .standard) {
         defaults.set(order.ids, forKey: key(for: teamId))
+    }
+
+    /// Merges the pre-team list into `order` and saves the result under
+    /// `teamId`: the team's own order first, then legacy ids not already
+    /// there. The old list is removed only after the merged order reads back
+    /// from the team's key, so a failed write never loses the pins.
+    static func adoptLegacyIfPossible(
+        teamId: String,
+        into order: PinnedBotsOrder,
+        defaults: UserDefaults = .standard
+    ) -> PinnedBotsOrder {
+        guard !teamId.isEmpty,
+              let legacy = defaults.stringArray(forKey: legacyKey) else { return order }
+        var merged = order
+        for id in PinnedBotsOrder(legacy).ids where !merged.contains(id) {
+            merged.pin(id)
+        }
+        let scopedKey = key(for: teamId)
+        save(merged, teamId: teamId, defaults: defaults)
+        guard defaults.stringArray(forKey: scopedKey) == merged.ids else { return order }
+        defaults.removeObject(forKey: legacyKey)
+        return merged
     }
 }
 
@@ -289,24 +301,31 @@ struct PinnedBotsSession: Equatable, Sendable {
     /// turned out to exist. The team the session already read without
     /// migrating — the launch cache's, before the list loaded — takes the pins
     /// here, so a valid team still inherits them.
+    ///
+    /// `validatedTeamId` is the id whose membership in the loaded team list
+    /// was checked. Two view updates can run in either order, so the phase
+    /// handler may validate team B while the session still holds dead team A;
+    /// writing then would migrate the legacy pins into A's key. Requiring the
+    /// validated id to equal the session's id makes that pass a no-op; the
+    /// next pass, after `select` has caught up, adopts them.
     mutating func adoptLegacyPinsIfPossible(
+        validatedTeamId: String?,
         teamIsValid: Bool,
         defaults: UserDefaults = .standard
     ) {
-        guard teamIsValid, let teamId, !teamId.isEmpty else { return }
-        if defaults.object(forKey: PinnedBotsStorage.key(for: teamId)) != nil {
-            // This verified team already has its own list. The pre-team list
-            // cannot be merged into it without rewriting pins made since, so
-            // drop it before another team can inherit it.
-            defaults.removeObject(forKey: PinnedBotsStorage.legacyKey)
-            return
+        guard teamIsValid,
+              let teamId, !teamId.isEmpty,
+              teamId == validatedTeamId else { return }
+        // The session's order and the team's stored order are the same list;
+        // keeping both preserves a pin made before the first read completed.
+        var existing = order
+        for id in PinnedBotsStorage.stored(teamId: teamId, defaults: defaults).ids
+        where !existing.contains(id) {
+            existing.pin(id)
         }
-        guard order.ids.isEmpty,
-              let legacy = defaults.stringArray(forKey: PinnedBotsStorage.legacyKey)
-        else { return }
-        order = PinnedBotsOrder(legacy)
-        PinnedBotsStorage.save(order, teamId: teamId, defaults: defaults)
-        defaults.removeObject(forKey: PinnedBotsStorage.legacyKey)
+        order = PinnedBotsStorage.adoptLegacyIfPossible(
+            teamId: teamId, into: existing, defaults: defaults
+        )
     }
 
     @discardableResult
