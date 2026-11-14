@@ -239,6 +239,7 @@ struct RuntimeObservationTests {
         ResourceStripTests.run()
         BotQuestionsTests.run()
         BotLeaderTests.run()
+        HandoffTests.run()
         ComposerDraftsTests.run()
         CredentialScopeTests.run()
         RetiredConnectorTests.run()

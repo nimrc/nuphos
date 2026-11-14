@@ -25,6 +25,8 @@ struct BotProfileSheet: View {
     @State private var showTriggers = false
     @State private var leader = false
     @State private var changingLeader = false
+    /// What this Bot handed out or was given that is not finished.
+    @State private var handoffs: [Handoff] = []
 
     private let faces = BotAvatars.files.map { $0.replacingOccurrences(of: ".svg", with: "") }
     private var editable: Bool { saved?.editable == true }
@@ -128,6 +130,13 @@ struct BotProfileSheet: View {
                         .listRowBackground(Theme.surface)
                     }
 
+                    if editable, !handoffs.isEmpty {
+                        Section("Handoffs") {
+                            ForEach(handoffs) { handoff in HandoffRow(handoff: handoff, botId: target.botId) }
+                        }
+                        .listRowBackground(Theme.surface)
+                    }
+
                     Section {
                         Button { showTriggers = true } label: {
                             Label("Triggers", systemImage: "clock.arrow.circlepath")
@@ -181,9 +190,18 @@ struct BotProfileSheet: View {
             if let avatar = profile.avatar { face = avatar }
             instructions = profile.instructions
             leader = profile.leader
+            if profile.editable { await loadHandoffs() }
         } catch {
             loadError = error.localizedDescription
         }
+    }
+
+    private func loadHandoffs() async {
+        struct Envelope: Decodable { let handoffs: [Handoff] }
+        let envelope: Envelope? = try? await WorkspaceAPI.request(
+            "agent/conversations/\(target.botId)/handoffs",
+            query: [URLQueryItem(name: "teamId", value: target.teamId)], token: store.token)
+        handoffs = envelope?.handoffs ?? []
     }
 
     /// Applies at once, apart from Save: picking a Leader also takes the role from any other Bot.
@@ -226,5 +244,55 @@ struct BotProfileSheet: View {
                 failure = error.localizedDescription
             }
         }
+    }
+}
+
+/// One handoff: the other Bot, the task, and whether it is late or blocked.
+private struct HandoffRow: View {
+    let handoff: Handoff
+    /// The Bot whose profile this is: the other end is the one shown.
+    let botId: String
+    @Environment(AgentStore.self) private var store
+
+    private var outgoing: Bool { handoff.fromSessionId == botId }
+    private var other: String {
+        let id = outgoing ? handoff.toSessionId : handoff.fromSessionId
+        return store.bots.first { $0.sessionId == id }?.displayTitle ?? String(localized: "Another Bot")
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 6) {
+                Image(systemName: outgoing ? "arrow.up.right" : "arrow.down.left")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.muted)
+                    .accessibilityHidden(true)
+                Group { if outgoing { Text("To \(other)") } else { Text("From \(other)") } }
+                    .font(Theme.Text.label.weight(.medium))
+                    .foregroundStyle(Theme.heading)
+                    .lineLimit(1)
+                Spacer(minLength: 8)
+                if handoff.status == .blocked {
+                    Text("Blocked").font(Theme.Text.caption).foregroundStyle(.red)
+                } else if handoff.overdue() {
+                    Text("Late").font(Theme.Text.caption).foregroundStyle(Theme.warning)
+                } else if let due = handoff.dueAt {
+                    Text(due, style: .relative).font(Theme.Text.caption).foregroundStyle(Theme.muted)
+                }
+            }
+            Text(handoff.task)
+                .font(Theme.Text.label)
+                .foregroundStyle(Theme.body)
+                .lineLimit(2)
+            if let report = handoff.report, !report.isEmpty {
+                Text(report)
+                    .font(Theme.Text.caption)
+                    .foregroundStyle(Theme.muted)
+                    .lineLimit(2)
+            }
+        }
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("bot-profile.handoff")
     }
 }
