@@ -101,6 +101,44 @@ gcloud iam service-accounts add-iam-policy-binding \
 After the local command succeeds, retry `setup-credentials.sh` or the original
 GCP operation to verify the impersonation grant works.
 
+### Token Creator grant rejected: "do not belong to a permitted customer"
+
+Google returns this when an organization policy limits which identities may
+appear in IAM policies. Do not tell the user to turn a policy off, and do not
+hand them a policy to apply: a human administrator decides on and makes any
+policy change.
+
+- This message comes from Domain Restricted Sharing
+  (`iam.allowedPolicyMemberDomains`), enforced by default on organizations
+  created on or after 2024-05-03. It only accepts organization principal sets
+  and Google Workspace customer IDs, never a single principal.
+- `iam.managed.allowedPolicyMembers` reports a different error,
+  `Operation denied by org policy ... constraints/iam.managed.allowedPolicyMembers`.
+  Its `allowedMemberSubjects` accepts the single Nuphos `principal://` value and
+  allows only that exact subject; `allowedPrincipalSets` must be non-empty and
+  list only `//cloudresourcemanager.googleapis.com/organizations/<id>` values. A
+  project policy replaces the parent policy rather than merging with it, and a
+  new policy takes several minutes to take effect.
+- Every constraint in force must allow the principal, so relaxing one does not
+  help while another still denies it.
+
+For the administrator to weigh, not a policy to hand over: the narrowest
+exception would be on the project that holds the connector service account, a
+managed policy that keeps the organization's principal set and every parent
+value and adds the Nuphos principal to `allowedMemberSubjects`, then, once it is
+in effect, `allowAll` for the legacy constraint on that project. The managed
+behavior above was tested; that the legacy step completes the grant was not.
+See https://docs.cloud.google.com/organization-policy/restrict-domains.
+
+The one piece of evidence needed is which of the two constraints is in force on
+the project that holds the connector service account. Ask the administrator for
+the output of these read-only commands, and nothing broader:
+
+```bash
+gcloud org-policies describe iam.allowedPolicyMemberDomains --project=<project-id> --effective
+gcloud org-policies describe iam.managed.allowedPolicyMembers --project=<project-id> --effective
+```
+
 ### No binding, or a binding on the wrong project
 
 Creating the Nuphos-side binding is a human step. `POST /teams/:teamId/gcp-projects`
@@ -183,12 +221,11 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    Cloud Monitoring notification received (state: {{payload.incident.state}}).
    Policy: {{payload.incident.policy_name}} — {{payload.incident.summary}}
    If the payload contains "test": true or "drill": true, reply "test delivery received" and STOP — no investigation.
-   For Slack, handle it the way an on-call engineer would. First check the earlier firings in this conversation to see whether this alert has gone off before and in which thread, and slack_read_channel if you want to know what is already in the channel. Post something quickly so whoever is watching knows it is being looked at, then investigate and follow up in the same thread when you know more.
-   Pass replyToThread with that earlier threadTs when this firing is the same problem still going or coming back; omit it to start a new thread when it is genuinely different. There is no message type to declare. When it has recovered, say so in its thread and stop — nothing needs to be closed. Post to the exact destination the user approved, as written in the messageTemplate, including slackWorkspaceId when it is known: {"type":"channel","channelId":"<the selected stable ID>","slackWorkspaceId":"<its workspace>"} for a channel, or {"type":"dm_self"} for a DM.
+   For Slack, first check the earlier firings in this conversation to see whether this alert has already been reported. Investigate, then call slack_post once when this firing is worth telling people about — a new problem, a material change, or its recovery; an unchanged repeat needs no post. Post to the exact destination the user approved, as written in the messageTemplate, including slackWorkspaceId when it is known: {"type":"channel","channelId":"<the selected stable ID>","slackWorkspaceId":"<its workspace>"} for a channel, or {"type":"dm_self"} for a DM. Keep bindConversation on unless this conversation is already bound to a Slack thread, in which case pass bindConversation=false.
    For Nuphos-only delivery, keep the findings here and do not call slack_post.
    ```
 
-   A Slack firing notification uses one root message per problem, followed by one investigation-result reply. Later meaningful changes and recovery also stay in that thread. Tell the user they can reply there to continue with Nuphos.
+   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Nuphos.
 
    The result gives you `webhookUrl` and `webhookSecret` (returned only once). Sanity check: the `webhookUrl` must be an absolute `https://` URL — a bare path means the backend has no public base URL; STOP and tell the user. NEVER substitute a different host.
 
@@ -220,7 +257,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
 
    If the user instead wants ONLY the agent notified, confirm before removing existing channels — never silently detach a team's notifications.
 
-4. **Control noise at every layer.** Cloud Monitoring is naturally transition-oriented; keep a sensible condition duration/retest window and set `minIntervalSeconds` for retries. For Slack, keep one root per problem, only material in-thread updates (at most once per 15 minutes / three per hour), and one resolution. Repeated timestamps, small metric movement, and unchanged evidence should not call `slack_post`.
+4. **Control noise at every layer.** Cloud Monitoring is naturally transition-oriented; keep a sensible condition duration/retest window and set `minIntervalSeconds` for retries. For Slack, post only for a new problem, a material change, and its resolution. Repeated timestamps, small metric movement, and unchanged evidence should not call `slack_post`.
 
 5. **Verify before saying live**: describe the new notification channel and alert policy, and verify the policy contains the new channel plus every channel it had before. Then `POST /{triggerId}/test-fire` (see the `triggers` skill) with a representative payload (`{"test": true, "incident": {"state": "open", "policy_name": "...", "summary": "..."}}`) to check the cheap action branch. GCP has no channel test-send CLI; changing a live condition to force an incident is a separate risky action and still requires explicit approval.
 
