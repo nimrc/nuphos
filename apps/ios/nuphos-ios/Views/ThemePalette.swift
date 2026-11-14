@@ -109,11 +109,12 @@ enum ThemePalette {
     /// the dark value is lifted past the system red on the row surface.
     static let danger = PaletteColor(light: 0xC22929, dark: 0xFF6961)
 
-    /// The primary action's disabled fill and label. The light fill is the
-    /// system gray it has always drawn (#E5E5EA), kept exact so the light
-    /// appearance does not change; the dark fill is dark enough that `body`
-    /// clears 4.5:1, where the system gray did not.
-    static let primaryButtonDisabledFill = PaletteColor(light: 0xE5E5EA, dark: 0x242427)
+    /// The primary action's disabled fill and label. The fill is brand tinted
+    /// over the surface it sits on (18% in the light, 24% in the dark),
+    /// resolved to opaque values so the shape ratio is fixed:
+    /// #E8DBFC / #3A2B59, 1.32:1 and 1.29:1 against the card. `body` still
+    /// clears 4.5:1 on the fill (5.88:1 / 4.91:1).
+    static let primaryButtonDisabledFill = PaletteColor(light: 0xE8DBFC, dark: 0x3A2B59)
     static let primaryButtonDisabledForeground = body
 
     /// The Bots list's thread-count capsule: `muted` at 12% over `canvas`,

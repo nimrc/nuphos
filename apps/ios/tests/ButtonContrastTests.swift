@@ -11,6 +11,10 @@ import Foundation
 enum ButtonContrastTests {
     private static let textFloor = 4.5
     private static let graphicFloor = 3.0
+    /// A disabled primary must keep a visible shape on the card and the login
+    /// canvas. This is a product floor, not a WCAG text floor; inactive
+    /// controls are exempt from 1.4.3/1.4.11.
+    private static let shapeFloor = 1.2
 
     static func run() {
         paletteRolesKeepTheirFloors()
@@ -45,10 +49,16 @@ enum ButtonContrastTests {
             check(ThemePalette.onBrand.value(for: scheme), ThemePalette.brand.value(for: scheme),
                   textFloor, "primary button label", "brand fill", scheme)
 
-            // Disabled primary: the dark fill exists so body clears 4.5:1.
+            // Disabled primary: the label clears 4.5:1, and the brand tint
+            // keeps the shape visible on the surfaces it can sit on.
+            let disabledFill = ThemePalette.primaryButtonDisabledFill.value(for: scheme)
             check(ThemePalette.primaryButtonDisabledForeground.value(for: scheme),
-                  ThemePalette.primaryButtonDisabledFill.value(for: scheme),
-                  textFloor, "disabled primary label", "disabled fill", scheme)
+                  disabledFill, textFloor, "disabled primary label", "disabled fill", scheme)
+            for (surfaceName, background) in [("surface", surface), ("canvas", canvas)] {
+                checkShape(disabledFill, background, shapeFloor,
+                           "disabled primary shape", surfaceName, scheme)
+            }
+            checkBrandTint(disabledFill, brand: ThemePalette.brand.value(for: scheme), scheme)
 
             // Capsule and chip controls in the transcript.
             check(body, ThemePalette.threadCapsuleFill.value(for: scheme),
@@ -70,6 +80,87 @@ enum ButtonContrastTests {
             check(ThemePalette.danger.value(for: scheme), surface,
                   textFloor, "spent-limit label", "surface", scheme)
         }
+    }
+
+    private static func checkShape(
+        _ fill: RGBColor,
+        _ background: RGBColor,
+        _ floor: Double,
+        _ role: String,
+        _ surface: String,
+        _ scheme: ThemeScheme
+    ) {
+        let ratio = fill.contrastRatio(against: background)
+        print(String(
+            format: "  %-26@ #%06X on %-14@ #%06X %.2f:1 (shape floor %.1f)",
+            role as NSString, fill.hex, surface as NSString, background.hex,
+            ratio, floor
+        ))
+        precondition(
+            ratio >= floor,
+            "\(role) is \(ratio):1 on the \(surface) in \(scheme); needs \(floor):1"
+        )
+    }
+
+    /// The disabled fill must read as brand, not as a neutral grey: a grey
+    /// vanishes into the card even when its luminance ratio is close.
+    private static func checkBrandTint(
+        _ fill: RGBColor,
+        brand: RGBColor,
+        _ scheme: ThemeScheme
+    ) {
+        let fillChroma = chroma(fill)
+        let fillHue = hue(fill)
+        let brandHue = hue(brand)
+        let delta = hueDistance(fillHue, brandHue)
+        print(String(
+            format: "  disabled fill #%06X hue %.1f°, chroma %.3f; brand hue %.1f° (delta %.1f°)",
+            fill.hex, fillHue, fillChroma, brandHue, delta
+        ))
+        precondition(
+            fillChroma >= 0.05,
+            "The disabled fill #\(String(format: "%06X", fill.hex)) is too neutral in \(scheme); keep the brand tint"
+        )
+        precondition(
+            delta <= 5,
+            "The disabled fill hue is \(delta)° from brand in \(scheme); keep the brand tint"
+        )
+    }
+
+    private static func components(_ color: RGBColor) -> (r: Double, g: Double, b: Double) {
+        (
+            Double((color.hex >> 16) & 0xFF) / 255,
+            Double((color.hex >> 8) & 0xFF) / 255,
+            Double(color.hex & 0xFF) / 255
+        )
+    }
+
+    private static func chroma(_ color: RGBColor) -> Double {
+        let c = components(color)
+        return max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b))
+    }
+
+    private static func hue(_ color: RGBColor) -> Double {
+        let c = components(color)
+        let maximum = max(c.r, max(c.g, c.b))
+        let minimum = min(c.r, min(c.g, c.b))
+        let delta = maximum - minimum
+        guard delta > 0 else { return 0 }
+        var value: Double
+        if maximum == c.r {
+            value = ((c.g - c.b) / delta).truncatingRemainder(dividingBy: 6)
+        } else if maximum == c.g {
+            value = (c.b - c.r) / delta + 2
+        } else {
+            value = (c.r - c.g) / delta + 4
+        }
+        value *= 60
+        return value < 0 ? value + 360 : value
+    }
+
+    private static func hueDistance(_ first: Double, _ second: Double) -> Double {
+        let difference = abs(first - second).truncatingRemainder(dividingBy: 360)
+        return min(difference, 360 - difference)
     }
 
     private static func check(
