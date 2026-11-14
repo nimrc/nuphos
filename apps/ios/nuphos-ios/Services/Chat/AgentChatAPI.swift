@@ -162,6 +162,18 @@ enum AgentChatAPI {
         )
     }
 
+    /// `PATCH /agent/conversations/:id/profile` — the owner edits a Bot. Nil fields stay as they are.
+    static func setBotProfile(
+        token: String, teamId: String, sessionId: String, name: String?, avatar: String?, instructions: String?
+    ) async throws {
+        struct Body: Encodable { let name: String?; let avatar: String?; let instructions: String? }
+        _ = try await send(
+            "PATCH", "agent/conversations/\(sessionId)/profile",
+            query: [URLQueryItem(name: "teamId", value: teamId)], token: token,
+            body: Body(name: name, avatar: avatar, instructions: instructions)
+        )
+    }
+
     /// `POST /agent/bots` — a Bot with the picked name and face, on the
     /// runtime a new chat would use (#1691).
     static func createBot(token: String, teamId: String, title: String, avatar: String, runtime: RuntimeInstance?) async throws -> String {
