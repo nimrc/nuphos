@@ -9,7 +9,7 @@ struct ChannelView: View {
     @Environment(AgentStore.self) private var store
     @Environment(\.openURL) private var openURL
     @State private var draft = ""
-    @State private var showTriggers = false
+    @State private var profile: BotProfileTarget?
     /// The agents typing: those in a turn, as of the last read of this chat. See `inTurn`.
     @State private var typing: [ChannelAgent] = []
     /// Raises the keyboard when a reply is chosen.
@@ -61,11 +61,7 @@ struct ChannelView: View {
         transcript
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Theme.chatCanvas)
-            .sheet(isPresented: $showTriggers) {
-                if let bot = channel.faces.botId {
-                    ConversationTriggers(teamId: channel.teamId, sessionId: bot, token: store.token).presentationDetents([.large])
-                }
-            }
+            .sheet(item: $profile) { BotProfileSheet(target: $0) }
             .navigationTitle(channel.title)
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -73,7 +69,12 @@ struct ChannelView: View {
             #endif
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Button { showTriggers = true } label: {
+                    // A Bot's 1:1 chat: the header opens the Bot's profile, as a contact's name does.
+                    Button {
+                        if let bot = channel.faces.botId {
+                            profile = BotProfileTarget(botId: bot, teamId: channel.teamId, title: channel.title)
+                        }
+                    } label: {
                         HStack(spacing: 8) {
                             ChatIcon(faces: channel.faces, title: channel.title, size: 24)
                             Text(channel.title)
@@ -85,7 +86,7 @@ struct ChannelView: View {
                     .buttonStyle(.plain)
                     .disabled(channel.faces.botId == nil)
                     .accessibilityAddTraits(.isHeader)
-                    .accessibilityIdentifier("bot-trigger-entry")
+                    .accessibilityIdentifier("bot-profile-entry")
                 }
                 if let bot = desktopBot {
                     ToolbarItem(placement: .primaryAction) {

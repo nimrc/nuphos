@@ -5,7 +5,12 @@ import { z } from 'zod'
 import { BOT_AVATARS, derivedAvatar } from '@/lib/agent/bot-avatars'
 import { createBot } from '@/lib/agent/bots'
 import { startConversationTurn } from '@/lib/agent/conversation-turn'
-import { claimBotAvatar, getReadableConversation, setConversationAvatar } from '@/lib/agent/db'
+import {
+  claimBotAvatar,
+  getReadableConversation,
+  setConversationAvatar,
+  updateBotSelf,
+} from '@/lib/agent/db'
 import { systemSender } from '@/lib/agent/message-metadata'
 import {
   validateRequestedAgentRuntime,
@@ -48,6 +53,38 @@ agent.patch('/conversations/:sessionId/avatar', async (c) => {
   }
 
   return c.json({ avatar: body.data.avatar })
+})
+
+const profileBody = z
+  .object({
+    name: z.string().trim().min(1).max(120).optional(),
+    avatar: z.enum(BOT_AVATARS).optional(),
+    // The complete standing instructions; empty clears them, as update_self does.
+    instructions: z.string().trim().max(8000).optional(),
+    teamId: z.string().optional(),
+  })
+  .strict()
+
+// The owner edits a Bot's profile: the same fields the Bot changes with update_self.
+agent.patch('/conversations/:sessionId/profile', async (c) => {
+  const body = profileBody.safeParse(await c.req.json().catch(() => ({})))
+
+  if (!body.success) throw new AppError(400, 'invalid_request', 'Invalid Bot profile')
+  const { name, avatar, instructions } = body.data
+  const update = {
+    ...(name === undefined ? {} : { title: name }),
+    ...(avatar === undefined ? {} : { avatar }),
+    ...(instructions === undefined ? {} : { instructions }),
+  }
+
+  if (Object.keys(update).length === 0)
+    throw new AppError(400, 'invalid_request', 'Nothing to change')
+  const teamId = await resolveVerifiedTeamId(c, readTeamIdCandidate(c, body.data.teamId))
+
+  if (!(await updateBotSelf(c.req.param('sessionId'), c.get('userId'), teamId, update)))
+    throw new AppError(404, 'not_found', 'Bot not found')
+
+  return c.json({ name, avatar, instructions })
 })
 
 // "+" on Bots. It is placed on the runtime the client would start a new chat on, so its

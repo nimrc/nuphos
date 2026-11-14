@@ -33,6 +33,7 @@ let currentAvatar: string | undefined
 let member = true
 let claimWins = true
 let parentSessionId: string | undefined
+let profiles: { userId: string; update: Record<string, unknown> }[] = []
 
 useIdentity({
   authenticateToken: async () => ({ user: { id: caller } }),
@@ -63,6 +64,13 @@ useAgentDb({
       return false
     }
     saved.push(avatar)
+
+    return true
+  },
+  // As the write: only the owner's Bot matches.
+  updateBotSelf: async (_session, userId, _team, update) => {
+    if (userId !== owner || !currentAvatar) return false
+    profiles.push({ userId, update })
 
     return true
   },
@@ -106,6 +114,7 @@ beforeEach(() => {
   member = true
   claimWins = true
   parentSessionId = undefined
+  profiles = []
   turns.length = 0
 })
 const pick = (avatar: unknown, team = teamId) =>
@@ -254,4 +263,48 @@ test('"Make this a Bot" clicked twice at once starts one turn', async () => {
   expect(await (await makeBot()).json()).toEqual({ avatar: '07-ada' })
   expect(saved).toEqual([])
   expect(turns).toEqual([])
+})
+
+const editProfile = (body: unknown) =>
+  app.request(`/agent/conversations/s1/profile?teamId=${teamId}`, {
+    method: 'PATCH',
+    headers: { authorization: 'Bearer test-token', 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+
+test("the owner edits a Bot's name, face and instructions in one save", async () => {
+  currentAvatar = '07-ada'
+  const response = await editProfile({
+    name: ' Release Helper ',
+    avatar: '05-rembrandt',
+    instructions: 'Watch the release train.',
+  })
+
+  expect(response.status).toBe(200)
+  expect(profiles).toEqual([
+    {
+      userId: caller,
+      update: {
+        title: 'Release Helper',
+        avatar: '05-rembrandt',
+        instructions: 'Watch the release train.',
+      },
+    },
+  ])
+  expect((await editProfile({ instructions: '' })).status).toBe(200)
+  expect(profiles[1]?.update).toEqual({ instructions: '' })
+})
+
+test('a profile edit needs the owner, a Bot and a valid field', async () => {
+  currentAvatar = '07-ada'
+  expect((await editProfile({})).status).toBe(400)
+  expect((await editProfile({ name: '' })).status).toBe(400)
+  expect((await editProfile({ avatar: 'rembrandt' })).status).toBe(400)
+  expect((await editProfile({ instructions: 'x'.repeat(8001) })).status).toBe(400)
+  owner = 'someone-else'
+  expect((await editProfile({ name: 'Mine now' })).status).toBe(404)
+  owner = caller
+  currentAvatar = undefined
+  expect((await editProfile({ name: 'A Task' })).status).toBe(404)
+  expect(profiles).toEqual([])
 })
