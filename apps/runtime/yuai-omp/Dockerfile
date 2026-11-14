@@ -12,8 +12,11 @@ RUN set -eux; cd /tmp; \
     grep " omp-linux-x64$" SHA256SUMS.txt | sha256sum -c -; \
     install -m 755 omp-linux-x64 /usr/local/bin/omp; rm -f omp-linux-x64 SHA256SUMS.txt; \
     omp --version
-# The fork's shim knows omp and seeds its settings from these templates on every start.
-COPY image/acp-shim.mjs /opt/acp-shim.mjs
+# The fork's shim knows omp and seeds its settings from these templates on every start. Its
+# modules come along: it imports some (hermes-session.mjs) newer than BASE has.
+COPY image/acp-shim.mjs image/hermes-session.mjs image/mcp-bridge-config.mjs \
+     image/runtime-defaults.mjs image/session-home.mjs image/reply-image-stream.mjs \
+     image/reply-images.mjs /opt/
 COPY yuai-omp/models.yml yuai-omp/config.yml /etc/nuphos-runtime/omp/
 # Nothing to sign in to: the runtime always reports itself signed in and offers no sign-in.
 # No OpenCode download on first start either.

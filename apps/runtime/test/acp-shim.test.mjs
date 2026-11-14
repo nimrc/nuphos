@@ -532,3 +532,23 @@ test('omp gets its settings from the image templates, filled with the session en
     await rm(root, { recursive: true, force: true })
   }
 })
+
+test("the Yu AI omp image's templates seed both files from a session env", async () => {
+  const { seedOmpAgentDir } = await import('../image/acp-shim.mjs')
+  const { readFile } = await import('node:fs/promises')
+  const home = await mkdtemp(join(tmpdir(), 'omp-yuai-'))
+  try {
+    seedOmpAgentDir(
+      { HOME: home, NUPHOS_BACKEND_URL: 'http://backend.svc:3000' },
+      new URL('../yuai-omp', import.meta.url).pathname,
+    )
+    const agent = join(home, '.omp', 'agent')
+    assert.match(
+      await readFile(join(agent, 'models.yml'), 'utf8'),
+      /baseUrl: http:\/\/backend\.svc:3000\/llm\/yuai\/v1/,
+    )
+    assert.match(await readFile(join(agent, 'config.yml'), 'utf8'), /yuai\/deepseek/)
+  } finally {
+    await rm(home, { recursive: true, force: true })
+  }
+})
