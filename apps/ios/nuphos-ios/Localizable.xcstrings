@@ -3352,6 +3352,17 @@
         }
       }
     },
+    "Selected": {
+      "comment": "VoiceOver value for the current pinned Bot",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已选中"
+          }
+        }
+      }
+    },
     "Select Text": {
       "localizations": {
         "zh-Hans": {

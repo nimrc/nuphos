@@ -29,8 +29,9 @@ struct PinnedBotsRow: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: Metrics.spacing) {
+                LazyHStack(spacing: Metrics.spacing) {
                     ForEach(bots) { bot in
+                        let accessibility = PinnedBotAccessibility(title: bot.title, isCurrent: bot.id == currentBotId)
                         Button {
                             // The open one has nowhere to go.
                             guard bot.id != currentBotId else { return }
@@ -53,13 +54,11 @@ struct PinnedBotsRow: View {
                                 Label("Profile", systemImage: "person.text.rectangle")
                             }
                         }
-                        .accessibilityLabel(Text(verbatim: bot.title))
+                        .accessibilityLabel(Text(verbatim: accessibility.label))
                         .accessibilityHint(Text("Open this Bot"))
                         // The current Bot speaks its state in the value, as the
                         // page picker does, so VoiceOver never says it twice.
-                        .accessibilityValue(
-                            bot.id == currentBotId ? Text("\(bot.title), selected") : Text(verbatim: "")
-                        )
+                        .accessibilityValue(Text(verbatim: accessibility.value))
                         .accessibilityRemoveTraits(.isSelected)
                     }
                     // A second layout child keeps the row's accessibility
@@ -71,11 +70,12 @@ struct PinnedBotsRow: View {
                             .frame(width: 1, height: 1)
                             .accessibilityElement()
                             .accessibilityLabel(Text(verbatim: "\u{200B}"))
+                            .accessibilityHidden(true)
                     }
                 }
                 .padding(.horizontal, Metrics.inset)
                 .frame(height: Metrics.height, alignment: .leading)
-                // The avatars' HStack is the labelled container at one and
+                // The avatars' LazyHStack is the labelled container at one and
                 // many pins, so the count is spoken before the faces.
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel(Text("Pinned Bots, \(bots.count)"))

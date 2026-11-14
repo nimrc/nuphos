@@ -7,10 +7,15 @@ enum PinnedBotsTests {
         pinningTwiceDoesNotDuplicate()
         unpinningRemovesAndKeepsOrder()
         storageSurvivesRelaunch()
+        legacyPinsFollowTheFirstSelectedTeam()
         loadDropsDuplicatesAndEmptyIds()
         pruneDropsBotsThatNoLongerExist()
+        searchFilteredListDoesNotDeletePins()
+        teamSwitchDoesNotDeleteOrShowAnotherTeamsPins()
         rowIsAbsentWhenNothingIsPinned()
         rowAccessibilityIsAContainerAtOneAndMany()
+        pinnedAvatarAccessibilityNamesTheBotOnce()
+        pinnedRowUsesALazyStack()
         barClearanceClearsTheListContent()
         rowResolvesInPinOrder()
         initialIsTheFirstWordOrFirstCharacter()
@@ -49,9 +54,28 @@ enum PinnedBotsTests {
 
         var pins = PinnedBotsOrder()
         pins.pin("bot-b"); pins.pin("bot-a")
-        PinnedBotsStorage.save(pins, defaults: defaults)
-        let reloaded = PinnedBotsStorage.load(defaults: defaults)
+        PinnedBotsStorage.save(pins, teamId: "team-a", defaults: defaults)
+        let reloaded = PinnedBotsStorage.load(teamId: "team-a", defaults: defaults)
         precondition(reloaded == pins, "the pin order did not survive a reload")
+    }
+
+    /// The old build kept one key for every team. On upgrade its pins must
+    /// follow the team selected first, not vanish and not leak to a second team.
+    private static func legacyPinsFollowTheFirstSelectedTeam() {
+        let suite = "nuphos.pinnedBots.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        defaults.set(["bot-old"], forKey: PinnedBotsStorage.legacyKey)
+        var pins = PinnedBotsSession()
+        pins.select(teamId: "team-a", defaults: defaults)
+        precondition(pins.order.ids == ["bot-old"], "existing pins vanished on upgrade")
+        precondition(defaults.object(forKey: PinnedBotsStorage.legacyKey) == nil,
+                     "the legacy pins were left behind for another team to read")
+
+        pins.select(teamId: "team-b", defaults: defaults)
+        precondition(pins.order.ids.isEmpty, "the migrated pins were copied to a second team")
+        precondition(PinnedBotsStorage.load(teamId: "team-a", defaults: defaults).ids == ["bot-old"])
     }
 
     private static func loadDropsDuplicatesAndEmptyIds() {
@@ -64,6 +88,61 @@ enum PinnedBotsTests {
         precondition(pins.prune(keeping: ["bot-c", "bot-b"]))
         precondition(pins.ids == ["bot-b", "bot-c"], "prune dropped a Bot that exists or changed the order")
         precondition(!pins.prune(keeping: ["bot-b", "bot-c"]), "prune reported a change with nothing to drop")
+    }
+
+    /// Typing in search replaces `botsList` with the matches. The debounced
+    /// prune must not read that filtered list as "these Bots no longer exist".
+    private static func searchFilteredListDoesNotDeletePins() {
+        let suite = "nuphos.pinnedBots.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        var pins = PinnedBotsSession(teamId: "team-a", order: PinnedBotsOrder(["bot-a"]))
+        let searchResults: Set<String> = ["bot-z"]
+
+        let filtered = PinnedBotsPrunePolicy(
+            search: "zed", loadedQuery: "zed", botsListIsEmpty: false,
+            loadedTeamId: "team-a", currentTeamId: "team-a", pinsTeamId: "team-a"
+        )
+        precondition(!filtered.allowsPruning, "a search-filtered list was allowed to prune pins")
+        _ = pins.prune(available: searchResults, search: "zed", loadedQuery: "zed",
+                       botsListIsEmpty: false, loadedTeamId: "team-a", defaults: defaults)
+        precondition(pins.order.ids == ["bot-a"], "a search-filtered list deleted a pin")
+
+        // Clearing the field while the filtered list is still on screen (its
+        // reload failed) must not prune against the stale matches either.
+        _ = pins.prune(available: searchResults, search: "", loadedQuery: "zed",
+                       botsListIsEmpty: false, loadedTeamId: "team-a", defaults: defaults)
+        precondition(pins.order.ids == ["bot-a"], "a stale filtered list deleted a pin")
+
+        // An empty list, as during a team switch, must not prune either.
+        _ = pins.prune(available: [], search: "", loadedQuery: "",
+                       botsListIsEmpty: true, loadedTeamId: "team-a", defaults: defaults)
+        precondition(pins.order.ids == ["bot-a"], "an empty list deleted a pin")
+    }
+
+    /// Pins are per team on this device: another team neither sees them nor
+    /// can delete them, and going back restores them.
+    private static func teamSwitchDoesNotDeleteOrShowAnotherTeamsPins() {
+        let suite = "nuphos.pinnedBots.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        var pins = PinnedBotsSession()
+        pins.select(teamId: "team-a", defaults: defaults)
+        precondition(pins.pin("bot-a", defaults: defaults))
+
+        pins.select(teamId: "team-b", defaults: defaults)
+        precondition(pins.order.ids.isEmpty, "team B saw team A's pins")
+        _ = pins.prune(available: ["bot-b"], search: "", loadedQuery: "",
+                       botsListIsEmpty: false, loadedTeamId: "team-b", defaults: defaults)
+        precondition(PinnedBotsStorage.load(teamId: "team-a", defaults: defaults).ids == ["bot-a"],
+                     "team B's prune deleted team A's pins")
+
+        pins.select(teamId: "team-a", defaults: defaults)
+        precondition(pins.order.ids == ["bot-a"], "team A's pin did not survive the switch")
+        precondition(PinnedBotsStorage.load(teamId: "team-b", defaults: defaults).ids.isEmpty,
+                     "team B's pins leaked into team A")
     }
 
     private static func rowIsAbsentWhenNothingIsPinned() {
@@ -84,6 +163,39 @@ enum PinnedBotsTests {
         precondition(many.accessibility == .container(count: 2), "many pins lost their labelled container")
         precondition(none.accessibility == .absent, "zero pins still expose a container")
         precondition(one.isVisible && many.isVisible && !none.isVisible)
+    }
+
+    private static func pinnedAvatarAccessibilityNamesTheBotOnce() {
+        let selected = PinnedBotAccessibility(title: "Ada", isCurrent: true)
+        precondition(selected.label == "Ada", "the pinned avatar's label is not the Bot name")
+        precondition(selected.value == String(localized: "Selected"),
+                     "the pinned avatar's value is not only the selected wording")
+        precondition(!selected.value.contains("Ada"), "VoiceOver says the name twice: \"\(selected.label), \(selected.value)\"")
+        precondition(selected.label.components(separatedBy: "Ada").count == 2,
+                     "the label does not name the Bot exactly once")
+
+        let idle = PinnedBotAccessibility(title: "Ada", isCurrent: false)
+        precondition(idle.label == "Ada" && idle.value.isEmpty,
+                     "an unselected pinned avatar reads a selected value")
+
+        // The row must draw exactly these words, not rebuild them beside them.
+        guard let row = try? String(contentsOfFile: "nuphos-ios/Views/Home/PinnedBotsRow.swift", encoding: .utf8) else {
+            preconditionFailure("PinnedBotsRow.swift not readable from the test")
+        }
+        precondition(row.contains("PinnedBotAccessibility(title: bot.title, isCurrent: bot.id == currentBotId)"),
+                     "the pinned row does not use the tested accessibility wording")
+        precondition(row.contains(".accessibilityLabel(Text(verbatim: accessibility.label))"))
+        precondition(row.contains(".accessibilityValue(Text(verbatim: accessibility.value))"))
+        precondition(!row.contains("\\(bot.title), selected"),
+                     "the pinned row still puts the name in the selected value")
+    }
+
+    private static func pinnedRowUsesALazyStack() {
+        guard let row = try? String(contentsOfFile: "nuphos-ios/Views/Home/PinnedBotsRow.swift", encoding: .utf8) else {
+            preconditionFailure("PinnedBotsRow.swift not readable from the test")
+        }
+        precondition(row.contains("LazyHStack(spacing: Metrics.spacing)"),
+                     "the pinned avatars are not in a LazyHStack")
     }
 
     private static func barClearanceClearsTheListContent() {

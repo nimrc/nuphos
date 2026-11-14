@@ -60,8 +60,9 @@ struct AgentPage: View {
     @State private var unbotting: AgentConversation?
     @State private var renamedTitle = ""
     @State private var refreshing = false
-    /// The device-local pin order. Loaded once; every change is saved at once.
-    @State private var pinned = PinnedBotsStorage.load()
+    /// The device-local pins for the team on screen. Each team has its own
+    /// list, loaded when the selection changes; every change is saved at once.
+    @State private var pins = PinnedBotsSession()
     /// Debounces pruning saved pins against the Bots list as it loads.
     @State private var pinPruneTask: Task<Void, Never>?
     /// The pin/unpin confirmation, and the task that takes it away after 2 s.
@@ -180,6 +181,12 @@ struct AgentPage: View {
             .onChange(of: store.teamsPhase) { _, phase in if phase == .loaded { openPushTarget() } }
             .onChange(of: store.botsList.map(\.pinnedBotId), initial: true) { _, _ in schedulePinPrune() }
             .onChange(of: store.channelsLoaded) { _, _ in schedulePinPrune() }
+            .onChange(of: store.selectedTeam?.id, initial: true) { _, teamId in
+                // Load that team's pins. A switch never carries the previous
+                // team's pins over, and never writes to its key.
+                pins.select(teamId: teamId)
+                schedulePinPrune()
+            }
             .onChange(of: PushNotifications.shared.pendingTarget) { _, _ in openPushTarget() }
             .task {
                 // The poller is what keeps the list fresh while a chat is on
@@ -576,7 +583,7 @@ struct AgentPage: View {
 
     private var pinnedRowModel: PinnedBotsRowModel {
         PinnedBotsRowModel(
-            order: pinned,
+            order: pins.order,
             available: store.botsList.compactMap { row in
                 guard let botId = row.pinnedBotId else { return nil }
                 return PinnedBot(
@@ -619,7 +626,7 @@ struct AgentPage: View {
     @ViewBuilder
     private func pinMenuItem(_ row: AgentConversation) -> some View {
         if let botId = row.pinnedBotId {
-            let isPinned = pinned.contains(botId)
+            let isPinned = pins.order.contains(botId)
             Button {
                 togglePin(botId)
             } label: {
@@ -643,12 +650,10 @@ struct AgentPage: View {
     }
 
     private func togglePin(_ botId: String) {
-        if pinned.contains(botId) {
-            guard pinned.unpin(botId) else { return }
-            PinnedBotsStorage.save(pinned)
+        if pins.order.contains(botId) {
+            guard pins.unpin(botId) else { return }
             showToast(String(localized: "Unpinned"))
-        } else if pinned.pin(botId) {
-            PinnedBotsStorage.save(pinned)
+        } else if pins.pin(botId) {
             showToast(String(localized: "Pinned"))
         }
     }
@@ -673,10 +678,10 @@ struct AgentPage: View {
         if let toastText {
             Text(toastText)
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.onBrand)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(Theme.heading.opacity(0.9), in: Capsule())
+                .background(Theme.brand, in: Capsule())
                 .padding(.bottom, 16)
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
@@ -685,18 +690,30 @@ struct AgentPage: View {
     }
 
     /// A saved pin can name a Bot that was archived or removed. Once the Bots
-    /// list has settled, drop those ids without saying anything.
+    /// list has settled, drop those ids without saying anything. Search
+    /// replaces the list, a team switch empties it, and another team's list is
+    /// not ours to prune against, so all three leave the pins alone.
     private func schedulePinPrune() {
-        guard store.channelsLoaded else { return }
         pinPruneTask?.cancel()
         pinPruneTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(1500))
-            guard !Task.isCancelled, store.channelsLoaded else { return }
+            guard !Task.isCancelled else { return }
+            guard PinnedBotsPrunePolicy(
+                search: store.search,
+                loadedQuery: store.channelsQuery,
+                botsListIsEmpty: store.botsList.isEmpty,
+                loadedTeamId: store.channelsTeamId,
+                currentTeamId: store.selectedTeam?.id,
+                pinsTeamId: pins.teamId
+            ).allowsPruning else { return }
             let available = Set(store.botsList.compactMap(\.pinnedBotId))
-            var next = pinned
-            guard next.prune(keeping: available) else { return }
-            pinned = next
-            PinnedBotsStorage.save(pinned)
+            _ = pins.prune(
+                available: available,
+                search: store.search,
+                loadedQuery: store.channelsQuery,
+                botsListIsEmpty: store.botsList.isEmpty,
+                loadedTeamId: store.channelsTeamId
+            )
         }
     }
 

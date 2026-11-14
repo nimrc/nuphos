@@ -138,16 +138,129 @@ extension PinnedBotsRowModel {
     }
 }
 
+/// Whether the loaded Bots list may prune saved pins. Pins are local to one
+/// team on this device, so a filtered list (search replaces `botsList`), an
+/// empty list (a team switch clears it), or a list loaded for another team or
+/// query must never be allowed to delete them.
+struct PinnedBotsPrunePolicy: Equatable, Sendable {
+    let search: String
+    /// The query `botsList` was actually loaded with, which can lag the field
+    /// when a search is cleared but its reload fails.
+    let loadedQuery: String?
+    let botsListIsEmpty: Bool
+    let loadedTeamId: String?
+    let currentTeamId: String?
+    let pinsTeamId: String?
+
+    var allowsPruning: Bool {
+        search.isEmpty
+            && loadedQuery == search
+            && !botsListIsEmpty
+            && loadedTeamId != nil
+            && loadedTeamId == currentTeamId
+            && pinsTeamId == currentTeamId
+    }
+}
+
+/// What one pinned avatar reads aloud. The label is the name exactly once;
+/// the value is only the selected wording, never the name again.
+struct PinnedBotAccessibility: Equatable, Sendable {
+    let label: String
+    let value: String
+
+    init(title: String, isCurrent: Bool) {
+        label = title
+        value = isCurrent ? String(localized: "Selected") : ""
+    }
+}
+
 /// The device-local store behind the pinned row.
 enum PinnedBotsStorage {
-    static let key = "nuphos.pinnedBots"
+    /// The pre-team key. Its list follows the first team selected after this
+    /// build, so an upgrade does not lose the pins already on the device.
+    static let legacyKey = "nuphos.pinnedBots"
 
-    static func load(defaults: UserDefaults = .standard) -> PinnedBotsOrder {
-        PinnedBotsOrder(defaults.stringArray(forKey: key) ?? [])
+    static func key(for teamId: String) -> String { "\(legacyKey).\(teamId)" }
+
+    static func load(teamId: String, defaults: UserDefaults = .standard) -> PinnedBotsOrder {
+        let scopedKey = key(for: teamId)
+        if let scoped = defaults.stringArray(forKey: scopedKey) {
+            // One team has taken the old list; no other team may read it.
+            if defaults.object(forKey: legacyKey) != nil { defaults.removeObject(forKey: legacyKey) }
+            return PinnedBotsOrder(scoped)
+        }
+        guard let legacy = defaults.stringArray(forKey: legacyKey) else { return PinnedBotsOrder() }
+        let order = PinnedBotsOrder(legacy)
+        defaults.set(order.ids, forKey: scopedKey)
+        defaults.removeObject(forKey: legacyKey)
+        return order
     }
 
-    static func save(_ order: PinnedBotsOrder, defaults: UserDefaults = .standard) {
-        defaults.set(order.ids, forKey: key)
+    static func save(_ order: PinnedBotsOrder, teamId: String, defaults: UserDefaults = .standard) {
+        defaults.set(order.ids, forKey: key(for: teamId))
+    }
+}
+
+/// The pins for the team on screen: which team they belong to and its order.
+/// AgentPage keeps one, so a team switch loads that team's pins and nothing
+/// else — another team never sees them and can never delete them.
+struct PinnedBotsSession: Equatable, Sendable {
+    private(set) var teamId: String?
+    private(set) var order: PinnedBotsOrder
+
+    init(teamId: String? = nil, order: PinnedBotsOrder = PinnedBotsOrder()) {
+        self.teamId = teamId
+        self.order = order
+    }
+
+    /// Loads `teamId`'s pins. Nil clears the row without touching any team.
+    mutating func select(teamId: String?, defaults: UserDefaults = .standard) {
+        guard teamId != self.teamId else { return }
+        self.teamId = teamId
+        order = teamId.map { PinnedBotsStorage.load(teamId: $0, defaults: defaults) } ?? PinnedBotsOrder()
+    }
+
+    @discardableResult
+    mutating func pin(_ id: String, defaults: UserDefaults = .standard) -> Bool {
+        guard order.pin(id) else { return false }
+        save(defaults: defaults)
+        return true
+    }
+
+    @discardableResult
+    mutating func unpin(_ id: String, defaults: UserDefaults = .standard) -> Bool {
+        guard order.unpin(id) else { return false }
+        save(defaults: defaults)
+        return true
+    }
+
+    /// Drops ids the loaded list no longer has, but only when that list is
+    /// this team's current, unfiltered, non-empty list.
+    @discardableResult
+    mutating func prune(
+        available: Set<String>,
+        search: String,
+        loadedQuery: String?,
+        botsListIsEmpty: Bool,
+        loadedTeamId: String?,
+        defaults: UserDefaults = .standard
+    ) -> Bool {
+        let policy = PinnedBotsPrunePolicy(
+            search: search,
+            loadedQuery: loadedQuery,
+            botsListIsEmpty: botsListIsEmpty,
+            loadedTeamId: loadedTeamId,
+            currentTeamId: teamId,
+            pinsTeamId: teamId
+        )
+        guard policy.allowsPruning, order.prune(keeping: available) else { return false }
+        save(defaults: defaults)
+        return true
+    }
+
+    private func save(defaults: UserDefaults) {
+        guard let teamId else { return }
+        PinnedBotsStorage.save(order, teamId: teamId, defaults: defaults)
     }
 }
 

@@ -18,6 +18,7 @@ enum ButtonContrastTests {
 
     static func run() {
         paletteRolesKeepTheirFloors()
+        disabledPrimaryDrawsTheDisabledFill()
         buttonStylingKeepsToThePalette()
         print("Button contrast passed")
     }
@@ -114,6 +115,50 @@ enum ButtonContrastTests {
             check(ThemePalette.danger.value(for: scheme), surface,
                   textFloor, "spent-limit label", "surface", scheme)
         }
+    }
+
+    /// The palette numbers alone cannot prove a view draws the disabled fill:
+    /// the style has to name the token, and that token has to resolve to the
+    /// measured palette value. This walks that chain for the primary login
+    /// button, the only disabled primary in the app.
+    private static func disabledPrimaryDrawsTheDisabledFill() {
+        guard let login = try? String(contentsOfFile: "nuphos-ios/Views/LoginView.swift", encoding: .utf8) else {
+            preconditionFailure("LoginView.swift not readable from the test")
+        }
+        guard let start = login.range(of: "private struct LoginPrimaryButtonStyle") else {
+            preconditionFailure("LoginPrimaryButtonStyle is gone; the disabled primary has no style to audit")
+        }
+        let tail = login[start.lowerBound...]
+        guard let end = tail.range(of: "\n}\n") else {
+            preconditionFailure("LoginPrimaryButtonStyle has no closing brace")
+        }
+        let style = String(tail[..<end.upperBound])
+        let compact = style.components(separatedBy: .whitespacesAndNewlines).joined()
+        precondition(
+            compact.contains("isEnabled?Theme.brand:Theme.primaryButtonDisabledFill"),
+            "LoginPrimaryButtonStyle's disabled fill is not Theme.primaryButtonDisabledFill"
+        )
+        precondition(
+            compact.contains("isEnabled?Theme.onBrand:Theme.primaryButtonDisabledForeground"),
+            "LoginPrimaryButtonStyle's disabled label is not Theme.primaryButtonDisabledForeground"
+        )
+
+        guard let theme = try? String(contentsOfFile: "nuphos-ios/Views/Theme.swift", encoding: .utf8) else {
+            preconditionFailure("Theme.swift not readable from the test")
+        }
+        precondition(
+            theme.contains("static let primaryButtonDisabledFill = adaptive(ThemePalette.primaryButtonDisabledFill)"),
+            "Theme.primaryButtonDisabledFill no longer resolves to the measured palette token"
+        )
+        precondition(
+            theme.contains("static let primaryButtonDisabledForeground = adaptive(ThemePalette.primaryButtonDisabledForeground)"),
+            "Theme.primaryButtonDisabledForeground no longer resolves to the measured palette token"
+        )
+
+        // The token the style draws, resolved for each scheme.
+        precondition(ThemePalette.primaryButtonDisabledFill.value(for: .light) == RGBColor(hex: 0xE8DBFC))
+        precondition(ThemePalette.primaryButtonDisabledFill.value(for: .dark) == RGBColor(hex: 0x3A2B59))
+        print("  disabled primary uses Theme.primaryButtonDisabledFill -> #E8DBFC light, #3A2B59 dark")
     }
 
     private static func checkShape(
