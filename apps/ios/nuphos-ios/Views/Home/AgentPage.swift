@@ -581,7 +581,7 @@ struct AgentPage: View {
                     if store.botsList.isEmpty {
                         Text("No Bots yet. Tap + in the top right to create one.")
                             .font(.system(size: 15))
-                            .foregroundStyle(Theme.muted)
+                            .foregroundStyle(Theme.emptyBotsHint)
                             .multilineTextAlignment(.center)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 24)

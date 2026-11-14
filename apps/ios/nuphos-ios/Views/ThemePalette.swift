@@ -91,6 +91,11 @@ enum ThemePalette {
     static let body = PaletteColor(light: 0x52525B, dark: 0xA1A1AA)
     static let muted = PaletteColor(light: 0x84848C, dark: 0x71717A)
 
+    /// The empty Bots sentence. `muted` measured below the 4.5:1 body-text
+    /// floor, so the designer approved these darker/lighter greys for it:
+    /// #5C5C63 light and #A0A0A8 dark.
+    static let emptyBotsHint = PaletteColor(light: 0x5C5C63, dark: 0xA0A0A8)
+
     /// Label and glyph on the brand fill: white in both schemes.
     static let onBrand = PaletteColor(light: 0xFFFFFF, dark: 0xFFFFFF)
 

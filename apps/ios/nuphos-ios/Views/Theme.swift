@@ -33,6 +33,8 @@ enum Theme {
     static let heading = adaptive(ThemePalette.heading)
     static let body = adaptive(ThemePalette.body)
     static let muted = adaptive(ThemePalette.muted)
+    /// The empty Bots sentence: the designer-approved body-text grey.
+    static let emptyBotsHint = adaptive(ThemePalette.emptyBotsHint)
     /// Desktop `--color-warning`, darkened in light mode for contrast.
     static let warning = adaptive(light: 0xA04606, dark: 0xF5A623)
     static let hairline = adaptive(light: 0x18181B, dark: 0xFFFFFF, lightAlpha: 0.08, darkAlpha: 0.10)
