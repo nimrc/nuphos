@@ -253,7 +253,33 @@ struct SelectorAgentRow: View {
             Spacer(minLength: 4)
             if selected { Image(systemName: "checkmark").font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.heading) }
         }.frame(minHeight: 48).contentShape(Rectangle())
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(spokenLabel))
+            .accessibilityHint(Text(spokenHint))
+    }
+
+    /// What the person has to do about it, when the row shows such a sentence.
+    private var spokenHint: String {
+        if runtime.status != .active { return "" }
+        if runtime.local?.online == false { return String(localized: "Offline · open Nuphos on that computer") }
+        if runtime.local?.signedIn == false
+            || (quota?.needsSignIn == true && RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue)) {
+            return String(localized: "Signed out · sign in on that computer")
+        }
+        return ""
+    }
+
+    /// One sentence for VoiceOver: the name once, then the status once, and
+    /// "Disabled" only when the runtime really is switched off. The row's own
+    /// parts are combined by hand so nothing is read twice and no English
+    /// qualifier leaks into a translated row.
+    private var spokenLabel: String {
+        var parts = [SelectorBox.agentName(runtime)]
+        if let reachable = runtime.reachable(online: online) {
+            parts.append(reachable ? String(localized: "Online") : String(localized: "Offline"))
+        }
+        if runtime.status != .active { parts.append(String(localized: "Disabled")) }
+        return parts.joined(separator: ", ")
     }
     @ViewBuilder private var details: some View {
         if SelectorBox.agentName(runtime) != runtime.providerName { Text(runtime.providerName).font(.system(size: detailSize)).foregroundStyle(Theme.muted) }

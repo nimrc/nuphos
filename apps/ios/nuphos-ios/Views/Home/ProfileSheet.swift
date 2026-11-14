@@ -150,7 +150,7 @@ struct ProfileSheet: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .confirmationDialog("Withdraw AI data sharing permission?", isPresented: $confirmWithdraw, titleVisibility: .visible) {
+            .alert("Withdraw AI data sharing permission?", isPresented: $confirmWithdraw) {
                 Button("Withdraw", role: .destructive) {
                     withdrawing = true
                     privacyError = nil
@@ -164,7 +164,7 @@ struct ProfileSheet: View {
             } message: {
                 Text("You can't chat with Bots until you allow it again, and unsent drafts are deleted. Work already running is not stopped.")
             }
-            .confirmationDialog("Sign out of Yu Bot?", isPresented: $confirmSignOut, titleVisibility: .visible) {
+            .alert("Sign out of Yu Bot?", isPresented: $confirmSignOut) {
                 Button("Sign out", role: .destructive) {
                     dismiss()
                     session.signOut()
