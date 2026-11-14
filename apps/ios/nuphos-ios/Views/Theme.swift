@@ -52,8 +52,8 @@ enum Theme {
     /// The Bots list's thread-count capsule, opaque so its ratio is fixed.
     static let threadCapsuleFill = adaptive(ThemePalette.threadCapsuleFill)
     /// The disabled send key: the light disc keeps its 60% `muted` exactly;
-    /// the dark disc is 85%, matching the #4D4C51 pixel sampled from the dark
-    /// glass. It is an inactive control, so WCAG 1.4.3/1.4.11 exempt it.
+    /// the dark disc is 85%, matching the #3C3B40 pixel sampled from the
+    /// opaque dark bar. It is an inactive control, so WCAG 1.4.3/1.4.11 exempt it.
     static let composerSendDisabledFill = adaptive(
         light: ThemePalette.muted.light.hex, dark: ThemePalette.muted.dark.hex,
         lightAlpha: 0.6, darkAlpha: 0.85
@@ -110,16 +110,20 @@ extension View {
         buttonStyle(Theme.DangerBorderedButtonStyle())
     }
 
-    /// The composer's surface. The dark composer is opaque canvas so a
-    /// bright attachment cannot lift Attach/Mic; the light composer keeps the
-    /// glass it had, because its body colour clears the floor on white.
-    @ViewBuilder
-    func composerSurface(isDark: Bool, in shape: some Shape) -> some View {
-        if isDark {
-            background(Theme.composerBarFill, in: shape)
-        } else {
-            glass(interactive: true, in: shape)
-        }
+    /// The composer's surface is opaque in both schemes. Dark glass could be
+    /// lifted by a bright attachment (#7E7E7E, 1.58:1), and light glass could
+    /// be darkened by a near-black one (#909090, 2.42:1), so neither material
+    /// holds the 4.5:1 Attach/Mic floor over arbitrary content. The 0.5 pt
+    /// top hairline keeps the bar a layer even where its fill matches the
+    /// chat canvas.
+    func composerSurface(in shape: some Shape) -> some View {
+        background(Theme.composerBarFill, in: shape)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Theme.hairline)
+                    .frame(height: 0.5)
+                    .padding(.horizontal, 24)
+            }
     }
 
     /// Liquid Glass on iOS 26 and later; a material in the same shape before.

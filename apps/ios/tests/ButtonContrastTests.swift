@@ -60,19 +60,19 @@ enum ButtonContrastTests {
             }
             checkBrandTint(disabledFill, brand: ThemePalette.brand.value(for: scheme), scheme)
 
-            // The dark composer bar is opaque canvas, not glass: a pure-white
-            // attachment under the old glass lifted Attach and Mic to #7E7E7E
-            // (1.58:1). The dark bar's own surface must hold 4.5:1 and stay at
-            // or below the #393939 ceiling even in that worst case. The light
-            // composer keeps its glass; #52525B clears 4.5:1 on white/glass.
+            // The composer bar is opaque canvas in both schemes, not glass:
+            // a pure-white attachment under the old dark glass lifted Attach
+            // and Mic to #7E7E7E (1.58:1), and a near-black one under the old
+            // light glass dropped them to #909090 (2.42:1). The dark bar must
+            // stay at or below #393939; the light bar must be at least as
+            // light as #C8C8C8 for #52525B. Both hold 4.5:1.
             let composerBar = ThemePalette.composerBarFill.value(for: scheme)
-            let composerBarLabel = scheme == .dark ? "opaque canvas bar" : "light glass seat"
-            check(body, composerBar, textFloor, "composer Attach/Mic", composerBarLabel, scheme)
+            check(body, composerBar, textFloor, "composer Attach/Mic", "opaque composer bar", scheme)
+            precondition(
+                composerBar == canvas,
+                "composer bar must stay on the canvas token in \(scheme)"
+            )
             if scheme == .dark {
-                precondition(
-                    composerBar == canvas,
-                    "dark composer bar must stay on the canvas token"
-                )
                 let ceiling = RGBColor(hex: 0x393939)
                 print(String(
                     format: "  composer bar #%06X stays at or below #393939 (%@)",
@@ -81,6 +81,16 @@ enum ButtonContrastTests {
                 precondition(
                     composerBar.relativeLuminance <= ceiling.relativeLuminance,
                     "composer bar is #\(String(format: "%06X", composerBar.hex)); must stay at or below #393939 even over a pure-white attachment"
+                )
+            } else {
+                let lightFloor = RGBColor(hex: 0xC8C8C8)
+                print(String(
+                    format: "  composer bar #%06X stays at or above #C8C8C8 (%@)",
+                    composerBar.hex, composerBar.relativeLuminance >= lightFloor.relativeLuminance ? "yes" : "NO"
+                ))
+                precondition(
+                    composerBar.relativeLuminance >= lightFloor.relativeLuminance,
+                    "composer bar is #\(String(format: "%06X", composerBar.hex)); must stay at or above #C8C8C8 even over a near-black attachment"
                 )
             }
 
