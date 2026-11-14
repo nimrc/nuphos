@@ -386,7 +386,7 @@ private struct PlanStepDisclosure: View {
                     if !step.jobs.isEmpty {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Theme.muted)
+                            .foregroundStyle(Theme.body)
                             .rotationEffect(.degrees(open ? 90 : 0))
                     }
                 }

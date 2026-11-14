@@ -68,7 +68,7 @@ struct BotQuestionCard: View {
                         Image(systemName: "arrow.up.right")
                     }
                     .font(Theme.Text.caption)
-                    .foregroundStyle(Theme.muted)
+                    .foregroundStyle(Theme.body)
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("botQuestion.from")
@@ -98,7 +98,7 @@ struct BotQuestionCard: View {
                     } else if question.typed {
                         Button(replyLabel) { typing = true }
                             .font(Theme.Text.label)
-                            .foregroundStyle(Theme.muted)
+                            .foregroundStyle(Theme.body)
                             .buttonStyle(.plain)
                     }
                 } else if let onConnect, question.connectable {
@@ -137,7 +137,7 @@ struct BotQuestionCard: View {
             if long {
                 Button(expanded ? "Show less" : "Show more") { expanded.toggle() }
                     .font(Theme.Text.caption)
-                    .foregroundStyle(Theme.muted)
+                    .foregroundStyle(Theme.body)
                     .buttonStyle(.plain)
             }
         }
@@ -200,7 +200,7 @@ private struct DecisionForm: View {
                 }
             }
             Button("Send answer") { onSubmit(BotQuestion.formAnswer(questions, picked: picked, typed: typed)) }
-                .buttonStyle(.borderedProminent)
+                .prominentButton()
                 .controlSize(.small)
                 .disabled(answers.contains { $0.isEmpty })
         }

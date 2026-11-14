@@ -52,17 +52,17 @@ struct AgentThreadBadge: View {
         } label: {
             HStack(spacing: 6) {
                 AgentAvatar(agentId: reference.id, runtime: detail?.agentRuntime, size: 20)
-                Text(reference.verb).foregroundStyle(Theme.muted)
+                Text(reference.verb).foregroundStyle(Theme.body)
                 Text(detail?.title ?? reference.title ?? "Agent")
                     .fontWeight(.medium).foregroundStyle(Theme.heading).lineLimit(1)
                 if !status.isEmpty {
                     if status == "Running" { ProgressView().controlSize(.mini) }
                     Text(status)
-                        .foregroundStyle(status == "Needs input" ? Theme.warning : Theme.muted)
+                        .foregroundStyle(status == "Needs input" ? Theme.warning : Theme.body)
                         .fixedSize()
                 }
                 Image(systemName: "chevron.right")
-                    .font(Theme.Text.micro.weight(.bold)).foregroundStyle(Theme.muted).opacity(0.35)
+                    .font(Theme.Text.micro.weight(.bold)).foregroundStyle(Theme.body)
                 Spacer(minLength: 0)
             }
             .font(Theme.Text.label)

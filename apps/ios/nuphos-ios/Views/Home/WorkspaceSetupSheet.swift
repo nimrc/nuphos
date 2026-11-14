@@ -33,7 +33,7 @@ struct WorkspaceSetupSheet: View {
                     Button { create() } label: {
                         HStack {
                             Spacer()
-                            if busy { ProgressView().tint(.white) } else { Text("Create workspace").fontWeight(.semibold) }
+                            if busy { ProgressView().tint(Theme.onBrand) } else { Text("Create workspace").fontWeight(.semibold) }
                             Spacer()
                         }
                         .frame(minHeight: 30)

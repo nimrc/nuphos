@@ -51,7 +51,24 @@ enum EmptyBotsHintContrastTests {
                 }
             }
         }
+        ringContrastMatchesTheApprovedBrand()
         print("Empty Bots hint and New Bot plus contrast passed")
+    }
+
+    /// The pinned row's current-chat ring. The designer confirmed 4.05:1 in
+    /// the dark scheme is the approved value, not the 4.6 once printed.
+    private static func ringContrastMatchesTheApprovedBrand() {
+        for (scheme, expected) in [(ThemeScheme.light, 5.43), (.dark, 4.05)] {
+            let page = ThemePalette.canvas.value(for: scheme)
+            let ring = ThemePalette.brand.value(for: scheme)
+            let ratio = ring.contrastRatio(against: page)
+            print(String(
+                format: "  pinned ring #%06X on canvas #%06X %.2f:1 (approved %.2f)",
+                ring.hex, page.hex, ratio, expected
+            ))
+            precondition(abs(ratio - expected) < 0.02,
+                         "the pinned ring is \(ratio):1 in \(scheme); the approved value is \(expected):1")
+        }
     }
 
     /// The sentence takes its colour from the shared palette slot, not from

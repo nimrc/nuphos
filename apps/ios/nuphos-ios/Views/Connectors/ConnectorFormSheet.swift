@@ -46,7 +46,7 @@ struct ConnectorFormSheet: View {
                     HStack {
                         Spacer()
                         if isSubmitting {
-                            ProgressView().controlSize(.small).tint(Theme.muted)
+                            ProgressView().controlSize(.small).tint(Theme.body)
                         } else {
                             Text("Connect").font(.system(size: 15, weight: .medium))
                         }

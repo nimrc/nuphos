@@ -96,7 +96,7 @@ extension TurnActivityAttributes.Phase {
         switch self {
         case .running: String(localized: "Running", table: "TurnActivity")
         case .approval: String(localized: "Needs approval", table: "TurnActivity")
-        case .done: String(localized: "Done", table: "TurnActivity")
+        case .done: String(localized: "Turn state done", table: "TurnActivity")
         case .stopped: String(localized: "Stopped", table: "TurnActivity")
         case .unavailable: String(localized: "Unavailable", table: "TurnActivity")
         }

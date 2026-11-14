@@ -13,16 +13,16 @@ enum Theme {
     /// Grouped rows / cards on top of the canvas.
     static let surface = adaptive(ThemePalette.surface)
     /// The chat transcript reads like a page: #FFFFFF light, #141414 dark.
-    static let chatCanvas = adaptive(light: 0xFFFFFF, dark: 0x141414)
+    static let chatCanvas = adaptive(ThemePalette.chatCanvas)
     /// Chips and cards inside the transcript, which `surface` cannot be
     /// because it matches the transcript's own light-mode background.
-    static let chatSurface = adaptive(light: 0xF1F1F4, dark: 0x202024)
+    static let chatSurface = adaptive(ThemePalette.chatSurface)
     /// The user's own chat bubble: a shade off the canvas in either scheme.
-    static let bubble = adaptive(light: 0xE9E9EC, dark: 0x2A2A2E)
+    static let bubble = adaptive(ThemePalette.bubble)
     /// Brand violet (`--landing-brand`), brighter in the dark so it keeps contrast.
     static let brand = adaptive(ThemePalette.brand)
     /// Brand used as text/tint on the surfaces.
-    static let brandText = adaptive(light: 0x6D28D9, dark: 0xA469FF)
+    static let brandText = adaptive(ThemePalette.brandText)
     /// Unread reply dot — desktop's `bg-zViolet-500`, lifted in the dark
     /// the way `brand` is so it keeps contrast against #141414.
     static let unread = adaptive(light: 0x6300FF, dark: 0x8B4DFF)
@@ -36,11 +36,28 @@ enum Theme {
     /// The empty Bots sentence: the designer-approved body-text grey.
     static let emptyBotsHint = adaptive(ThemePalette.emptyBotsHint)
     /// Desktop `--color-warning`, darkened in light mode for contrast.
-    static let warning = adaptive(light: 0xA04606, dark: 0xF5A623)
+    static let warning = adaptive(ThemePalette.warning)
+    /// Text for a spent limit or a refused action, measured in both schemes.
+    static let danger = adaptive(ThemePalette.danger)
     static let hairline = adaptive(light: 0x18181B, dark: 0xFFFFFF, lightAlpha: 0.08, darkAlpha: 0.10)
 
     /// Label and glyph on the brand fill.
     static let onBrand = adaptive(ThemePalette.onBrand)
+    /// The primary action's disabled fill and label, measured in both schemes.
+    static let primaryButtonDisabledFill = adaptive(ThemePalette.primaryButtonDisabledFill)
+    static let primaryButtonDisabledForeground = adaptive(ThemePalette.primaryButtonDisabledForeground)
+    /// The composer bar's opaque fill. It replaces the glass on the composer
+    /// so a pure-white attachment cannot lift the Attach/Mic backdrop.
+    static let composerBarFill = adaptive(ThemePalette.composerBarFill)
+    /// The Bots list's thread-count capsule, opaque so its ratio is fixed.
+    static let threadCapsuleFill = adaptive(ThemePalette.threadCapsuleFill)
+    /// The disabled send key: the light disc keeps its 60% `muted` exactly;
+    /// the dark disc is 85%, matching the #3C3B40 pixel sampled from the
+    /// opaque dark bar. It is an inactive control, so WCAG 1.4.3/1.4.11 exempt it.
+    static let composerSendDisabledFill = adaptive(
+        light: ThemePalette.muted.light.hex, dark: ThemePalette.muted.dark.hex,
+        lightAlpha: 0.6, darkAlpha: 0.85
+    )
     /// The New Bot "not ready" fill: `muted` at 45% over `surface`, opaque.
     static let newBotNotReadyFill = adaptive(ThemePalette.newBotNotReadyFill)
     /// Label and plus glyph on `newBotNotReadyFill`.
@@ -85,6 +102,30 @@ extension View {
         buttonStyle(.borderedProminent).tint(Theme.brand)
     }
 
+    /// A destructive secondary action. `.bordered` tints its material with the
+    /// tint, and a danger-tinted fill drops `danger` to 3.87:1 in the dark;
+    /// this keeps the measured opaque surface fill and draws the danger in the
+    /// label and a hairline instead (5.76:1 in both schemes).
+    func dangerBorderedButton() -> some View {
+        buttonStyle(Theme.DangerBorderedButtonStyle())
+    }
+
+    /// The composer's surface is opaque in both schemes. Dark glass could be
+    /// lifted by a bright attachment (#7E7E7E, 1.58:1), and light glass could
+    /// be darkened by a near-black one (#909090, 2.42:1), so neither material
+    /// holds the 4.5:1 Attach/Mic floor over arbitrary content. The 0.5 pt
+    /// top hairline keeps the bar a layer even where its fill matches the
+    /// chat canvas.
+    func composerSurface(in shape: some Shape) -> some View {
+        background(Theme.composerBarFill, in: shape)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Theme.hairline)
+                    .frame(height: 0.5)
+                    .padding(.horizontal, 24)
+            }
+    }
+
     /// Liquid Glass on iOS 26 and later; a material in the same shape before.
     @ViewBuilder
     func glass(interactive: Bool = false, in shape: some Shape) -> some View {
@@ -96,12 +137,32 @@ extension View {
     }
 
     /// The glass call-to-action on iOS 26; the bordered one before it.
+    /// Brand-tinted, so a primary action reads as the same action as
+    /// `prominentButton()` rather than taking the white/black `heading` tint.
     @ViewBuilder
     func glassProminentButton() -> some View {
         if #available(iOS 26, *) {
-            buttonStyle(.glassProminent)
+            buttonStyle(.glassProminent).tint(Theme.brand)
         } else {
-            buttonStyle(.borderedProminent)
+            buttonStyle(.borderedProminent).tint(Theme.brand)
+        }
+    }
+}
+
+extension Theme {
+    /// The secondary destructive key, used where a red action must sit beside
+    /// a primary one without taking the primary's fill.
+    fileprivate struct DangerBorderedButtonStyle: ButtonStyle {
+        @Environment(\.isEnabled) private var isEnabled
+
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .foregroundStyle(isEnabled ? Theme.danger : Theme.body)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(Theme.surface, in: Capsule())
+                .overlay(Capsule().strokeBorder(Theme.danger.opacity(0.35), lineWidth: 1))
+                .opacity(configuration.isPressed ? 0.8 : 1)
         }
     }
 }

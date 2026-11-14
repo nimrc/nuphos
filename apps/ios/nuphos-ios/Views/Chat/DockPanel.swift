@@ -46,7 +46,7 @@ struct DockPanel: View {
                 HStack(spacing: 8) {
                     Label(notice, systemImage: "macbook").font(Theme.Text.secondary).foregroundStyle(Theme.body)
                     Spacer(minLength: 4)
-                    Button("Dismiss", systemImage: "xmark") { self.notice = nil }.labelStyle(.iconOnly).foregroundStyle(Theme.muted)
+                    Button("Dismiss", systemImage: "xmark") { self.notice = nil }.labelStyle(.iconOnly).foregroundStyle(Theme.body)
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
@@ -97,7 +97,7 @@ struct DockPanel: View {
             Button("Close \(tab.title)", systemImage: "xmark") { Task { await closeTab(tab) } }
                 .labelStyle(.iconOnly)
                 .font(.caption2.weight(.semibold))
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
                 .accessibilityIdentifier("dock-close-tab-\(tab.id)")
         }
         .padding(.leading, 10)
@@ -180,13 +180,13 @@ struct DockPanel: View {
     private func row(_ title: String, detail: String?, destination: DockDestination, id: String, systemImage: String? = nil) -> some View {
         Button { open(destination, tab: nil, title: title) } label: {
             HStack(spacing: 12) {
-                if let systemImage { Image(systemName: systemImage).foregroundStyle(Theme.muted).frame(width: 20) } else { icon(destination, kind: nil) }
+                if let systemImage { Image(systemName: systemImage).foregroundStyle(Theme.body).frame(width: 20) } else { icon(destination, kind: nil) }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).foregroundStyle(Theme.heading).lineLimit(1)
-                    if let detail { Text(detail).font(Theme.Text.label).foregroundStyle(Theme.muted).lineLimit(1) }
+                    if let detail { Text(detail).font(Theme.Text.label).foregroundStyle(Theme.body).lineLimit(1) }
                 }
                 Spacer(minLength: 0)
-                if case .onMac = destination { Image(systemName: "macbook").font(.caption).foregroundStyle(Theme.muted) }
+                if case .onMac = destination { Image(systemName: "macbook").font(.caption).foregroundStyle(Theme.body) }
             }
             .contentShape(Rectangle())
         }

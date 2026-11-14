@@ -75,7 +75,10 @@ struct AgentDetailView: View {
                 ))
             }
             Section {
-                Button(actionTitle, role: .destructive) { confirmRemoval = true }
+                Button(role: .destructive) { confirmRemoval = true } label: {
+                    Text(actionTitle).foregroundStyle(Theme.danger)
+                }
+                .tint(Theme.danger)
             }
             if let error {
                 Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red).font(.footnote) }

@@ -61,7 +61,7 @@ struct SavedAccountsView: View {
                         Text(account.user.email)
                             .font(.footnote).foregroundStyle(Theme.body)
                         if let server = serverLabel(account.origin) {
-                            Text(server).font(.caption2).foregroundStyle(Theme.muted)
+                            Text(server).font(.caption2).foregroundStyle(Theme.body)
                                 .accessibilityLabel("Server: \(account.origin)")
                         }
                         if account.token == nil {
@@ -87,7 +87,7 @@ struct SavedAccountsView: View {
                 Button("Sign out", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) { removing = account }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.body.weight(.medium)).foregroundStyle(Theme.muted)
+                    .font(.body.weight(.medium)).foregroundStyle(Theme.body)
                     .frame(width: 44, height: 44).contentShape(Rectangle())
             }
             .buttonStyle(.borderless)

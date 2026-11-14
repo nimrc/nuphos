@@ -37,7 +37,7 @@ struct ConversationRow: View {
 
                 Text(meta)
                     .font(Theme.Text.label)
-                    .foregroundStyle(Theme.muted)
+                    .foregroundStyle(Theme.body)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                     .fixedSize(horizontal: false, vertical: true)
             }

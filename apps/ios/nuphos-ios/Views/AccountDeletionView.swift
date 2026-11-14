@@ -46,7 +46,10 @@ struct AccountDeletionView: View {
                         usePassword.toggle(); password = ""; code = ""; error = nil
                     }.disabled(busy)
                     TextField("Type DELETE", text: $confirmation).autocorrectionDisabled()
-                    Button("Request permanent deletion", role: .destructive) { Task { await submit() } }
+                    Button(role: .destructive) { Task { await submit() } } label: {
+                        Text("Request permanent deletion").foregroundStyle(Theme.danger)
+                    }
+                    .tint(Theme.danger)
                         .disabled(busy || !loaded || confirmation != "DELETE" || (usePassword ? password.count < 12 : code.count != 6))
                 }
             }

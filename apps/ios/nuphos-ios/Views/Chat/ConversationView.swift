@@ -262,7 +262,7 @@ struct ConversationView: View {
                             if botAvatars { RuntimeMark(runtime: session.agentRuntime) }
                             Text(RuntimeInstance.Provider.detail(session.agentRuntime, instance: name))
                                 .font(Theme.Text.micro)
-                                .foregroundStyle(Theme.muted)
+                                .foregroundStyle(Theme.body)
                                 .lineLimit(1)
                         }
                         .accessibilityElement(children: .combine)
@@ -579,7 +579,7 @@ struct UserBubble: View {
                             disclose(readingInteraction) { expanded.toggle() }
                         }
                         .font(Theme.Text.label.weight(.medium))
-                        .foregroundStyle(Theme.muted)
+                        .foregroundStyle(Theme.body)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -752,7 +752,7 @@ struct HintRow: View {
                     if let ask, !ask.asked {
                         Button(ask.label, systemImage: "hand.wave", action: ask.action)
                             .font(Theme.Text.label.weight(.medium))
-                            .buttonStyle(.borderedProminent)
+                            .prominentButton()
                             .controlSize(.small)
                     }
                     if let onSwitchRuntime {
@@ -802,7 +802,7 @@ struct EventLine: View {
     private func channelNotice(_ channelId: String) -> some View {
         let label = Text("New messages in #\(event.name)")
             .font(Theme.Text.caption)
-            .foregroundStyle(Theme.muted)
+            .foregroundStyle(Theme.body)
             .lineLimit(1)
             .frame(maxWidth: .infinity, alignment: .leading)
         if let onLink, let teamId, let link = SessionLink.url(teamId: teamId, sessionId: channelId) {
@@ -832,9 +832,9 @@ struct EventLine: View {
                         } else {
                             Text(event.name.prefix(1).uppercased())
                                 .font(.system(size: 8, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Theme.chatCanvas)
                                 .frame(width: 14, height: 14)
-                                .background(Theme.muted, in: Circle())
+                                .background(Theme.body, in: Circle())
                         }
                         Text(event.name).fontWeight(.medium).foregroundStyle(Theme.heading).layoutPriority(1)
                         Text(event.text.prefix { $0 != "\n" })
@@ -844,7 +844,7 @@ struct EventLine: View {
                         .rotationEffect(.degrees(expanded ? 90 : 0))
                 }
                 .font(Theme.Text.caption)
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
@@ -901,7 +901,7 @@ struct MemoryRecallPill: View {
                             .rotationEffect(.degrees(expanded ? 90 : 0))
                     }
                 }
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(Theme.chatSurface, in: Capsule())
@@ -943,7 +943,7 @@ struct ResourceStrip: View {
                     let label = SessionResource.finishedLabel(groups.finished)
                     Button { showFinished.toggle() } label: {
                         Text(label)
-                            .foregroundStyle(Theme.muted)
+                            .foregroundStyle(Theme.body)
                             .font(Theme.Text.caption)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
@@ -977,7 +977,7 @@ struct ResourceStrip: View {
     }
 
     private func tone(_ resource: SessionResource) -> Color {
-        guard resource.provider == "github" else { return Theme.muted }
+        guard resource.provider == "github" else { return Theme.body }
         switch resource.state {
         case "merged": return Theme.brandText
         case "closed": return .red
@@ -1055,7 +1055,7 @@ struct QueuedStrip: View {
             Button { onEdit(item.id) } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "text.badge.plus").font(Theme.Text.micro)
-                    Text("\(number)").font(Theme.Text.micro).monospacedDigit().foregroundStyle(Theme.muted)
+                    Text("\(number)").font(Theme.Text.micro).monospacedDigit().foregroundStyle(Theme.body)
                     Text(item.text).lineLimit(1).font(Theme.Text.label)
                     Spacer(minLength: 0)
                 }

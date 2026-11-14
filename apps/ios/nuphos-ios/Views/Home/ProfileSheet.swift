@@ -124,7 +124,9 @@ struct ProfileSheet: View {
                         confirmSignOut = true
                     } label: {
                         Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
+                            .foregroundStyle(Theme.danger)
                     }
+                    .tint(Theme.danger)
                 } footer: {
                     Text("Yu Bot is based on Nuphos, an open source project. Not affiliated with Zeabur Inc.")
                         .frame(maxWidth: .infinity)
@@ -262,7 +264,10 @@ private struct EditProfileSheet: View {
                         PhotosPicker(currentUser.avatarURL.isEmpty ? "Choose photo" : "Change photo", selection: $photo, matching: .images)
                     }
                     if !currentUser.avatarURL.isEmpty {
-                        Button("Remove photo", role: .destructive) { setAvatar(nil) }
+                        Button(role: .destructive) { setAvatar(nil) } label: {
+                            Text("Remove photo").foregroundStyle(Theme.danger)
+                        }
+                        .tint(Theme.danger)
                     }
                 } footer: {
                     Text("Without a photo, your initials are shown.")

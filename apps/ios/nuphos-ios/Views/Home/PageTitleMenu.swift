@@ -27,7 +27,7 @@ struct PageTitleMenu: View {
                     .font(font)
                 Image(systemName: "chevron.down")
                     .font(.system(size: style == .large ? 16 : 12, weight: .bold))
-                    .foregroundStyle(Theme.muted)
+                    .foregroundStyle(Theme.body)
                     // Optically centre on the cap height rather than the
                     // full line box, which sits a touch low.
                     .offset(y: style == .large ? 2 : 1)

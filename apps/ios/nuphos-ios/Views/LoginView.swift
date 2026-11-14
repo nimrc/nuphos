@@ -3,7 +3,6 @@ import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthSession.self) private var session
-    @Environment(\.colorScheme) private var colorScheme
     @AppStorage(NuphosAPI.baseURLKey) private var savedURL = ""
     @State private var path: [Screen] = []
     @State private var showingServer = false
@@ -26,8 +25,6 @@ struct LoginView: View {
     private var signingIn: Bool { busy || session.state == .signingIn }
     private var cleanEmail: String { email.trimmingCharacters(in: .whitespacesAndNewlines) }
     private var validEmail: Bool { cleanEmail.contains("@") && !cleanEmail.contains(" ") }
-    private var loginButtonFill: Color { colorScheme == .dark ? .white : .black }
-    private var loginButtonLabel: Color { colorScheme == .dark ? .black : .white }
     private var validCode: Bool { credential.count == 6 && credential.allSatisfy(\.isNumber) }
     private var canContinue: Bool { validEmail && (!usePassword || !credential.isEmpty) }
 
@@ -113,9 +110,9 @@ struct LoginView: View {
                         Image(systemName: "key.fill").frame(width: 20, height: 20)
                         Text("Continue with \(oidcName)")
                     }.frame(maxWidth: .infinity, minHeight: 20)
-                        .foregroundStyle(loginButtonLabel)
+                        .foregroundStyle(Theme.onBrand)
                 }
-                .buttonStyle(.borderedProminent).accessibilityIdentifier("login.oidc")
+                .buttonStyle(.borderedProminent).tint(Theme.brand).accessibilityIdentifier("login.oidc")
             }
             if loadingProviders { ProgressView().frame(minHeight: 44) }
             if providerError {
@@ -123,7 +120,7 @@ struct LoginView: View {
                     .font(.footnote).frame(minHeight: 44)
             }
         }
-        .controlSize(.large).buttonBorderShape(.capsule).tint(loginButtonFill).disabled(signingIn)
+        .controlSize(.large).buttonBorderShape(.capsule).disabled(signingIn)
     }
 
     private var codeScreen: some View {
@@ -265,7 +262,6 @@ struct LoginView: View {
                 if signingIn { ProgressView() }
                 Text(signingIn ? "Please wait…" : title)
             }.frame(maxWidth: .infinity, minHeight: 20)
-                .foregroundStyle(disabled || signingIn ? Theme.body : loginButtonLabel)
         }
         .buttonStyle(LoginPrimaryButtonStyle())
         .disabled(disabled || signingIn).accessibilityIdentifier("login.submit")
@@ -323,14 +319,13 @@ struct LoginView: View {
 
 private struct LoginPrimaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.colorScheme) private var colorScheme
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(.horizontal, 16).padding(.vertical, 16)
-            .foregroundStyle(isEnabled ? (colorScheme == .dark ? Color.black : .white) : Theme.body)
+            .foregroundStyle(isEnabled ? Theme.onBrand : Theme.primaryButtonDisabledForeground)
             .background(
-                isEnabled ? (colorScheme == .dark ? Color.white : .black) : Color(uiColor: .systemGray5),
+                isEnabled ? Theme.brand : Theme.primaryButtonDisabledFill,
                 in: Capsule()
             )
             .opacity(configuration.isPressed && isEnabled ? 0.8 : 1)
@@ -414,7 +409,7 @@ private struct NativeAppleSignInButton: UIViewRepresentable {
     let action: () -> Void
 
     func makeUIView(context: Context) -> ASAuthorizationAppleIDButton {
-        let button = ASAuthorizationAppleIDButton(type: .continue, style: dark ? .white : .black)
+        let button = ASAuthorizationAppleIDButton(type: .continue, style: dark ? .white : .black) // palette-exempt: system control
         button.cornerRadius = 26
         button.accessibilityIdentifier = "login.apple"
         button.addAction(UIAction { _ in action() }, for: .touchUpInside)
