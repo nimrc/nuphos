@@ -272,6 +272,64 @@ describe('agents in a channel', () => {
   })
 })
 
+describe('the lead of a chat', () => {
+  async function ledChat() {
+    const channelId = await createChannel()
+
+    await seedAgent('agent-a', OWNER)
+    await seedAgent('agent-b', OWNER)
+    await agentConversations().updateOne(
+      { sessionId: channelId },
+      { $set: { agentSessionIds: ['agent-a', 'agent-b'], participantIds: [TEAMMATE] } },
+    )
+
+    return channelId
+  }
+
+  test('the owner picks one of its Bots, and the agents list says which', async () => {
+    const channelId = await ledChat()
+    const response = await send('PUT', `/conversations/${channelId}/lead`, {
+      agentSessionId: 'agent-b',
+    })
+
+    expect(response.status).toBe(200)
+    expect(await response.json()).toMatchObject({ leadAgentSessionId: 'agent-b' })
+    const listed = await send('GET', `/conversations/${channelId}/agents`)
+
+    expect(await listed.json()).toMatchObject({ leadAgentSessionId: 'agent-b' })
+    const cleared = await send('PUT', `/conversations/${channelId}/lead`, { agentSessionId: null })
+
+    expect(await cleared.json()).not.toHaveProperty('leadAgentSessionId')
+  })
+
+  test('needs the chat’s owner and one of its Bots', async () => {
+    const channelId = await ledChat()
+
+    expect(
+      (await send('PUT', `/conversations/${channelId}/lead`, { agentSessionId: 'elsewhere' }))
+        .status,
+    ).toBe(404)
+    expect((await send('PUT', `/conversations/${channelId}/lead`, {})).status).toBe(400)
+    viewer = TEAMMATE
+    expect(
+      (await send('PUT', `/conversations/${channelId}/lead`, { agentSessionId: 'agent-a' })).status,
+    ).toBe(403)
+    expect((await agentConversations().findOne({ sessionId: channelId }))?.leadAgentSessionId).toBe(
+      undefined,
+    )
+  })
+
+  test('a lead taken out of the chat leads no more', async () => {
+    const channelId = await ledChat()
+
+    await send('PUT', `/conversations/${channelId}/lead`, { agentSessionId: 'agent-a' })
+    expect((await send('DELETE', `/conversations/${channelId}/agents/agent-a`)).status).toBe(204)
+    expect((await agentConversations().findOne({ sessionId: channelId }))?.leadAgentSessionId).toBe(
+      undefined,
+    )
+  })
+})
+
 describe('posting to a channel', () => {
   test('records the message with its sender and starts nothing', async () => {
     const channelId = await createChannel()

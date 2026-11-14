@@ -11,7 +11,8 @@ import {
   steerQueuedNotice,
   steerRunningTurn,
 } from './channel-wake'
-import { isChannel, postText } from './db/channels'
+import { addressedAgents, channelLead, channelRecipients } from './channel-lead'
+import { isChannel, listChannelAgents, postText } from './db/channels'
 import { bumpConversationActivity } from './db/read-state'
 import { pushTimelineEvent } from './db/participants'
 import { agentConversations } from './db/shared'
@@ -92,12 +93,22 @@ export async function postChannelMessage(
   })
   await bumpConversationActivity(channel.sessionId, channel.userId)
   await noteMentions({ ...channel, teamId }, post)
+  // Only a led chat routes by name, so only it looks the names up.
+  const addressed = channelLead(channel)
+    ? addressedAgents(await listChannelAgents(channel), post.text, authorSessionId)
+    : []
+
   if (authorSessionId)
     await agentConversations().updateOne(
       { sessionId: authorSessionId },
-      { $addToSet: { channelWakes: channel.sessionId } },
+      {
+        $addToSet: {
+          channelWakes: channel.sessionId,
+          [`channelAddressed.${channel.sessionId}`]: { $each: addressed },
+        },
+      },
     )
-  else await wakeChannelAgents({ ...channel, teamId }, undefined)
+  else await wakeChannelAgents({ ...channel, teamId }, undefined, addressed)
 
   return true
 }
@@ -109,7 +120,7 @@ export async function postChannelMessage(
 export async function wakeAfterTurn(agentSessionId: string): Promise<void> {
   const agent = await agentConversations().findOneAndUpdate(
     { sessionId: agentSessionId, channelWakes: { $exists: true } },
-    { $unset: { channelWakes: '' } },
+    { $unset: { channelWakes: '', channelAddressed: '' } },
     { returnDocument: 'before' },
   )
 
@@ -117,15 +128,21 @@ export async function wakeAfterTurn(agentSessionId: string): Promise<void> {
     const channel = await getConversationBySessionId(channelId)
 
     if (channel?.teamId && isChannel(channel))
-      await wakeChannelAgents({ ...channel, teamId: channel.teamId }, agentSessionId)
+      await wakeChannelAgents(
+        { ...channel, teamId: channel.teamId },
+        agentSessionId,
+        agent?.channelAddressed?.[channelId] ?? [],
+      )
   }
 }
 
+/** `addressed`: the member Bots the post named, which a led chat wakes. */
 export async function wakeChannelAgents(
   channel: AgentConversation & { teamId: string },
   authorSessionId: string | undefined,
+  addressed: readonly string[] = [],
 ): Promise<void> {
-  const recipients = (channel.agentSessionIds ?? []).filter((id) => id !== authorSessionId)
+  const recipients = channelRecipients(channel, authorSessionId, addressed)
 
   if (recipients.length === 0) return
   // A person speaking refills the budget; an agent spends it, one turn per agent woken.

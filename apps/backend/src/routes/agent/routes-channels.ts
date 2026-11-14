@@ -15,7 +15,9 @@ import {
   listChannelMentions,
   ownsChannelAgent,
   removeChannelAgent,
+  setChannelLead,
 } from '@/lib/agent/db/channels'
+import { channelLead } from '@/lib/agent/channel-lead'
 import { addConversationParticipants } from '@/lib/agent/db/participants'
 import { channelUploadPart, resolveChannelFiles } from '@/lib/agent/channel-attachments'
 import { channelFacesField } from '@/lib/agent/channel-faces'
@@ -77,7 +79,13 @@ function channelOrNotFound(conversation: AgentConversation | null): AgentConvers
 }
 
 async function agentsResponse(channel: AgentConversation | null) {
-  return { agents: await listChannelAgents(channelOrNotFound(channel)) }
+  const found = channelOrNotFound(channel)
+  const lead = channelLead(found)
+
+  return {
+    agents: await listChannelAgents(found),
+    ...(lead ? { leadAgentSessionId: lead } : {}),
+  }
 }
 
 channelRoutes.post('/channels', async (c) => {
@@ -187,6 +195,27 @@ channelRoutes.delete('/conversations/:sessionId/agents/:agentSessionId', async (
 
   // Nothing back: the agent's owner may not be allowed to see who else is here.
   return c.body(null, 204)
+})
+
+// The channel's owner picks which of its Bots leads: people's posts then wake
+// the lead, which hands work to the others by name. null ends it.
+channelRoutes.put('/conversations/:sessionId/lead', async (c) => {
+  const userId = c.get('userId')
+  const body = await readBody(c)
+  const teamId = await requireTeam(c, body)
+  const channelId = c.req.param('sessionId')
+  const found = await getConversationBySessionId(channelId)
+  const channel = channelOrNotFound(found?.teamId === teamId ? found : null)
+  const lead = body.agentSessionId
+
+  if (channel.userId !== userId)
+    throw new AppError(403, 'forbidden', 'Only the chat’s owner can choose its lead')
+  if (lead !== null && (typeof lead !== 'string' || !lead))
+    throw new AppError(400, 'invalid_request', 'agentSessionId must name a Bot here, or be null')
+  if (lead !== null && !channel.agentSessionIds?.includes(lead))
+    throw new AppError(404, 'not_found', 'This Bot is not in the chat')
+
+  return c.json(await agentsResponse(await setChannelLead(channelId, lead)))
 })
 
 // Retry after an agent could not reply: it reads again what it has not read yet.

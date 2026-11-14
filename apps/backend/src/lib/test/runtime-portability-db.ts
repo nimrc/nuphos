@@ -79,11 +79,16 @@ function update(doc: Doc, query: Doc, mutation: Doc) {
   }
   for (const [key, value] of Object.entries<number>(mutation.$inc ?? {}))
     doc[key] = Number(doc[key] ?? 0) + value
-  for (const [key, value] of Object.entries<Doc>(mutation.$addToSet ?? {})) {
-    doc[key] ??= []
+  for (const [path, value] of Object.entries<Doc>(mutation.$addToSet ?? {})) {
+    const parts = path.split('.')
+    const key = parts.pop()!
+    let parent = doc
+
+    for (const part of parts) parent = parent[part] ??= {}
+    parent[key] ??= []
     const values = value && typeof value === 'object' && '$each' in value ? value.$each : [value]
 
-    for (const entry of values) if (!doc[key].includes(entry)) doc[key].push(entry)
+    for (const entry of values) if (!parent[key].includes(entry)) parent[key].push(entry)
   }
   for (const [key, value] of Object.entries<Doc>(mutation.$push ?? {})) {
     doc[key] ??= []

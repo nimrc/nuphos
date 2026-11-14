@@ -7,6 +7,8 @@ import { parseMessageMetadata } from '../message-metadata'
 import { fenceUntrusted } from '../untrusted-content'
 
 import { canReply, readableConversationScope } from './access'
+import { channelLead, leadFieldsFor } from '../channel-lead'
+
 import { assertBot } from './bot-membership'
 import { readNote } from './channel-notes'
 import { agentConversations, agentMessages } from './shared'
@@ -31,6 +33,8 @@ export type ChannelFields = {
   agentTurns?: number
   /** On an agent: the channels it posted in this turn, woken once when the turn ends. */
   channelWakes?: string[]
+  /** On an agent: by channel, the member Bots its posts this turn named, which a led chat wakes. */
+  channelAddressed?: Record<string, string[]>
   /** People @mentioned here, in a channel or a shared agent, who have not posted since: their Inbox entry. */
   mentions?: Record<string, { messageId: string; at: Date }>
   /** A live call mirrored here: speech and chat come in, agents' posts go to its chat. */
@@ -78,9 +82,28 @@ export async function removeChannelAgent(
   channelId: string,
   agentSessionId: string,
 ): Promise<AgentConversation | null> {
+  // A lead that left leads no more.
+  await agentConversations().updateOne(
+    { sessionId: channelId, kind: 'channel', leadAgentSessionId: agentSessionId },
+    { $unset: { leadAgentSessionId: '' } },
+  )
+
   return await agentConversations().findOneAndUpdate(
     { sessionId: channelId, kind: 'channel' },
     { $pull: { agentSessionIds: agentSessionId } },
+    { returnDocument: 'after' },
+  )
+}
+
+/** The chat's lead, one of its Bots, or none. */
+export async function setChannelLead(channelId: string, agentSessionId: string | null) {
+  return await agentConversations().findOneAndUpdate(
+    agentSessionId === null
+      ? { sessionId: channelId, kind: 'channel' }
+      : { sessionId: channelId, kind: 'channel', agentSessionIds: agentSessionId },
+    agentSessionId === null
+      ? { $unset: { leadAgentSessionId: '' } }
+      : { $set: { leadAgentSessionId: agentSessionId } },
     { returnDocument: 'after' },
   )
 }
@@ -180,6 +203,7 @@ export async function readChannelMessages(
     | 'agentSessionIds'
     | 'instructions'
     | 'leadAgentSessionId'
+    | 'teamId'
   >,
   agentSessionId: string,
   /** The reading agent's owner, whose posts carry `fromOwner`. */
@@ -235,11 +259,25 @@ export async function readChannelMessages(
     ...(channel.instructions
       ? { sharedInstructions: fenceUntrusted('channel-setup', channel.instructions, '') }
       : {}),
-    ...(channel.leadAgentSessionId && channel.agentSessionIds?.includes(channel.leadAgentSessionId)
-      ? { leadAgentSessionId: channel.leadAgentSessionId }
-      : {}),
+    ...(await leadFields(channel, agentSessionId)),
     note: readNote(channel),
   }
+}
+
+/** The lead, and what it means for this reader, as channel_read shows them. */
+async function leadFields(
+  channel: Pick<AgentConversation, 'agentSessionIds' | 'leadAgentSessionId' | 'teamId'>,
+  readerId: string,
+) {
+  const leadId = channelLead(channel)
+
+  if (!leadId) return {}
+  const members = await listChannelAgents(channel)
+  const lead = members.find((member) => member.sessionId === leadId)
+
+  if (!lead) return {}
+
+  return { leadAgentSessionId: leadId, ...leadFieldsFor(lead, members, readerId) }
 }
 
 /**

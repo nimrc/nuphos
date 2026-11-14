@@ -17,6 +17,10 @@ final class ChannelSession {
     private(set) var stored: [ChannelPost] = []
     private(set) var events: [AgentConversationDetail.TimelineEvent] = []
     private(set) var agents: [ChannelAgent] = []
+    /// The Bot that leads this chat: people's posts wake it, and it hands work to the others.
+    private(set) var leadId: String?
+    /// Only the chat's owner picks its lead.
+    private(set) var isOwner = false
     private(set) var loaded = false
     private(set) var loadError: String?
     private(set) var readOnly = false
@@ -79,7 +83,8 @@ final class ChannelSession {
             async let listed = Self.listAgents(token: token, teamId: teamId, channelId: channelId)
             let (read, people) = try await (detail, listed)
             await resolveFiles(of: read.messages.compactMap(ChannelPost.init))
-            apply(read, agents: people)
+            apply(read, agents: people.agents)
+            leadId = people.leadAgentSessionId
         } catch {
             if !loaded { loadError = error.localizedDescription; loaded = true }
         }
@@ -92,6 +97,7 @@ final class ChannelSession {
         events = detail.timelineEvents
         agents = listed
         readOnly = detail.readOnly ?? false
+        isOwner = detail.isOwner ?? false
         if let title = detail.title, !title.isEmpty { self.title = title }
         faces = detail.faces
         revision = detail.channelRevision
@@ -116,11 +122,33 @@ final class ChannelSession {
                                        query: [URLQueryItem(name: "teamId", value: teamId)], token: token)
     }
 
-    private static func listAgents(token: String, teamId: String, channelId: String) async throws -> [ChannelAgent] {
-        struct Envelope: Decodable { let agents: [ChannelAgent] }
-        let envelope: Envelope = try await WorkspaceAPI.request(
+    private struct AgentsEnvelope: Decodable {
+        let agents: [ChannelAgent]
+        let leadAgentSessionId: String?
+    }
+
+    private static func listAgents(token: String, teamId: String, channelId: String) async throws -> AgentsEnvelope {
+        try await WorkspaceAPI.request(
             "agent/conversations/\(channelId)/agents", query: [URLQueryItem(name: "teamId", value: teamId)], token: token)
-        return envelope.agents
+    }
+
+    /// The owner picks the lead, or `nil` for none; shown at once, put back if refused.
+    func setLead(_ agentId: String?) {
+        let before = leadId
+        leadId = agentId
+        Task {
+            struct Body: Encodable { let agentSessionId: String? }
+            do {
+                _ = try await AgentChatAPI.send(
+                    "PUT", "agent/conversations/\(channelId)/lead",
+                    query: [URLQueryItem(name: "teamId", value: teamId)], token: token,
+                    body: Body(agentSessionId: agentId), encodeNulls: true)
+                await refresh(force: true)
+            } catch {
+                leadId = before
+                sendError = error.localizedDescription
+            }
+        }
     }
 
     // MARK: - Questions
