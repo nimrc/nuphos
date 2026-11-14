@@ -27,16 +27,15 @@ struct ReasoningTile: View {
                     if let headline = ReasoningText.headline(part.text) {
                         Text(headline)
                             .lineLimit(1)
-                            .foregroundStyle(Theme.muted.opacity(0.8))
+                            .foregroundStyle(Theme.body)
                     }
                     Image(systemName: "chevron.right")
                         .font(Theme.Text.micro.weight(.bold))
                         .rotationEffect(.degrees(expanded ? 90 : 0))
-                        .opacity(expanded ? 0.6 : 0.35)
                     Spacer(minLength: 0)
                 }
                 .font(Theme.Text.label)
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

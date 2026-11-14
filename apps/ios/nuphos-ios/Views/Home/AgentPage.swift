@@ -353,6 +353,8 @@ struct AgentPage: View {
                         )
                         if item.hasChildren {
                             // The thread count, so it never reads as the row's own disclosure chevron.
+                            // The thread count is clickable text, so it uses the
+                            // body colour; muted is for decoration only.
                             Button { store.toggleFolded(conversation.sessionId) } label: {
                                 HStack(spacing: 3) {
                                     Text("\(item.threads)")
@@ -360,10 +362,10 @@ struct AgentPage: View {
                                         .font(Theme.Text.caption.weight(.semibold))
                                 }
                                 .font(Theme.Text.label.weight(.medium))
-                                .foregroundStyle(Theme.muted)
+                                .foregroundStyle(Theme.body)
                                 .padding(.horizontal, 8)
                                 .frame(height: 24)
-                                .background(Capsule().fill(Theme.muted.opacity(0.12)))
+                                .background(Capsule().fill(Theme.threadCapsuleFill))
                                 .padding(.leading, 8)
                                 .frame(minHeight: 44)
                                 .contentShape(Rectangle())
@@ -418,7 +420,8 @@ struct AgentPage: View {
         } label: {
             Label("Archive", systemImage: "archivebox")
         }
-        .tint(.orange) }
+        .tint(.orange) // palette-exempt: system menu accent
+        }
         if conversation.ownsChat, !conversation.isChannel {
             Button {
                 if conversation.isBot { unbotting = conversation; return }
@@ -430,7 +433,7 @@ struct AgentPage: View {
             } label: {
                 Label(conversation.isBot ? "Turn into a Task" : "Make this a Bot", systemImage: conversation.isBot ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
             }
-            .tint(.indigo)
+            .tint(.indigo) // palette-exempt: system menu accent
         }
         if let watching = conversation.watching {
             Button {
@@ -438,12 +441,12 @@ struct AgentPage: View {
             } label: {
                 Label(watching ? "Unwatch" : "Watch", systemImage: watching ? "bell.slash" : "bell")
             }
-            .tint(.teal)
+            .tint(.teal) // palette-exempt: system menu accent
             .disabled(store.watchChanges.contains(conversation.sessionId))
         }
         if conversation.isBot {
             profileButton(botId: conversation.sessionId, teamId: conversation.teamId, title: conversation.displayTitle)
-                .tint(.purple)
+                .tint(.purple) // palette-exempt: system menu accent
         }
         if conversation.ownsChat {
             Button {
@@ -452,7 +455,7 @@ struct AgentPage: View {
             } label: {
                 Label("Rename", systemImage: "pencil")
             }
-            .tint(.blue)
+            .tint(.blue) // palette-exempt: system menu accent
         }
         if conversation.ownsChat, conversation.parentSessionId != nil {
             Button {
@@ -460,7 +463,7 @@ struct AgentPage: View {
             } label: {
                 Label("Unlink", systemImage: "link.badge.minus")
             }
-            .tint(.gray)
+            .tint(.gray) // palette-exempt: system menu accent
         }
     }
 
@@ -656,7 +659,7 @@ struct ChannelRow: View {
                     Spacer(minLength: 8)
                     Text(HistoryTime.format(channel.lastActiveAt))
                         .font(Theme.Text.label)
-                        .foregroundStyle(Theme.muted)
+                        .foregroundStyle(Theme.body)
                         .lineLimit(1)
                 }
                 if channel.botTyping(in: store.observations, team: team) {
@@ -667,7 +670,7 @@ struct ChannelRow: View {
                 } else if let preview = channel.previewLine {
                     Text(preview)
                         .font(Theme.Text.label)
-                        .foregroundStyle(Theme.muted)
+                        .foregroundStyle(Theme.body)
                         .lineLimit(1)
                 }
             }
@@ -713,7 +716,7 @@ struct SearchBar: View {
                     Button {
                         text = ""
                     } label: {
-                        Image(systemName: "xmark.circle.fill").foregroundStyle(Theme.muted)
+                        Image(systemName: "xmark.circle.fill").foregroundStyle(Theme.body)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Clear search")

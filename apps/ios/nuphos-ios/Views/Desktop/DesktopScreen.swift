@@ -3,6 +3,10 @@ import SwiftUI
 /// A conversation's desktop, full screen or in a pane beside it. Taller than
 /// wide, the picture sits on top with the controls, a row of keys and a
 /// trackpad below it, as in Sill; wider, the picture fills it and takes touch directly.
+///
+/// This screen is deliberately outside the theme palette: it draws a remote
+/// desktop, not app chrome, so its white-on-black controls sit on the streamed
+/// picture and keep white glyphs and 12% white fills in both appearances.
 struct DesktopScreen: View {
     @State private var desktop: DesktopSession
     /// Closes the screen. Its presenter passes this rather than the screen

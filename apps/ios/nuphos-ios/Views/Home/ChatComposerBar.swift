@@ -298,7 +298,7 @@ struct ChatComposerBar<Controls: View>: View {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(Theme.muted)
+                    .foregroundStyle(Theme.body)
                 Text(title)
                     .font(.subheadline)
                     .foregroundStyle(Theme.heading)
@@ -537,7 +537,12 @@ struct ChatComposerBar<Controls: View>: View {
                 .font(Theme.Text.secondary.weight(.bold))
                 .frame(width: 34, height: 34)
                 .foregroundStyle(Theme.chatCanvas)
-                .background(filled ? Theme.heading : Theme.muted.opacity(0.6), in: Circle())
+                // The send key is deliberately outside the theme: it is the
+                // inverse of the transcript (white glyph on the heading fill
+                // in the light, #141414 glyph on white in the dark), 17.72:1
+                // and 18.42:1. The disabled disc is a measured dark glass
+                // sample and is exempt as an inactive control (2.17:1).
+                .background(filled ? Theme.heading : Theme.composerSendDisabledFill, in: Circle())
         }
         .buttonStyle(.plain)
         #if os(iOS)
@@ -652,7 +657,7 @@ struct ComposerChip: View {
             }
             Text(title).font(.system(size: 12, weight: .medium)).lineLimit(1)
             if showsChevron {
-                Image(systemName: "chevron.down").font(.system(size: 9, weight: .bold)).foregroundStyle(Theme.muted)
+                Image(systemName: "chevron.down").font(.system(size: 9, weight: .bold))
             }
         }
         .foregroundStyle(isActive ? Theme.heading : Theme.body)

@@ -91,6 +91,35 @@ enum ThemePalette {
     static let body = PaletteColor(light: 0x52525B, dark: 0xA1A1AA)
     static let muted = PaletteColor(light: 0x84848C, dark: 0x71717A)
 
+    /// The chat transcript reads like a page; a chip or card inside it sits on
+    /// `chatSurface`, and the viewer's own bubble on `bubble`. They are palette
+    /// values, not literals, so button contrast can be measured on them too.
+    static let chatCanvas = PaletteColor(light: 0xFFFFFF, dark: 0x141414)
+    static let chatSurface = PaletteColor(light: 0xF1F1F4, dark: 0x202024)
+    static let bubble = PaletteColor(light: 0xE9E9EC, dark: 0x2A2A2E)
+
+    /// Brand used as text or a link on a surface.
+    static let brandText = PaletteColor(light: 0x6D28D9, dark: 0xA469FF)
+
+    /// Desktop's `--color-warning`, darkened in the light for contrast.
+    static let warning = PaletteColor(light: 0xA04606, dark: 0xF5A623)
+
+    /// Text that reports a spent limit or a refused action. The system red is
+    /// 3.55:1 on white and the light value is darkened until it clears 4.5:1;
+    /// the dark value is lifted past the system red on the row surface.
+    static let danger = PaletteColor(light: 0xC22929, dark: 0xFF6961)
+
+    /// The primary action's disabled fill and label. The light fill is the
+    /// system gray it has always drawn (#E5E5EA), kept exact so the light
+    /// appearance does not change; the dark fill is dark enough that `body`
+    /// clears 4.5:1, where the system gray did not.
+    static let primaryButtonDisabledFill = PaletteColor(light: 0xE5E5EA, dark: 0x242427)
+    static let primaryButtonDisabledForeground = body
+
+    /// The Bots list's thread-count capsule: `muted` at 12% over `canvas`,
+    /// resolved to an opaque colour so the ratio never depends on the row.
+    static let threadCapsuleFill = muted.composited(over: canvas, opacity: 0.12)
+
     /// The empty Bots sentence. `muted` measured below the 4.5:1 body-text
     /// floor, so the designer approved these darker/lighter greys for it:
     /// #5C5C63 light and #A0A0A8 dark.
