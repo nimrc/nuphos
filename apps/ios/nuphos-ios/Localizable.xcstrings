@@ -1740,7 +1740,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "这一轮只接收文字，附件请在这一轮结束后发送。"
+            "value": "这一轮只收文字，附件请下一轮再发。"
           }
         }
       }
@@ -4704,7 +4704,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法连接"
+            "value": "连接失败"
           }
         }
       }
@@ -4714,7 +4714,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "把这个 Bot 转成 Task？"
+            "value": "要把这个 Bot 变成 Task 吗？"
           }
         }
       }
@@ -4724,7 +4724,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "转成 Task"
+            "value": "变成 Task"
           }
         }
       }
@@ -4734,7 +4734,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "它会退出所在的所有聊天，包括群聊。之后再把它设为 Bot，也不会自动加回去。"
+            "value": "它会退出所在的每一个聊天，群聊也算。再变回 Bot 时不会自动加回去。"
           }
         }
       }
@@ -4744,7 +4744,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "撤回 AI 数据共享授权？"
+            "value": "要撤回 AI 数据共享授权吗？"
           }
         }
       }
@@ -4764,7 +4764,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "重新授权前将无法与 Bot 对话，未发送的草稿会被删除。已在运行的工作不会停止。"
+            "value": "重新授权之前不能和 Bot 对话，没发出去的草稿会被删掉。已经在跑的工作不会停。"
           }
         }
       }
