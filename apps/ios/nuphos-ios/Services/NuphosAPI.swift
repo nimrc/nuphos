@@ -117,6 +117,14 @@ extension NuphosAPI {
         return envelope.runtimes.compactMap(\.runtime)
     }
 
+    /// `GET /teams/:id/agent-runtimes/:runtimeId/status` — whether the runtime answers now;
+    /// nil when it has nowhere to be reached, such as while disabled.
+    static func runtimeOnline(token: String, teamId: String, runtimeId: String) async throws -> Bool? {
+        struct Status: Decodable { let online: Bool? }
+        let status: Status = try await get("teams/\(teamId)/agent-runtimes/\(runtimeId)/status", token: token, timeout: 20)
+        return status.online
+    }
+
     static func runtimeQuotas(token: String, teamId: String) async throws -> [RuntimeQuota] {
         struct Entry: Decodable {
             let quota: RuntimeQuota?

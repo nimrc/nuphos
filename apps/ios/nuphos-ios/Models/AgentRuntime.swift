@@ -67,6 +67,13 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
 
     var isSelectable: Bool { status == .active && local?.signedIn != false }
 
+    /// Whether a Cloud runtime answers now, by its status probe. Nil for a computer's runtime,
+    /// whose row says it in words, and while the probe has no answer.
+    func reachable(online: Bool?) -> Bool? {
+        guard tier == .cloud else { return nil }
+        return status == .active ? online : false
+    }
+
     /// A local agent runs on its owner's own computer (`local_<user>_<device>`).
     /// Read from the id, so it holds while that computer is offline.
     static func isLocalAgent(_ runtimeId: String?) -> Bool { runtimeId?.hasPrefix("local_") == true }

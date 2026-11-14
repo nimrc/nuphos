@@ -106,7 +106,7 @@ private struct RuntimePicker: View {
                         if expanded == box.id {
                             ForEach(box.agents) { runtime in
                                 Button { select(runtime) } label: {
-                                    SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: runtime.id == selectedId)
+                                    SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: runtime.id == selectedId, online: store.runtimeOnline[runtime.id])
                                         .padding(.leading, 12)
                                         .opacity(ready(runtime) ? 1 : 0.45)
                                 }
@@ -228,13 +228,22 @@ struct SelectorAgentRow: View {
     let runtime: RuntimeInstance
     let quota: RuntimeQuota?
     let selected: Bool
+    /// The runtime's status probe, for a Cloud runtime's dot.
+    var online: Bool? = nil
     @ScaledMetric(relativeTo: .subheadline) private var titleSize = 16.0
     @ScaledMetric(relativeTo: .footnote) private var detailSize = 13.0
     var body: some View {
         HStack(spacing: 12) {
             BrandLogo(name: RuntimeInstance.Provider.logo(runtime.provider.rawValue), size: 20).frame(width: 28).foregroundStyle(Theme.heading)
             VStack(alignment: .leading, spacing: 5) {
-                Text(SelectorBox.agentName(runtime)).font(.system(size: titleSize, weight: .medium)).foregroundStyle(Theme.heading).fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 6) {
+                    Text(SelectorBox.agentName(runtime)).font(.system(size: titleSize, weight: .medium)).foregroundStyle(Theme.heading).fixedSize(horizontal: false, vertical: true)
+                    if let reachable = runtime.reachable(online: online) {
+                        Circle().fill(reachable ? Color.green : Color.red).frame(width: 7, height: 7)
+                            .accessibilityElement()
+                            .accessibilityLabel(reachable ? Text("Online") : Text("Offline"))
+                    }
+                }
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) { details }
                     VStack(alignment: .leading, spacing: 2) { details }

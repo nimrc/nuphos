@@ -88,11 +88,11 @@ struct RuntimesPage: View {
                             NavigationLink {
                                 RuntimeDestination(runtime: runtime).environment(store)
                             } label: {
-                                SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false)
+                                SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false, online: store.runtimeOnline[runtime.id])
                             }
                             .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                         } else {
-                            SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false)
+                            SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: false, online: store.runtimeOnline[runtime.id])
                                 .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
                         }
                     }
