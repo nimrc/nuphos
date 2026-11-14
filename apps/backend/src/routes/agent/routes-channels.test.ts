@@ -316,9 +316,9 @@ describe('the lead of a chat', () => {
     expect(
       (await send('PUT', `/conversations/${channelId}/lead`, { agentSessionId: 'agent-a' })).status,
     ).toBe(403)
-    expect((await agentConversations().findOne({ sessionId: channelId }))?.leadAgentSessionId).toBe(
-      undefined,
-    )
+    expect(
+      (await agentConversations().findOne({ sessionId: channelId }))?.leadAgentSessionId,
+    ).toBeUndefined()
   })
 
   test('a lead taken out of the chat leads no more', async () => {
@@ -326,9 +326,9 @@ describe('the lead of a chat', () => {
 
     await send('PUT', `/conversations/${channelId}/lead`, { agentSessionId: 'agent-a' })
     expect((await send('DELETE', `/conversations/${channelId}/agents/agent-a`)).status).toBe(204)
-    expect((await agentConversations().findOne({ sessionId: channelId }))?.leadAgentSessionId).toBe(
-      undefined,
-    )
+    expect(
+      (await agentConversations().findOne({ sessionId: channelId }))?.leadAgentSessionId,
+    ).toBeUndefined()
   })
 })
 
