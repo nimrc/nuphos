@@ -592,7 +592,7 @@ struct AgentPage: View {
     @ViewBuilder
     private var pinnedRow: some View {
         let model = pinnedRowModel
-        if page == .chats, model.isVisible {
+        if page == .chats, model.accessibility.containerCount != nil {
             PinnedBotsRow(
                 bots: model.bots,
                 currentBotId: currentBotId,
@@ -706,7 +706,7 @@ struct AgentPage: View {
                 // The list's content starts 55 pt below the row's safe-area
                 // origin on iPhone and iPad; without this the bar covers it.
                 pinnedRow
-                    .padding(.top, 55)
+                    .padding(.top, PinnedBotsRow.Metrics.navigationBarClearance)
             }
     }
 

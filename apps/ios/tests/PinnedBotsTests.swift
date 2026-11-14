@@ -10,6 +10,8 @@ enum PinnedBotsTests {
         loadDropsDuplicatesAndEmptyIds()
         pruneDropsBotsThatNoLongerExist()
         rowIsAbsentWhenNothingIsPinned()
+        rowAccessibilityIsAContainerAtOneAndMany()
+        barClearanceClearsTheListContent()
         rowResolvesInPinOrder()
         initialIsTheFirstWordOrFirstCharacter()
         print("Pinned bots passed")
@@ -69,6 +71,34 @@ enum PinnedBotsTests {
         precondition(PinnedBotsRowModel(order: PinnedBotsOrder(), available: available).count == 0)
         // Saved ids that no longer resolve also leave no row.
         precondition(!PinnedBotsRowModel(order: PinnedBotsOrder(["bot-gone"]), available: available).isVisible)
+    }
+
+
+    private static func rowAccessibilityIsAContainerAtOneAndMany() {
+        let available = [bot("bot-a", "Ada"), bot("bot-b", "Bruce")]
+        let one = PinnedBotsRowModel(order: PinnedBotsOrder(["bot-a"]), available: available)
+        let many = PinnedBotsRowModel(order: PinnedBotsOrder(["bot-a", "bot-b"]), available: available)
+        let none = PinnedBotsRowModel(order: PinnedBotsOrder(), available: available)
+        precondition(one.accessibility == .container(count: 1), "one pin lost its labelled container")
+        precondition(many.accessibility == .container(count: 2), "many pins lost their labelled container")
+        precondition(none.accessibility == .absent, "zero pins still expose a container")
+        precondition(one.isVisible && many.isVisible && !none.isVisible)
+    }
+
+    private static func barClearanceClearsTheListContent() {
+        // The row's measured top on iPhone 18 Pro and iPad Pro 13-inch M5:
+        // 121.66 + 55 = 176.66 and 91.5 + 55 = 146.5. The first Bots row
+        // starts another 52 pt below that, so the row clears the bar and the
+        // list's first content.
+        let metrics = [(safeAreaTop: 121.66, measuredRowTop: 176.66),
+                       (safeAreaTop: 91.5, measuredRowTop: 146.5)]
+        for metric in metrics {
+            let top = PinnedBotsLayout.rowTop(forSafeAreaTop: metric.safeAreaTop)
+            precondition(abs(top - metric.measuredRowTop) < 0.5,
+                         "the pinned row is not below the navigation bar at \(metric)")
+            precondition(top >= metric.safeAreaTop,
+                         "the pinned row starts above the safe area at \(metric)")
+        }
     }
 
     private static func rowResolvesInPinOrder() {

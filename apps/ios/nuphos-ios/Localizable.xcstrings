@@ -4816,6 +4816,24 @@
             "state": "translated",
             "value": "置顶的 Bot，%lld 个"
           }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 pinned Bot"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pinned Bots"
+                }
+              }
+            }
+          }
         }
       }
     },
