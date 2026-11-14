@@ -301,6 +301,8 @@ final class AgentStore {
     private(set) var runtimesError: String?
     /// Usage by runtime id; missing while loading or when a lookup fails.
     private(set) var quotas: [String: RuntimeQuota] = [:]
+    /// Whether each active Cloud runtime answers now, by id; missing until its probe answers.
+    private(set) var runtimeOnline: [String: Bool] = [:]
     /// Remembered per team; an unavailable remembered choice means "pick
     /// again", never a silent switch to another account.
     private(set) var selectedRuntimeId: String?
@@ -358,14 +360,28 @@ final class AgentStore {
         }
     }
 
-    /// Reloads devices until cancelled: every 5s, but after 1s while a host
-    /// has no fresh reading yet, since older hosts only start sampling once asked.
+    /// Reloads devices and whether Cloud runtimes answer until cancelled: every 5s, but after
+    /// 1s while a host has no fresh reading yet, since older hosts only start sampling once asked.
     func pollAgentDevices() async {
         for round in 0... {
+            async let online: Void = loadRuntimeOnline()
             await loadAgentDevices()
+            await online
             let settling = round < 5 && agentDevices.contains { $0.metricsStatus == "waiting" || $0.metricsStatus == "stale" }
             do { try await Task.sleep(for: .seconds(settling ? 1 : 5)) } catch { return }
         }
+    }
+
+    func loadRuntimeOnline() async {
+        guard let team = selectedTeam else { return }
+        var next: [String: Bool] = [:]
+        for runtime in runtimes where runtime.tier == .cloud && runtime.status == .active {
+            if let online = try? await NuphosAPI.runtimeOnline(token: token, teamId: team.id, runtimeId: runtime.id) {
+                next[runtime.id] = online
+            }
+        }
+        guard !Task.isCancelled, team.id == selectedTeam?.id else { return }
+        runtimeOnline = next
     }
 
     func loadQuotas() async {
@@ -442,6 +458,7 @@ final class AgentStore {
         agentDevicesError = false
         runtimesLoaded = false
         quotas = [:]
+        runtimeOnline = [:]
         selectedRuntimeId = selectedTeam.flatMap { UserDefaults.standard.string(forKey: runtimeKey(for: $0)) }
     }
     var search = "" {

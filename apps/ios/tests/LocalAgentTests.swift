@@ -10,6 +10,7 @@ enum LocalAgentTests {
         asksWhoeverCanSignIn()
         defaultsToAUsableCloudAgent()
         namesCloudOnlyProviders()
+        dotsCloudRuntimesByTheirProbe()
         modelSettingsRemainAvailable()
         measuresWhatIsLeft()
         print("Local agents passed")
@@ -134,5 +135,15 @@ enum LocalAgentTests {
         precondition(antigravity.providerName == "Antigravity" && RuntimeInstance.Provider.logo("antigravity") == "logo-antigravity")
         let opencode = agent(#"{"id":"rt_4","provider":"opencode","label":"Team OpenCode","status":"active","kind":"managed"}"#)
         precondition(opencode.providerName == "OpenCode" && RuntimeInstance.Provider.logo("opencode") == "logo-opencode")
+    }
+
+    private static func dotsCloudRuntimesByTheirProbe() {
+        let omp = agent(#"{"id":"rt_5","provider":"omp","label":"omp","status":"active","kind":"managed"}"#)
+        precondition(omp.reachable(online: true) == true && omp.reachable(online: false) == false)
+        precondition(omp.reachable(online: nil) == nil)
+        let disabled = agent(#"{"id":"rt_6","provider":"omp","label":"omp","status":"disabled","kind":"managed"}"#)
+        precondition(disabled.reachable(online: nil) == false)
+        let computer = agent(#"{"id":"local_u1_dev1_codex","provider":"codex","label":"Codex","status":"active","kind":"local","local":{"ownerUserId":"u1","deviceId":"dev1","deviceLabel":"Mac","online":true,"signedIn":true}}"#)
+        precondition(computer.reachable(online: true) == nil)
     }
 }
