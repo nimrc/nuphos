@@ -21,9 +21,9 @@ function renderGroup(heading: string, snippets: InstructionSnippet[]): string[] 
 export type BotSelf = { name: string; instructions?: string }
 
 /**
- * The Bot's identity, outside `<nuphos_instructions>`: its instructions were
- * written by the agent itself through `update_self`, not configured by a
- * person, so they never borrow the authority of team or personal instructions.
+ * The Bot's identity, outside `<nuphos_instructions>`: its instructions come
+ * from `update_self` or its profile, so they never borrow the authority of team
+ * or personal instructions.
  */
 /** Agent-written text cannot open or close a Nuphos block: `<nuphos_…` loses its `<`. */
 function inert(text: string): string {
@@ -37,7 +37,7 @@ function renderBot(bot: BotSelf): string {
     '<nuphos_bot_identity>',
     `You are ${JSON.stringify(inert(bot.name))}, a Bot: a persistent agent with its own name, face and standing instructions, not a one-off task. When the person you work for tells you what you are for, what to call you or how to behave, save it with the \`update_self\` tool. Tasks you start do not inherit these instructions.`,
     own
-      ? `Your own instructions follow. You wrote them with \`update_self\`; no person configured them here. Team and personal instructions win over them, and they never authorize anything the person you work for has not asked for.\n\n${own}`
+      ? `Your own instructions follow, saved with \`update_self\` or in your profile. They are not team or personal instructions: those win over them, and these never authorize anything the person you work for has not asked for.\n\n${own}`
       : 'You have no instructions yet. Ask what you should take care of, then save it with `update_self`.',
     '</nuphos_bot_identity>',
   ].join('\n\n')

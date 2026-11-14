@@ -52,6 +52,7 @@ struct AgentPage: View {
     @State private var showWorkspaceSetup = false
     @State private var showNewBot = false
     @State private var renaming: AgentConversation?
+    @State private var profile: BotProfileTarget?
     @State private var archivingBot: AgentConversation?
     @State private var renamedTitle = ""
     @State private var refreshing = false
@@ -97,6 +98,7 @@ struct AgentPage: View {
                 if store.selectedTeam == nil { await store.loadTeams() } else { await store.reload() }
             }
             .sheet(isPresented: $showWorkspaceSetup) { WorkspaceSetupSheet() }
+            .sheet(item: $profile) { BotProfileSheet(target: $0) }
             .sheet(isPresented: $showNewBot) {
                 NewBotSheet { title, avatar in
                     guard let bot = try await store.createBot(title: title, avatar: avatar) else { return }
@@ -380,6 +382,17 @@ struct AgentPage: View {
                 .contextMenu { rowActions(conversation) }
     }
 
+    @ViewBuilder
+    private func profileButton(botId: String, teamId: String?, title: String) -> some View {
+        if let teamId = teamId ?? store.selectedTeam?.id {
+            Button {
+                profile = BotProfileTarget(botId: botId, teamId: teamId, title: title)
+            } label: {
+                Label("Profile", systemImage: "person.text.rectangle")
+            }
+        }
+    }
+
     private func sectionHeader<Action: View>(_ title: String, @ViewBuilder action: () -> Action = { EmptyView() }) -> some View {
         HStack {
             Text(title).font(Theme.Text.label.weight(.semibold)).foregroundStyle(Theme.muted)
@@ -417,6 +430,10 @@ struct AgentPage: View {
             }
             .tint(.teal)
             .disabled(store.watchChanges.contains(conversation.sessionId))
+        }
+        if conversation.isBot {
+            profileButton(botId: conversation.sessionId, teamId: conversation.teamId, title: conversation.displayTitle)
+                .tint(.purple)
         }
         if conversation.ownsChat {
             Button {
@@ -554,6 +571,11 @@ struct AgentPage: View {
                         .listRowBackground(openChat?.id == row.sessionId ? Theme.muted.opacity(0.12) : Color.clear)
                         .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 16))
                         .listSectionSeparator(.hidden, edges: .top)
+                        .contextMenu {
+                            if let bot = row.isChannel ? row.botId : Optional(row.sessionId) {
+                                profileButton(botId: bot, teamId: row.teamId, title: row.displayTitle)
+                            }
+                        }
                     }
 
                     if store.botsList.isEmpty {

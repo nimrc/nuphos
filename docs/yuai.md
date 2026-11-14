@@ -16,8 +16,8 @@ https://nuphos.yuai.dev. What it adds on top of upstream:
   owner otherwise), looks up that user's own Yu AI key through sub2api's admin API by email
   (`YUAI_ADMIN_KEY`; a key named `YUAI_KEY_NAME`, default `nuphos`, wins) and forwards the call.
 - **One runtime per team, no setup step**: with `NUPHOS_DEFAULT_RUNTIME=opencode` a team gets its
-  OpenCode cloud runtime (owned by the team owner) the first time its runtimes are listed; once per
-  team, so one deleted on purpose is not recreated. `NUPHOS_RUNTIME_PROVIDERS` also filters the
+  OpenCode cloud runtime (owned by the team owner) whenever its runtimes are listed and it has none,
+  so deleting it starts the team over with a fresh one. `NUPHOS_RUNTIME_PROVIDERS` also filters the
   runtime list (members' own computers included), so other providers can be neither seen nor
   chatted on.
 - **Helm**: `oidc.*`, `backend.imagePullSecrets`, and `provisioner.*` (ServiceAccount, RBAC and

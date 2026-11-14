@@ -88,6 +88,17 @@ extension NuphosAPI {
         return detail
     }
 
+    /// A Bot's name, face and standing instructions: its conversation read without messages.
+    static func botProfile(token: String, teamId: String, sessionId: String) async throws -> BotProfile {
+        try await get(
+            "agent/conversations/\(sessionId)",
+            query: [URLQueryItem(name: "teamId", value: teamId), URLQueryItem(name: "messages", value: "omit"),
+                    URLQueryItem(name: "runtimeState", value: "omit")],
+            token: token,
+            timeout: 20
+        )
+    }
+
     /// `GET /agent/credential-options?teamId=` — the IAM the agent may use.
     static func credentialOptions(token: String, teamId: String) async throws -> CredentialCatalog {
         let json: JSONValue = try await get("agent/credential-options", query: [URLQueryItem(name: "teamId", value: teamId)], token: token, timeout: 20)

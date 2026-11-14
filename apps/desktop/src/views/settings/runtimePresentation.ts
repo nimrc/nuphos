@@ -89,7 +89,7 @@ export const QUOTA_LABEL_CLASS: Record<QuotaTone, string> = {
 export function runtimeRemovalDescription(instance: RuntimeInstance): string {
   if (instance.kind === 'managed')
     return t(
-      'This permanently deletes the runtime, its disks, workspaces, and sign-in, and stops agents running on it. Your agent history stays in Nuphos. Move any workspace you want to keep to another runtime before removing this one.',
+      'This deletes the runtime, its disks, workspaces, and sign-in, stops agents running on it, and starts a fresh one in its place. Your agent history stays in Nuphos.',
     )
   const local = instance.local
 

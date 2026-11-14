@@ -8,29 +8,45 @@ import { createManagedRuntimeInstance } from './runtime-instances'
 import { defaultRuntimeLabel } from './runtime-provider'
 import { runtimes } from './runtime-registry'
 
+/** How long a listing's claim keeps others from creating; outlives a slow create, not a crash. */
+const CLAIM_MS = 60_000
+
 /**
- * Gives a team its cloud runtime without anyone adding one: the first time the team's runtimes
- * are listed, a team with no hosted runtime gets one of `config...defaultProvider`, owned by the
- * team owner. Once per team and provider: a claim on the team document makes concurrent listings
- * create one, a team whose runtime was later deleted on purpose is not given another, and changing
- * the default provider gives every team one of the new provider. A failed create drops the claim so
- * the next listing tries again. Never throws.
+ * Keeps a team's cloud runtime without anyone adding one: whenever the team's runtimes are listed
+ * and it has no hosted runtime of `config...defaultProvider`, one is created, owned by the team
+ * owner. Clients offer no way to add a runtime, so deleting it is how a team starts over: once the
+ * deletion finishes (the record lasts until then), the next listing creates a fresh one. A
+ * short-lived claim on the team document keeps concurrent listings from creating two. Never throws.
  */
 export async function ensureDefaultRuntime(teamId: string): Promise<void> {
   const { enabled, defaultProvider: provider } = config.claudeCodeRuntimeProvisioner
 
   if (!enabled || !provider || !ObjectId.isValid(teamId)) return
+  const hosted = { teamId, hostedBy: 'nuphos' as const, provider }
+
+  try {
+    if (await runtimes().findOne(hosted)) return
+  } catch {
+    return
+  }
   const _id = new ObjectId(teamId)
+  const claimedAt = new Date()
   const team = await teams()
     .findOneAndUpdate(
-      { _id, defaultRuntimeProvider: { $ne: provider } },
-      { $set: { defaultRuntimeProvider: provider } },
+      {
+        _id,
+        $or: [
+          { defaultRuntimeClaimedAt: { $exists: false } },
+          { defaultRuntimeClaimedAt: { $lt: new Date(claimedAt.getTime() - CLAIM_MS) } },
+        ],
+      },
+      { $set: { defaultRuntimeClaimedAt: claimedAt } },
     )
     .catch(() => null)
 
   if (!team) return
   try {
-    if (await runtimes().findOne({ teamId, hostedBy: 'nuphos', provider })) return
+    if (await runtimes().findOne(hosted)) return
     await createManagedRuntimeInstance({
       teamId,
       userId: team.ownerID.toHexString(),
@@ -39,12 +55,11 @@ export async function ensureDefaultRuntime(teamId: string): Promise<void> {
     })
   } catch (error) {
     logError('openab.default_runtime.create_failed', error, { team_id: teamId })
+  } finally {
     await teams()
       .updateOne(
-        { _id },
-        team.defaultRuntimeProvider
-          ? { $set: { defaultRuntimeProvider: team.defaultRuntimeProvider } }
-          : { $unset: { defaultRuntimeProvider: '' } },
+        { _id, defaultRuntimeClaimedAt: claimedAt },
+        { $unset: { defaultRuntimeClaimedAt: '' } },
       )
       .catch(() => undefined)
   }

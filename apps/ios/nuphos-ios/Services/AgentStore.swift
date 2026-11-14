@@ -254,6 +254,17 @@ final class AgentStore {
         return id
     }
 
+    /// Saves a Bot's profile; nil fields stay. Throws to the profile sheet, which stays open.
+    func saveBotProfile(botId: String, teamId: String, name: String?, avatar: String?, instructions: String?) async throws {
+        let scope = workspaceScope
+        try await AgentChatAPI.setBotProfile(
+            token: token, teamId: teamId, sessionId: botId, name: name, avatar: avatar, instructions: instructions
+        )
+        guard scope == workspaceScope else { return }
+        if let avatar { BotFaces.shared.learn(botId, avatar: avatar) }
+        await reload(afterChange: true)
+    }
+
     /// "Make this a Bot" or "Turn into a Task". Whether it was saved.
     func setBot(_ bot: Bool, conversation: AgentConversation) async -> Bool {
         guard conversation.ownsChat, let teamId = conversation.teamId ?? selectedTeam?.id else { return false }
