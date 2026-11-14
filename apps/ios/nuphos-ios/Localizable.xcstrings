@@ -4559,12 +4559,52 @@
     "Sign in with your Nuphos account to continue.": {},
     "Sign out of Nuphos?": {},
     "Welcome to Nuphos": {},
-    "This stops the runtime and permanently deletes its files and sign-in; a fresh one takes its place in a moment. Your agents' history stays in Yu AI.": {
+    "Rebuild Runtime": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "这会停止该 Runtime，并永久删除它的文件和登录状态，稍后会自动换上一个全新的 Runtime。你的 Agent 历史仍保留在 Yu AI 中。"
+            "value": "重建 Runtime"
+          }
+        }
+      }
+    },
+    "Rebuild %@?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重建 %@？"
+          }
+        }
+      }
+    },
+    "Remove %@?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除 %@？"
+          }
+        }
+      }
+    },
+    "This deletes the runtime's files and sign-in and starts a fresh one in a moment. Your agents' history stays in Yu AI.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会删除该 Runtime 的文件和登录状态，稍后自动换上一个全新的 Runtime。你的 Agent 历史仍保留在 Yu AI 中。"
+          }
+        }
+      }
+    },
+    "This disconnects the runtime. Your agents stay in Yu AI.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会断开该 Runtime 的连接。你的 Agent 仍保留在 Yu AI 中。"
           }
         }
       }
