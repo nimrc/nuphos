@@ -4558,7 +4558,17 @@
     "Connect cloud accounts and integrations in Nuphos to use them here.": {},
     "Sign in with your Nuphos account to continue.": {},
     "Sign out of Nuphos?": {},
-    "Welcome to Nuphos": {}
+    "Welcome to Nuphos": {},
+    "This stops the runtime and permanently deletes its files and sign-in; a fresh one takes its place in a moment. Your agents' history stays in Yu AI.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会停止该 Runtime，并永久删除它的文件和登录状态，稍后会自动换上一个全新的 Runtime。你的 Agent 历史仍保留在 Yu AI 中。"
+          }
+        }
+      }
+    }
   },
   "version": "1.0"
 }

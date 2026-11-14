@@ -77,7 +77,7 @@ struct AgentDetailView: View {
             Button("Remove Runtime", role: .destructive) { remove() }
         } message: {
             Text(current.kind == "managed"
-                ? "This stops the runtime and permanently deletes its files and sign-in. Your agents' history stays in Yu AI."
+                ? "This stops the runtime and permanently deletes its files and sign-in; a fresh one takes its place in a moment. Your agents' history stays in Yu AI."
                 : "This disconnects the runtime. Your agents stay in Yu AI.")
         }
     }

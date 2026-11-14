@@ -51,8 +51,8 @@ export type NuphosTeamDoc = {
   allowedEmailDomains?: string[]
   /** Stored value; the retired `nuphos` and absent both map to Claude Code. */
   agentRuntime?: string
-  /** The provider the team was last given a default cloud runtime of (default-runtime.ts). */
-  defaultRuntimeProvider?: string
+  /** While a listing creates the team's default cloud runtime (default-runtime.ts). */
+  defaultRuntimeClaimedAt?: Date
   /** The most a member may grant when sharing their own computer; unset is `approve`. */
   localAgentSharing?: string
   members: {
