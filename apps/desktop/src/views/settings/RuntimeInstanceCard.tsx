@@ -258,10 +258,14 @@ export function RuntimeInstanceCard({
       {canEdit && (
         <ConfirmDialog
           open={confirmRemoval}
-          title={t('Remove {name}?', { name: instance.label })}
+          title={
+            instance.kind === 'managed'
+              ? t('Rebuild {name}?', { name: instance.label })
+              : t('Remove {name}?', { name: instance.label })
+          }
           description={runtimeRemovalDescription(instance)}
           destructive
-          confirmLabel={t('Remove runtime')}
+          confirmLabel={instance.kind === 'managed' ? t('Rebuild runtime') : t('Remove runtime')}
           onConfirm={() => mutate(() => removeRuntime(instance, teamId))}
           onClose={() => setConfirmRemoval(false)}
         />

@@ -60,14 +60,15 @@ export function RuntimeActionsMenu({
           </MenuItem>
         )}
         {/* A Box can remove any of its agents, and an offline computer deletes one when it is
-            back; a person's own default agent is only forgotten. */}
+            back; a person's own default agent is only forgotten. A cloud runtime is only rebuilt:
+            once it is gone the server gives the team a fresh one. */}
         {(instance.kind !== 'local' || localRemovalId(instance)) && (
           <MenuItem
             destructive
             hint={instance.local?.online === false ? t('Offline') : undefined}
             onClick={onRemove}
           >
-            {t('Remove runtime')}
+            {instance.kind === 'managed' ? t('Rebuild runtime') : t('Remove runtime')}
           </MenuItem>
         )}
       </MenuContent>

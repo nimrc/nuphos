@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// One Cloud agent's own page, like Desktop's Settings → Agent: rename it,
-/// see its usage, sign it in again, disable or remove it.
+/// see its usage, sign it in again, disable it, and rebuild a cloud runtime
+/// or remove a connected one.
 struct AgentDetailView: View {
     @Environment(AuthSession.self) private var auth
     @Environment(AgentStore.self) private var store
@@ -23,6 +24,16 @@ struct AgentDetailView: View {
     private var current: RuntimeInstance { store.runtimes.first { $0.id == runtime.id } ?? runtime }
     private var quota: RuntimeQuota? { store.quotas[runtime.id] }
     private var path: String { "teams/\(team.id)/agent-runtimes/\(runtime.id)" }
+    /// A cloud runtime is only rebuilt: once it is deleted the server gives the team a fresh one.
+    private var rebuilds: Bool { current.kind == "managed" }
+    // Typed so each branch is looked up in the catalog; a bare ternary would pass a String.
+    private var actionTitle: LocalizedStringKey { rebuilds ? "Rebuild Runtime" : "Remove Runtime" }
+    private var confirmTitle: LocalizedStringKey { rebuilds ? "Rebuild \(current.label)?" : "Remove \(current.label)?" }
+    private var confirmMessage: LocalizedStringKey {
+        rebuilds
+            ? "This deletes the runtime's files and sign-in and starts a fresh one in a moment. Your agents' history stays in Yu AI."
+            : "This disconnects the runtime. Your agents stay in Yu AI."
+    }
 
     var body: some View {
         Form {
@@ -64,7 +75,7 @@ struct AgentDetailView: View {
                 ))
             }
             Section {
-                Button("Remove Runtime", role: .destructive) { confirmRemoval = true }
+                Button(actionTitle, role: .destructive) { confirmRemoval = true }
             }
             if let error {
                 Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red).font(.footnote) }
@@ -73,12 +84,10 @@ struct AgentDetailView: View {
         .disabled(busy)
         .navigationTitle(current.label)
         .navigationBarTitleDisplayMode(.inline)
-        .confirmationDialog("Remove \(current.label)?", isPresented: $confirmRemoval, titleVisibility: .visible) {
-            Button("Remove Runtime", role: .destructive) { remove() }
+        .confirmationDialog(confirmTitle, isPresented: $confirmRemoval, titleVisibility: .visible) {
+            Button(actionTitle, role: .destructive) { remove() }
         } message: {
-            Text(current.kind == "managed"
-                ? "This stops the runtime and permanently deletes its files and sign-in; a fresh one takes its place in a moment. Your agents' history stays in Yu AI."
-                : "This disconnects the runtime. Your agents stay in Yu AI.")
+            Text(confirmMessage)
         }
     }
 
