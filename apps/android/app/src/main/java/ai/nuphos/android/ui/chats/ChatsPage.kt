@@ -4,7 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.outlined.Archive
-import androidx.compose.material.icons.outlined.WorkspacePremium
+import androidx.compose.material.icons.outlined.StarOutline
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -157,7 +158,7 @@ private fun ChatRow(chat: AgentConversation, typing: Boolean, selected: Boolean,
     // A long press offers Archive Bot, as Desktop's sidebar does for a Bot and its chat, and the Leader.
     Box { DropdownMenu(expanded = menu && (onArchiveBot != null || onSetLeader != null), onDismissRequest = { menu = false }) {
         if (onSetLeader != null) DropdownMenuItem(text = { Text(if (leader) "Stop leading Bots" else "Make Leader of my Bots") },
-            leadingIcon = { Icon(Icons.Outlined.WorkspacePremium, null) },
+            leadingIcon = { Icon(Icons.Outlined.StarOutline, null) },
             onClick = { menu = false; onSetLeader() }, modifier = Modifier.testTag("chat-row-leader"))
         if (onArchiveBot != null) DropdownMenuItem(text = { Text("Archive Bot") }, leadingIcon = { Icon(Icons.Outlined.Archive, null) },
             onClick = { menu = false; onArchiveBot() })
@@ -177,7 +178,7 @@ private fun ChatRow(chat: AgentConversation, typing: Boolean, selected: Boolean,
         headlineContent = {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(title, Modifier.weight(1f, fill = false), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                if (leader) Icon(Icons.Outlined.WorkspacePremium, null, Modifier.size(16.dp).testTag("chat-row-leader-badge"),
+                if (leader) Icon(Icons.Filled.Star, null, Modifier.size(16.dp).testTag("chat-row-leader-badge"),
                     tint = MaterialTheme.colorScheme.tertiary)
             }
         },

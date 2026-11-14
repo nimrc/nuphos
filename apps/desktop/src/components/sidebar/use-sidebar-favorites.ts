@@ -16,6 +16,7 @@ import {
   teamOverviewNavItemFor,
 } from '../../lib/teamOverviewNav'
 
+import { favoriteEntryForItem, favoriteMatchIn } from './favorite-match'
 import { favoriteFallbackIcon } from './types'
 
 import type { Item, Section } from './types'
@@ -61,29 +62,7 @@ export function useSidebarFavorites({
     )
   }, [teamId, userId])
 
-  // A row with an href pins as an href entry — the same identity a workspace
-  // tab produces for that page. Rows without one (no route to derive) still pin
-  // by key.
-  const favoriteEntryForItem = useCallback(
-    (item: Item): SidebarFavorite =>
-      item.href ? { label: item.label, href: item.href } : { label: item.label, key: item.key },
-    [],
-  )
-
-  // Matches either identity, so a pin made before this row gained an href — or
-  // from the other surface — is still recognised and removable.
-  const favoriteMatch = useCallback(
-    (item: Item) => {
-      const identity = favoriteIdentity(favoriteEntryForItem(item))
-
-      return favorites.find((entry) => {
-        const entryIdentity = favoriteIdentity(entry)
-
-        return entryIdentity === identity || entryIdentity === item.key
-      })
-    },
-    [favoriteEntryForItem, favorites],
-  )
+  const favoriteMatch = useCallback((item: Item) => favoriteMatchIn(favorites, item), [favorites])
 
   // Overview pages are already permanently in the sidebar, so pinning one only
   // duplicates a row. Favorites is for what the sidebar can't otherwise reach:
@@ -109,7 +88,7 @@ export function useSidebarFavorites({
       if (existing) removeSidebarFavorite(userId, teamId, favoriteIdentity(existing))
       else addSidebarFavorite(userId, teamId, favoriteEntryForItem(item))
     },
-    [favoriteEntryForItem, favoriteMatch, teamId, userId],
+    [favoriteMatch, teamId, userId],
   )
 
   const placeBotPin = useCallback(
@@ -126,7 +105,7 @@ export function useSidebarFavorites({
         target ? favoriteIdentity(target) : null,
       )
     },
-    [favoriteEntryForItem, favoriteMatch, teamId, userId],
+    [favoriteMatch, teamId, userId],
   )
 
   // Resolve favorites against the live items so labels/active state stay

@@ -10,6 +10,7 @@ import { ContextMenu } from '../ContextMenu'
 import { BOT_PIN_DRAG_TYPE } from './bot-pin-drag'
 import { previewPinOrder } from './bot-pin-order'
 import { BotPinFace } from './BotPinFace'
+import { LeaderBadge } from './LeaderBadge'
 import { setRowDragImage } from './rowDragImage'
 import { SidebarPinShelf } from './SidebarPinShelf'
 import { useBotPinDrag } from './useBotPinDrag'
@@ -40,7 +41,13 @@ export function SidebarBotPins({
   order = [],
   onPlace,
 }: Props) {
-  const pins = bots.filter(pinned).sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key))
+  // A Bot's chat sits where the Bot was pinned.
+  const rank = (item: Item) => {
+    const index = order.indexOf(item.key)
+
+    return index >= 0 ? index : order.indexOf(`agent-session:${item.botChannelOf ?? ''}`)
+  }
+  const pins = bots.filter(pinned).sort((a, b) => rank(a) - rank(b))
   const {
     zone: pinZone,
     columns: availableColumns,
@@ -110,7 +117,7 @@ export function SidebarBotPins({
           </div>,
           document.body,
         )}
-      <SidebarPinShelf open={Boolean(pins.length || draggedBot)}>
+      <SidebarPinShelf open={pins.length > 0}>
         <div
           ref={pinZone}
           data-bot-pin-zone
@@ -191,6 +198,11 @@ export function SidebarBotPins({
                 <span className="relative">
                   <BotPinFace item={bot} size={Math.min(56, cellWidth - 20)} />
                   <span className="absolute -right-1 top-0">{bot.trailing}</span>
+                  <span className="absolute -left-1 top-0">
+                    <LeaderBadge
+                      botId={bot.botChannelOf ?? bot.key.replace('agent-session:', '')}
+                    />
+                  </span>
                 </span>
                 <span className="w-full truncate px-1 text-center text-[12px] leading-4 text-secondary">
                   {bot.label}

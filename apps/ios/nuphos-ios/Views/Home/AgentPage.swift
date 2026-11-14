@@ -683,7 +683,7 @@ struct ChannelRow: View {
 /// Marks the Bot that leads the owner's other Bots.
 struct LeaderBadge: View {
     var body: some View {
-        Image(systemName: "crown.fill")
+        Image(systemName: "star.fill")
             .font(.system(size: 11, weight: .semibold))
             .foregroundStyle(Theme.warning)
             .accessibilityLabel("Leader")

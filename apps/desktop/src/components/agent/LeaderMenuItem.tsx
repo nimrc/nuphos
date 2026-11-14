@@ -1,4 +1,4 @@
-import { Crown } from 'lucide-react'
+import { Star } from 'lucide-react'
 
 import { api } from '../../api'
 import { t } from '../../i18n'
@@ -12,7 +12,7 @@ export function LeaderMenuItem({ sessionId, teamId }: { sessionId: string; teamI
 
   return (
     <MenuItem
-      icon={<Crown className="h-3.5 w-3.5" />}
+      icon={<Star className="h-3.5 w-3.5" />}
       onClick={() => {
         pickBotLeader(sessionId, !leader, () =>
           api.agentSetBotLeader(sessionId, teamId, !leader),
