@@ -29,13 +29,13 @@ struct CredentialPickerSheet: View {
                                                 VStack(alignment: .leading, spacing: 2) {
                                                     Text(item.label).font(.system(size: 15)).foregroundStyle(Theme.heading)
                                                     if let detail = item.detail {
-                                                        Text(detail).font(.system(size: 12)).foregroundStyle(Theme.muted).lineLimit(1)
+                                                        Text(detail).font(.system(size: 12)).foregroundStyle(Theme.body).lineLimit(1)
                                                     }
                                                 }
                                                 Spacer()
                                                 Image(systemName: selection.contains(item) ? "checkmark.circle.fill" : "circle")
                                                     .font(.system(size: 20))
-                                                    .foregroundStyle(selection.contains(item) ? Theme.heading : Theme.muted)
+                                                    .foregroundStyle(selection.contains(item) ? Theme.heading : Theme.body)
                                             }
                                         }
                                         .buttonStyle(.plain)
@@ -247,7 +247,7 @@ struct PermissionModeSheet: View {
                         HStack(spacing: 14) {
                             VStack(alignment: .leading, spacing: 3) {
                                 Text(option.title).font(.system(size: 15, weight: .medium)).foregroundStyle(Theme.heading)
-                                Text(option.subtitle).font(.system(size: 13)).foregroundStyle(Theme.muted)
+                                Text(option.subtitle).font(.system(size: 13)).foregroundStyle(Theme.body)
                             }
                             Spacer()
                             if option == mode {

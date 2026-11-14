@@ -65,7 +65,7 @@ private struct RuntimePicker: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close", systemImage: "xmark") { dismiss() }.labelStyle(.iconOnly).foregroundStyle(Theme.muted)
+                    Button("Close", systemImage: "xmark") { dismiss() }.labelStyle(.iconOnly).foregroundStyle(Theme.body)
                 }
             }
             .navigationDestination(isPresented: $managing) { RuntimesPage().navigationTitle("Runtimes") }
@@ -109,7 +109,7 @@ private struct RuntimePicker: View {
                                 Button { select(runtime) } label: {
                                     SelectorAgentRow(runtime: runtime, quota: store.quotas[runtime.id], selected: runtime.id == selectedId, online: store.runtimeOnline[runtime.id])
                                         .padding(.leading, 12)
-                                        .opacity(ready(runtime) ? 1 : 0.45)
+                                        .opacity(ready(runtime) ? 1 : 0.8)
                                 }
                                 .buttonStyle(.plain)
                                 .disabled(!ready(runtime))
@@ -167,10 +167,10 @@ struct SelectorBoxHeader: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
                     Text(box.label).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.heading).lineLimit(1)
-                    if current { Text("Current").font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.muted) }
+                    if current { Text("Current").font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.body) }
                 }
                 Text("\(box.agents.count) runtimes")
-                    .font(.system(size: 12)).foregroundStyle(Theme.muted)
+                    .font(.system(size: 12)).foregroundStyle(Theme.body)
                 if let metrics {
                     // A split view's sidebar, such as iPhone Duo's inner display,
                     // is too narrow for three side by side: stack them instead.
@@ -180,14 +180,14 @@ struct SelectorBoxHeader: View {
                     }
                     if expanded {
                         Text("Memory \(metrics.memory.formatted) · Disk \(metrics.disk.formatted)")
-                            .font(.system(size: 12)).monospacedDigit().foregroundStyle(Theme.muted)
+                            .font(.system(size: 12)).monospacedDigit().foregroundStyle(Theme.body)
                     }
                 }
             }
             Spacer(minLength: 6)
             if showsChevron {
                 Image(systemName: expanded ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.muted).padding(.top, 4)
+                    .font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.body).padding(.top, 4)
             }
         }
         .frame(minHeight: 48).contentShape(Rectangle())
@@ -205,11 +205,11 @@ struct SelectorBoxHeader: View {
 private struct SelectorMeter: View {
     let title: String
     let value: Double
-    private var tint: Color { value >= 95 ? Color(hex: 0xC22929) : value >= 80 ? Theme.warning : Color(hex: 0x745DF3) }
+    private var tint: Color { value >= 95 ? Theme.danger : value >= 80 ? Theme.warning : Color(hex: 0x745DF3) }
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 3) {
-                Text(title).font(.system(size: 10, weight: .medium)).foregroundStyle(Theme.muted)
+                Text(title).font(.system(size: 10, weight: .medium)).foregroundStyle(Theme.body)
                 Spacer(minLength: 1)
                 Text("\(Int(value.rounded()))%").font(.system(size: 12, weight: .medium)).monospacedDigit()
                     .foregroundStyle(value >= 80 ? tint : Theme.body)
@@ -282,14 +282,14 @@ struct SelectorAgentRow: View {
         return parts.joined(separator: ", ")
     }
     @ViewBuilder private var details: some View {
-        if SelectorBox.agentName(runtime) != runtime.providerName { Text(runtime.providerName).font(.system(size: detailSize)).foregroundStyle(Theme.muted) }
+        if SelectorBox.agentName(runtime) != runtime.providerName { Text(runtime.providerName).font(.system(size: detailSize)).foregroundStyle(Theme.body) }
         if runtime.status != .active {
-            Text("Disabled").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
+            Text("Disabled").font(.system(size: detailSize)).foregroundStyle(Theme.body)
         } else if runtime.local?.online == false {
-            Text("Offline · open Nuphos on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
+            Text("Offline · open Nuphos on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.body)
         } else if runtime.local?.signedIn == false
                     || (quota?.needsSignIn == true && RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue)) {
-            Text("Signed out · sign in on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
+            Text("Signed out · sign in on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.body)
         }
         if let quota { QuotaLine(quota: quota, offersSignIn: RuntimeInstance.Provider.supportsSignIn(runtime.provider.rawValue)) }
     }
@@ -337,7 +337,7 @@ struct ModelSettingsSheet: View {
                                             VStack(alignment: .leading, spacing: 2) {
                                                 Text(choice.name).font(.system(size: 15)).foregroundStyle(Theme.heading)
                                                 if let d = choice.description, !d.isEmpty {
-                                                    Text(d).font(.system(size: 12)).foregroundStyle(Theme.muted)
+                                                    Text(d).font(.system(size: 12)).foregroundStyle(Theme.body)
                                                 }
                                             }
                                             Spacer()
@@ -399,7 +399,7 @@ private struct QuotaLine: View {
                 Text([window.leftPercent == 0 ? "Limit reached" : "\(window.leftPercent)% left", reset(window.resetsAt)].compactMap(\.self).joined(separator: " · "))
                     .font(.system(size: 12))
                     .monospacedDigit()
-                    .foregroundStyle(window.labelTint ?? Theme.muted)
+                    .foregroundStyle(window.labelTint ?? Theme.body)
             }
             .accessibilityElement(children: .combine)
         } else if quota.needsSignIn, offersSignIn {
@@ -435,6 +435,6 @@ extension RuntimeQuota.Window {
     /// Amber from 80% used and red once spent, as on Desktop. The label
     /// carries it too, since an empty bar has no fill left to colour.
     var labelTint: Color? {
-        usedPercent >= 100 ? .red : usedPercent >= 80 ? Theme.warning : nil
+        usedPercent >= 100 ? Theme.danger : usedPercent >= 80 ? Theme.warning : nil
     }
 }

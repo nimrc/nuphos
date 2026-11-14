@@ -30,7 +30,7 @@ struct ToolCallRow: View {
                         statusIcon
                         Image(systemName: part.systemImage)
                             .font(Theme.Text.caption.weight(.semibold))
-                            .foregroundStyle(Theme.muted)
+                            .foregroundStyle(Theme.body)
                         Text(label)
                             .font(Theme.Text.secondary.weight(.medium))
                             .lineLimit(1)
@@ -149,7 +149,7 @@ struct ApprovalActions: View {
                     }
                     .prominentButton()
                     Button("Deny", role: .destructive) { session.decide(toolCallId: part.toolCallId, .deny) }
-                        .buttonStyle(.bordered)
+                        .dangerBorderedButton()
                 }
                 .controlSize(.small)
                 .font(Theme.Text.label.weight(.medium))
@@ -196,13 +196,12 @@ struct ToolRunView: View {
                             .shimmer(active: !latest.isFinished && latest.state != .approvalRequested)
                         ElapsedBadge(part: latest)
                         if tools.count > 1 {
-                            Text("· \(tools.count) calls").foregroundStyle(Theme.muted)
+                            Text("· \(tools.count) calls").foregroundStyle(Theme.body)
                         }
                         Image(systemName: "chevron.right")
                             .font(Theme.Text.micro.weight(.bold))
-                            .foregroundStyle(Theme.muted)
+                            .foregroundStyle(Theme.body)
                             .rotationEffect(.degrees(open ? 90 : 0))
-                            .opacity(open ? 0.6 : 0.35)
                         Spacer(minLength: 0)
                     }
                     .font(Theme.Text.label)
@@ -336,7 +335,7 @@ struct WorkGroup: View {
                     Rectangle().fill(Theme.hairline).frame(height: 1).padding(.leading, 6)
                 }
                 .font(Theme.Text.label)
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }

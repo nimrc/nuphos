@@ -421,7 +421,7 @@ private struct ChannelPostRow: View {
     private func quote(_ reply: ChannelReply) -> some View {
         Button { onQuote(reply) } label: {
             (Text(reply.authorName).fontWeight(.medium).foregroundStyle(Theme.body)
-                + Text(" " + reply.text).foregroundStyle(Theme.muted))
+                + Text(" " + reply.text).foregroundStyle(Theme.body))
                 .font(Theme.Text.caption)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
@@ -599,7 +599,7 @@ struct ReplyChip: View {
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Button(action: onCancel) {
-                Image(systemName: "xmark.circle.fill").font(.system(size: 17)).foregroundStyle(Theme.muted)
+                Image(systemName: "xmark.circle.fill").font(.system(size: 17)).foregroundStyle(Theme.body)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Cancel reply")
