@@ -92,6 +92,52 @@ struct PinnedBotsRowModel: Equatable, Sendable {
     var count: Int { bots.count }
 }
 
+
+/// The row's measurements, shared with the standalone tests.
+enum PinnedBotsLayout {
+    static let height: CGFloat = 60
+    static let avatar: CGFloat = 44
+    /// A slot is the ring's outer diameter: 44 pt face + 2 x 2 pt gap + 2 x 2.5 pt
+    /// ring = 53. The ring sits 2 pt clear of the face, so the slot is wider than
+    /// the face and the gap between two faces is spacing + (slot - avatar).
+    static let slot: CGFloat = 53
+    static let spacing: CGFloat = 3
+    /// Slots centre their faces, so the row inset gives up the slot's overflow.
+    /// 15.5 + (53 - 44) / 2 = 20, the same left edge as a list row's avatar.
+    static let inset: CGFloat = 15.5
+    static let ring: CGFloat = 2.5
+    static let fade: CGFloat = 20
+    static let hairline: CGFloat = 0.5
+
+    /// Navigation-bar clearance above the List's safe-area origin. Measured
+    /// as the gap between the row's safe-area top and the first list content:
+    /// 55 pt on iPhone 18 Pro (121.66 -> 176.66) and iPad Pro 13-inch M5
+    /// (91.5 -> 146.5). It keeps the row below the bar's material.
+    static let navigationBarClearance: CGFloat = 55
+
+    static func rowTop(forSafeAreaTop top: CGFloat) -> CGFloat {
+        top + navigationBarClearance
+    }
+}
+
+/// The accessibility structure of the row: a labelled container once there
+/// is a Bot, and no element at all when nothing is pinned.
+enum PinnedBotsAccessibility: Equatable {
+    case absent
+    case container(count: Int)
+
+    var containerCount: Int? {
+        if case .container(let count) = self { return count }
+        return nil
+    }
+}
+
+extension PinnedBotsRowModel {
+    var accessibility: PinnedBotsAccessibility {
+        isVisible ? .container(count: count) : .absent
+    }
+}
+
 /// The device-local store behind the pinned row.
 enum PinnedBotsStorage {
     static let key = "nuphos.pinnedBots"

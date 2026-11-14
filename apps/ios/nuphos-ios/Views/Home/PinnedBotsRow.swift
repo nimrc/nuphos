@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The fixed strip above the Bots list: every pinned Bot in pin order, as a
-/// 44 pt face in a 49 pt slot. The row does not scroll with the list and it is
+/// 44 pt face in a 53 pt slot. The row does not scroll with the list and it is
 /// not built at all when nothing is pinned.
 struct PinnedBotsRow: View {
     let bots: [PinnedBot]
@@ -13,16 +13,17 @@ struct PinnedBotsRow: View {
 
     /// The spec's measurements, in one place.
     enum Metrics {
-        static let height: CGFloat = 60
-        static let avatar: CGFloat = 44
-        /// The current avatar's ring makes a 49 pt footprint; every slot keeps
+        static let height = PinnedBotsLayout.height
+        static let avatar = PinnedBotsLayout.avatar
+        /// The ring makes a 53 pt footprint; every slot keeps
         /// it, so the ring appearing never moves its neighbours.
-        static let slot: CGFloat = 49
-        static let spacing: CGFloat = 12
-        static let inset: CGFloat = 20
-        static let ring: CGFloat = 2.5
-        static let fade: CGFloat = 20
-        static let hairline: CGFloat = 0.5
+        static let slot = PinnedBotsLayout.slot
+        static let spacing = PinnedBotsLayout.spacing
+        static let inset = PinnedBotsLayout.inset
+        static let ring = PinnedBotsLayout.ring
+        static let fade = PinnedBotsLayout.fade
+        static let hairline = PinnedBotsLayout.hairline
+        static let navigationBarClearance = PinnedBotsLayout.navigationBarClearance
     }
 
     var body: some View {
@@ -61,9 +62,21 @@ struct PinnedBotsRow: View {
                         )
                         .accessibilityRemoveTraits(.isSelected)
                     }
+                    // A second layout child keeps the row's accessibility
+                    // container alive when exactly one Bot is pinned; with a
+                    // single child XCTest/VoiceOver pruned the count label.
+                    // It only exists at one, so many pins keep their tree.
+                    if bots.count == 1 {
+                        Color.clear
+                            .frame(width: 1, height: 1)
+                            .accessibilityElement()
+                            .accessibilityLabel(Text(verbatim: "\u{200B}"))
+                    }
                 }
                 .padding(.horizontal, Metrics.inset)
                 .frame(height: Metrics.height, alignment: .leading)
+                // The avatars' HStack is the labelled container at one and
+                // many pins, so the count is spoken before the faces.
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel(Text("Pinned Bots, \(bots.count)"))
                 .accessibilityIdentifier("pinned-bots-row")
