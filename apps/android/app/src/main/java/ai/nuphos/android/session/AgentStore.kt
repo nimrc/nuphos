@@ -564,6 +564,30 @@ class AgentStore(
 
     fun archiveBot(botId: String) = runBotArchive(botId) { it.run(botId) }
 
+    // MARK: Leader (iOS's profile toggle)
+    /** The Bot that leads the viewer's other Bots, as the Bots listing last read it. */
+    val leaderBotId: String? get() = bots.firstOrNull { it.leader == true && it.isOwner == true }?.sessionId
+
+    /** Only the owner picks the Leader, among their own Bots: the same Bots they can archive. */
+    fun canSetLeader(botId: String) = canArchiveBot(botId)
+
+    /** Makes the Bot the Leader, or stops it leading; false when it could not be saved. */
+    suspend fun setLeader(botId: String, leader: Boolean): Boolean {
+        val team = selectedTeam?.id ?: return false
+        if (!canSetLeader(botId)) return false
+        val workspace = workspaceRevision
+        return try {
+            BotActions.setLeader(token, team, botId, leader)
+            if (workspaceRevision == workspace && selectedTeam?.id == team) reload()
+            true
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            if (workspaceRevision == workspace) rowActionError = "Couldn't change the Leader. Try again."
+            false
+        }
+    }
+
     /** After a partial result: puts back the chats it reports as archived, after reading where they are now. */
     fun restoreBotChats() {
         val issue = botArchiveIssue ?: return

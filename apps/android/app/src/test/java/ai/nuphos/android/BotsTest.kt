@@ -145,6 +145,16 @@ class BotsTest {
             assertEquals(JsonValue.obj("avatar" to JsonValue.Null), body); "{}"
         }
     }
+    @Test fun theLeaderIsReadFromARowAndSetOnItsRoute() = runBlocking {
+        assertEquals(true, decode("""{"sessionId":"lead","avatar":"07-ada","leader":true}""").leader)
+        assertNull(decode("""{"sessionId":"bot","avatar":"07-ada"}""").leader)
+        BotActions.setLeader("synthetic", "team", "s /", true) { method, path, _, query, body ->
+            assertEquals("PUT", method); assertEquals("agent/conversations/s%20%2F/leader", path)
+            assertEquals(listOf("teamId" to "team"), query)
+            assertEquals(JsonValue.obj("leader" to JsonValue.Bool(true)), body); "{}"
+        }
+    }
+
     @Test fun facesAreLearnedFromListsAndForgottenWhenABotTurnsBack() {
         BotFaces.learn(listOf(session("bot", "05-rembrandt"), session("task"), channel("chat", agent("member", "07-ada"))))
         assertEquals("05-rembrandt", BotFaces.face("bot"))

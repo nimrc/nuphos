@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -116,8 +117,11 @@ internal fun ChatsPage(nav: NavHostController, selectedSessionId: String? = null
         }
         items(rows, key = { it.sessionId }) { row ->
             val botId = if (row.isChannel) row.botId else row.sessionId
+            val leader = botId != null && botId == store.leaderBotId
             ChatRow(row, typing = row.botTyping(store::typingIn), selected = row.sessionId == selectedSessionId, opening = store.openingBotId == row.sessionId,
-                onArchiveBot = botId?.takeIf { store.canArchiveBot(it) }?.let { { botArchiveTarget = it } }) {
+                onArchiveBot = botId?.takeIf { store.canArchiveBot(it) }?.let { { botArchiveTarget = it } },
+                leader = leader,
+                onSetLeader = botId?.takeIf { store.canSetLeader(it) }?.let { { scope.launch { store.setLeader(it, !leader) } } }) {
                 if (row.isChannel) nav.navigate("channel/${android.net.Uri.encode(row.sessionId)}") { launchSingleTop = true }
                 else openBot(row.sessionId)
             }
@@ -144,28 +148,39 @@ internal fun ChatsPage(nav: NavHostController, selectedSessionId: String? = null
 
 @Composable
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
-private fun ChatRow(chat: AgentConversation, typing: Boolean, selected: Boolean, opening: Boolean, onArchiveBot: (() -> Unit)? = null, onOpen: () -> Unit) {
+private fun ChatRow(chat: AgentConversation, typing: Boolean, selected: Boolean, opening: Boolean, onArchiveBot: (() -> Unit)? = null,
+    leader: Boolean = false, onSetLeader: (() -> Unit)? = null, onOpen: () -> Unit) {
     val unread = chat.isChannel && chat.hasUnreadPosts()
     val title = if (chat.isChannel) chat.displayTitleForChat else chat.displayTitle
     val preview = chat.previewLine
     var menu by remember { mutableStateOf(false) }
-    // A long press offers Archive Bot, as Desktop's sidebar does for a Bot and its chat.
-    Box { DropdownMenu(expanded = menu && onArchiveBot != null, onDismissRequest = { menu = false }) {
-        DropdownMenuItem(text = { Text("Archive Bot") }, leadingIcon = { Icon(Icons.Outlined.Archive, null) },
-            onClick = { menu = false; onArchiveBot?.invoke() })
+    // A long press offers Archive Bot, as Desktop's sidebar does for a Bot and its chat, and the Leader.
+    Box { DropdownMenu(expanded = menu && (onArchiveBot != null || onSetLeader != null), onDismissRequest = { menu = false }) {
+        if (onSetLeader != null) DropdownMenuItem(text = { Text(if (leader) "Stop leading Bots" else "Make Leader of my Bots") },
+            leadingIcon = { Icon(Icons.Outlined.WorkspacePremium, null) },
+            onClick = { menu = false; onSetLeader() }, modifier = Modifier.testTag("chat-row-leader"))
+        if (onArchiveBot != null) DropdownMenuItem(text = { Text("Archive Bot") }, leadingIcon = { Icon(Icons.Outlined.Archive, null) },
+            onClick = { menu = false; onArchiveBot() })
     }
     ListItem(
         modifier = Modifier.combinedClickable(enabled = !opening, onClick = onOpen,
-            onLongClick = onArchiveBot?.let { { menu = true } }, onLongClickLabel = onArchiveBot?.let { "More actions" })
+            onLongClick = if (onArchiveBot != null || onSetLeader != null) ({ menu = true }) else null,
+            onLongClickLabel = if (onArchiveBot != null || onSetLeader != null) "More actions" else null)
             .testTag("chat-row:${chat.sessionId}").semantics {
-            contentDescription = listOfNotNull(title, if (typing) "$title is typing" else preview, "unread posts".takeIf { unread }, "opening".takeIf { opening }).joinToString(", ")
+            contentDescription = listOfNotNull(title, "Leader".takeIf { leader }, if (typing) "$title is typing" else preview, "unread posts".takeIf { unread }, "opening".takeIf { opening }).joinToString(", ")
         },
         colors = ListItemDefaults.colors(containerColor = if (selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.background),
         leadingContent = {
             if (chat.isChannel) ChatIcon(chat.faces.orEmpty(), title, 40.dp)
             else AgentAvatar(chat.sessionId, chat.agentRuntime, 40.dp)
         },
-        headlineContent = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        headlineContent = {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(title, Modifier.weight(1f, fill = false), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (leader) Icon(Icons.Outlined.WorkspacePremium, null, Modifier.size(16.dp).testTag("chat-row-leader-badge"),
+                    tint = MaterialTheme.colorScheme.tertiary)
+            }
+        },
         // As iMessage does: the dots stand in for the newest post until the reply lands.
         supportingContent = if (typing) ({ TypingDots(Modifier.padding(vertical = 7.dp)) })
             else preview?.let { { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis) } },
