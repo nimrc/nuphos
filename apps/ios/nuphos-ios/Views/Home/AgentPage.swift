@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// A button that never dims its label for `disabled`. The New Bot "not ready"
 /// state already sets its own fill and text colour; the system's disabled
@@ -57,6 +60,13 @@ struct AgentPage: View {
     @State private var unbotting: AgentConversation?
     @State private var renamedTitle = ""
     @State private var refreshing = false
+    /// The device-local pin order. Loaded once; every change is saved at once.
+    @State private var pinned = PinnedBotsStorage.load()
+    /// Debounces pruning saved pins against the Bots list as it loads.
+    @State private var pinPruneTask: Task<Void, Never>?
+    /// The pin/unpin confirmation, and the task that takes it away after 2 s.
+    @State private var toastText: String?
+    @State private var toastTask: Task<Void, Never>?
     #if DEBUG
     /// `-preview-agent-login`: the authorization-code step with a canned attempt.
     @State private var previewLogin = false
@@ -81,6 +91,7 @@ struct AgentPage: View {
         @Bindable var store = store
 
         content
+            .overlay(alignment: .bottom) { toast }
             .toolbar {
                 if page == .chats {
                     newBotToolbarItem
@@ -167,6 +178,8 @@ struct AgentPage: View {
             .onPreferenceChange(ComposerOwnsKeyboard.self) { ownsKeyboard = $0 }
             .task(id: store.selectedTeam?.id) { await store.loadCredentialOptions() }
             .onChange(of: store.teamsPhase) { _, phase in if phase == .loaded { openPushTarget() } }
+            .onChange(of: store.botsList.map(\.pinnedBotId), initial: true) { _, _ in schedulePinPrune() }
+            .onChange(of: store.channelsLoaded) { _, _ in schedulePinPrune() }
             .onChange(of: PushNotifications.shared.pendingTarget) { _, _ in openPushTarget() }
             .task {
                 // The poller is what keeps the list fresh while a chat is on
@@ -561,7 +574,146 @@ struct AgentPage: View {
         .accessibilityValue(newBotAccessibilityValue)
     }
 
+    private var pinnedRowModel: PinnedBotsRowModel {
+        PinnedBotsRowModel(
+            order: pinned,
+            available: store.botsList.compactMap { row in
+                guard let botId = row.pinnedBotId else { return nil }
+                return PinnedBot(
+                    id: botId,
+                    conversationId: row.sessionId,
+                    title: row.displayTitle,
+                    avatar: row.avatar,
+                    runtime: row.agentRuntime
+                )
+            }
+        )
+    }
+
+    /// The pinned row is built only when something resolves, so with no pin
+    /// it takes no space and has no accessibility element either.
+    @ViewBuilder
+    private var pinnedRow: some View {
+        let model = pinnedRowModel
+        if page == .chats, model.accessibility.containerCount != nil {
+            PinnedBotsRow(
+                bots: model.bots,
+                currentBotId: currentBotId,
+                onOpen: { bot in Task { await openBotChat(bot.id) } },
+                onUnpin: { bot in togglePin(bot.id) },
+                onProfile: { bot in showProfile(for: bot) }
+            )
+        }
+    }
+
+    /// The Bot whose conversation is open. A Bot opens in its 1:1 chat, so
+    /// the open chat's id is not the Bot's id; its faces say which Bot it is.
+    private var currentBotId: String? {
+        guard let openChat else { return nil }
+        if openChat.channel != nil {
+            return store.botsList.first { $0.sessionId == openChat.id }?.pinnedBotId
+        }
+        return store.botsList.first { $0.sessionId == openChat.id && $0.isBot }?.sessionId
+    }
+
+    @ViewBuilder
+    private func pinMenuItem(_ row: AgentConversation) -> some View {
+        if let botId = row.pinnedBotId {
+            let isPinned = pinned.contains(botId)
+            Button {
+                togglePin(botId)
+            } label: {
+                if isPinned {
+                    Label("Unpin", systemImage: "pin.slash")
+                } else {
+                    Label("Pin", systemImage: "pin")
+                }
+            }
+            .tint(Theme.brand)
+        }
+    }
+
+    /// The pinned row's Profile item opens the same sheet as the list row's.
+    private func showProfile(for bot: PinnedBot) {
+        guard
+            let row = store.botsList.first(where: { $0.pinnedBotId == bot.id }),
+            let teamId = row.teamId ?? store.selectedTeam?.id
+        else { return }
+        profile = BotProfileTarget(botId: bot.id, teamId: teamId, title: bot.title)
+    }
+
+    private func togglePin(_ botId: String) {
+        if pinned.contains(botId) {
+            guard pinned.unpin(botId) else { return }
+            PinnedBotsStorage.save(pinned)
+            showToast(String(localized: "Unpinned"))
+        } else if pinned.pin(botId) {
+            PinnedBotsStorage.save(pinned)
+            showToast(String(localized: "Pinned"))
+        }
+    }
+
+    /// The 2 s confirmation above the bottom safe area. VoiceOver speaks the
+    /// same sentence; the capsule itself is not a stop and takes no taps.
+    private func showToast(_ text: String) {
+        toastTask?.cancel()
+        toastText = text
+        #if canImport(UIKit)
+        UIAccessibility.post(notification: .announcement, argument: text)
+        #endif
+        toastTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled else { return }
+            toastText = nil
+        }
+    }
+
+    @ViewBuilder
+    private var toast: some View {
+        if let toastText {
+            Text(toastText)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Theme.heading.opacity(0.9), in: Capsule())
+                .padding(.bottom, 16)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+                .transition(.opacity)
+        }
+    }
+
+    /// A saved pin can name a Bot that was archived or removed. Once the Bots
+    /// list has settled, drop those ids without saying anything.
+    private func schedulePinPrune() {
+        guard store.channelsLoaded else { return }
+        pinPruneTask?.cancel()
+        pinPruneTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(1500))
+            guard !Task.isCancelled, store.channelsLoaded else { return }
+            let available = Set(store.botsList.compactMap(\.pinnedBotId))
+            var next = pinned
+            guard next.prune(keeping: available) else { return }
+            pinned = next
+            PinnedBotsStorage.save(pinned)
+        }
+    }
+
     private var list: some View {
+        // The row sits in the list's top safe area, below the navigation bar.
+        // As a VStack sibling it was laid out under the bar and the bar's
+        // opaque material hid it, though the accessibility tree still saw it.
+        botList
+            .safeAreaInset(edge: .top, spacing: 0) {
+                // The list's content starts 55 pt below the row's safe-area
+                // origin on iPhone and iPad; without this the bar covers it.
+                pinnedRow
+                    .padding(.top, PinnedBotsRow.Metrics.navigationBarClearance)
+            }
+    }
+
+    private var botList: some View {
         List(selection: selection) {
             if page == .chats {
                 Section {
@@ -585,6 +737,7 @@ struct AgentPage: View {
                         .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 16))
                         .listSectionSeparator(.hidden, edges: .top)
                         .contextMenu {
+                            pinMenuItem(row)
                             if let bot = row.isChannel ? row.botId : Optional(row.sessionId) {
                                 profileButton(botId: bot, teamId: row.teamId, title: row.displayTitle)
                             }
@@ -804,6 +957,14 @@ struct NewChatComposer: View {
         .alert("Couldn't send", isPresented: Binding(get: { admissionError != nil }, set: { if !$0 { admissionError = nil } })) {
             Button("OK", role: .cancel) { admissionError = nil }
         } message: { Text(admissionError ?? "") }
+    }
+}
+
+extension AgentConversation {
+    /// The Bot this row pins: a 1:1 chat's Bot, or a Bot without a chat yet.
+    var pinnedBotId: String? {
+        if isChannel { return botId }
+        return isBot ? sessionId : nil
     }
 }
 
