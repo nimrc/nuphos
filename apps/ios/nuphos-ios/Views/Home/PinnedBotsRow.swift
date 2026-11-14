@@ -61,22 +61,16 @@ struct PinnedBotsRow: View {
                         .accessibilityValue(Text(verbatim: accessibility.value))
                         .accessibilityRemoveTraits(.isSelected)
                     }
-                    // A second layout child keeps the row's accessibility
-                    // container alive when exactly one Bot is pinned; with a
-                    // single child XCTest/VoiceOver pruned the count label.
-                    // It only exists at one, so many pins keep their tree.
-                    if bots.count == 1 {
-                        Color.clear
-                            .frame(width: 1, height: 1)
-                            .accessibilityElement()
-                            .accessibilityLabel(Text(verbatim: "\u{200B}"))
-                            .accessibilityHidden(true)
-                    }
                 }
                 .padding(.horizontal, Metrics.inset)
                 .frame(height: Metrics.height, alignment: .leading)
                 // The avatars' LazyHStack is the labelled container at one and
-                // many pins, so the count is spoken before the faces.
+                // many pins, so the count is spoken before the faces. Verified
+                // with `simulator describe-ui` on iPhone 18 Pro / iOS 27.2:
+                // one pin exposes AXGroup "1 pinned Bot" (identifier
+                // "pinned-bots-row") around its avatar; two expose "2 pinned
+                // Bots". No spacer is needed: a hidden one never contributed
+                // a child anyway.
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel(Text("Pinned Bots, \(bots.count)"))
                 .accessibilityIdentifier("pinned-bots-row")

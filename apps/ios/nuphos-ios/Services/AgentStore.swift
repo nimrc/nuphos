@@ -54,28 +54,50 @@ final class AgentStore {
     /// The search text `channels` and `bots` were loaded with. Empty means the
     /// full list; a stale filtered list must never prune pins.
     private(set) var channelsQuery = ""
+    /// True only when `channels` and `bots` are known to hold every row: each
+    /// scope answered with fewer rows than the page limit and nothing more.
+    /// Each listing is a single page of at most 100, so a team with more Bots
+    /// than that lists only the first — and a pin that is not in that page is
+    /// not necessarily gone. The pin prune reads this to refuse a truncated
+    /// list; the row itself stays drawn from what did load.
+    private(set) var channelsComplete = false
+
+    /// The page limit `loadChannels` asks each scope for. Hitting it means the
+    /// list may have more rows than were loaded.
+    static let channelsPageLimit = 100
 
     /// Both listings the desktop sidebar reads: chats of one's own, then the ones joined.
     /// Then one's Bots, for those that have no chat yet.
     func loadChannels() async {
         guard let team = selectedTeam else { return }
         let query = search
+        let limit = Self.channelsPageLimit
         var rows: [AgentConversation] = []
+        var complete = true
         for scope in ["mine", "shared"] {
             guard let page = try? await NuphosAPI.conversations(
-                token: token, teamId: team.id, limit: 100, search: query, scope: scope, channels: true
+                token: token, teamId: team.id, limit: limit, search: query, scope: scope, channels: true
             ) else { return }
             let seen = Set(rows.map(\.sessionId))
             rows += page.conversations.filter { !seen.contains($0.sessionId) }
+            // `hasMore` is the server's own answer; a page at the limit also
+            // counts, since an older backend may leave `hasMore` out.
+            if !PinnedBotsListing.pageIsComplete(
+                rowCount: page.conversations.count, limit: limit, hasMore: page.hasMore
+            ) { complete = false }
         }
         guard let botPage = try? await NuphosAPI.conversations(
-            token: token, teamId: team.id, limit: 100, search: query, bots: true
+            token: token, teamId: team.id, limit: limit, search: query, bots: true
         ) else { return }
+        if !PinnedBotsListing.pageIsComplete(
+            rowCount: botPage.conversations.count, limit: limit, hasMore: botPage.hasMore
+        ) { complete = false }
         guard team.id == selectedTeam?.id, query == search, !Task.isCancelled else { return }
         channels = rows.sorted { $0.lastActiveAt > $1.lastActiveAt }
         bots = botPage.conversations
         channelsQuery = query
         channelsTeamId = team.id
+        channelsComplete = complete
         if query.isEmpty { HomePage.hasChats = !botsList.isEmpty }
         channelsLoaded = true
     }
@@ -485,6 +507,7 @@ final class AgentStore {
         channelsLoaded = false
         channelsTeamId = nil
         channelsQuery = ""
+        channelsComplete = false
         runtimes = []
         agentDevices = []
         agentDevicesError = false

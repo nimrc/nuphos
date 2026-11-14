@@ -183,8 +183,20 @@ struct AgentPage: View {
             .onChange(of: store.channelsLoaded) { _, _ in schedulePinPrune() }
             .onChange(of: store.selectedTeam?.id, initial: true) { _, teamId in
                 // Load that team's pins. A switch never carries the previous
-                // team's pins over, and never writes to its key.
-                pins.select(teamId: teamId)
+                // team's pins over, and never writes to its key. The
+                // pre-team list is adopted only once the team list has loaded
+                // and this id is one of its teams: until then the id may be
+                // the one the launch cache remembered, which can name a team
+                // that no longer exists.
+                let known = isKnownTeam(teamId)
+                pins.select(teamId: teamId, canAdoptLegacy: known)
+                pins.adoptLegacyPinsIfPossible(teamIsValid: known)
+                schedulePinPrune()
+            }
+            .onChange(of: store.teamsPhase) { _, _ in
+                // The team list may have arrived after the pins were read for
+                // a cached id. A real team now takes the pre-team pins.
+                pins.adoptLegacyPinsIfPossible(teamIsValid: isKnownTeam(store.selectedTeam?.id))
                 schedulePinPrune()
             }
             .onChange(of: PushNotifications.shared.pendingTarget) { _, _ in openPushTarget() }
@@ -691,20 +703,23 @@ struct AgentPage: View {
 
     /// A saved pin can name a Bot that was archived or removed. Once the Bots
     /// list has settled, drop those ids without saying anything. Search
-    /// replaces the list, a team switch empties it, and another team's list is
-    /// not ours to prune against, so all three leave the pins alone.
+    /// replaces the list, a team switch empties it, another team's list is not
+    /// ours to prune against, and a list that hit the page limit may simply be
+    /// missing Bots beyond it, so all four leave the pins alone.
     private func schedulePinPrune() {
         pinPruneTask?.cancel()
         pinPruneTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(1500))
             guard !Task.isCancelled else { return }
+            let currentTeamId = store.selectedTeam?.id
             guard PinnedBotsPrunePolicy(
                 search: store.search,
                 loadedQuery: store.channelsQuery,
                 botsListIsEmpty: store.botsList.isEmpty,
                 loadedTeamId: store.channelsTeamId,
-                currentTeamId: store.selectedTeam?.id,
-                pinsTeamId: pins.teamId
+                currentTeamId: currentTeamId,
+                pinsTeamId: pins.teamId,
+                listIsComplete: store.channelsComplete
             ).allowsPruning else { return }
             let available = Set(store.botsList.compactMap(\.pinnedBotId))
             _ = pins.prune(
@@ -712,9 +727,19 @@ struct AgentPage: View {
                 search: store.search,
                 loadedQuery: store.channelsQuery,
                 botsListIsEmpty: store.botsList.isEmpty,
-                loadedTeamId: store.channelsTeamId
+                loadedTeamId: store.channelsTeamId,
+                currentTeamId: currentTeamId,
+                listIsComplete: store.channelsComplete
             )
         }
+    }
+
+    /// Whether `teamId` is one of the loaded teams: the only id a pin
+    /// migration may write to. An empty id, the launch cache's stale id, and
+    /// anything read before the list has loaded are all false.
+    private func isKnownTeam(_ teamId: String?) -> Bool {
+        guard let teamId, !teamId.isEmpty, store.teamsPhase == .loaded else { return false }
+        return store.teams.contains { $0.id == teamId }
     }
 
     private var list: some View {

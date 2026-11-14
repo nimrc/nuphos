@@ -74,18 +74,26 @@ struct PinnedBot: Identifiable, Equatable, Sendable {
         self.avatar = avatar
         self.runtime = runtime
     }
+
+    /// Whether the row has anything to say for this Bot. A slot with no name
+    /// reads as an anonymous circle, so it is not drawn at all.
+    var isDrawable: Bool {
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 }
 
 /// What the pinned row draws: the pinned Bots that still exist, in pin order.
 ///
 /// Empty when there is no pin, or when none of the pinned ids resolve — the
 /// row is then not built at all, so it leaves no space and no element in the
-/// accessibility tree.
+/// accessibility tree. A pin this list cannot resolve draws nothing either:
+/// the stored id stays (the list may have been truncated), but an anonymous
+/// empty circle is never shown for it.
 struct PinnedBotsRowModel: Equatable, Sendable {
     let bots: [PinnedBot]
 
     init(order: PinnedBotsOrder, available: [PinnedBot]) {
-        bots = order.resolved(in: available)
+        bots = order.resolved(in: available).filter(\.isDrawable)
     }
 
     var isVisible: Bool { !bots.isEmpty }
@@ -138,10 +146,24 @@ extension PinnedBotsRowModel {
     }
 }
 
+/// Whether a listing page proves the list is complete.
+///
+/// The Bots list is one page per scope and does not page, so a page at the
+/// limit may be cut short. A server answer of `hasMore` is authoritative; a
+/// page that reached the limit counts as incomplete even when an older
+/// backend leaves `hasMore` out.
+enum PinnedBotsListing {
+    static func pageIsComplete(rowCount: Int, limit: Int, hasMore: Bool) -> Bool {
+        !hasMore && rowCount < limit
+    }
+}
+
 /// Whether the loaded Bots list may prune saved pins. Pins are local to one
 /// team on this device, so a filtered list (search replaces `botsList`), an
 /// empty list (a team switch clears it), or a list loaded for another team or
-/// query must never be allowed to delete them.
+/// query must never be allowed to delete them. A list that hit the server's
+/// page limit may be missing Bots beyond it, so it is not proof either: a pin
+/// that is not in a truncated list is probably just further down.
 struct PinnedBotsPrunePolicy: Equatable, Sendable {
     let search: String
     /// The query `botsList` was actually loaded with, which can lag the field
@@ -149,8 +171,14 @@ struct PinnedBotsPrunePolicy: Equatable, Sendable {
     let loadedQuery: String?
     let botsListIsEmpty: Bool
     let loadedTeamId: String?
+    /// The team the page currently shows.
     let currentTeamId: String?
+    /// The team the session's pins belong to.
     let pinsTeamId: String?
+    /// False when any listing scope returned a full page with more rows, or
+    /// when the load did not record whether it did: an unverified list is
+    /// never allowed to prune.
+    let listIsComplete: Bool
 
     var allowsPruning: Bool {
         search.isEmpty
@@ -159,6 +187,7 @@ struct PinnedBotsPrunePolicy: Equatable, Sendable {
             && loadedTeamId != nil
             && loadedTeamId == currentTeamId
             && pinsTeamId == currentTeamId
+            && listIsComplete
     }
 }
 
@@ -182,18 +211,44 @@ enum PinnedBotsStorage {
 
     static func key(for teamId: String) -> String { "\(legacyKey).\(teamId)" }
 
-    static func load(teamId: String, defaults: UserDefaults = .standard) -> PinnedBotsOrder {
+    /// The team's own list.
+    ///
+    /// `canAdoptLegacy` decides whether the old list may move into this team.
+    /// It must be false until the team list has loaded and this id is one of
+    /// them: the app reads pins for the team id the launch cache remembered,
+    /// which can name a team that no longer exists. Migrating into that id
+    /// would write the pins into a dead team's key and delete the old list, so
+    /// they would never reach a real team. Until then this reads the team's own
+    /// key (nothing, for a team that never had pins) and leaves the legacy
+    /// list where it is for the team that does qualify.
+    static func load(
+        teamId: String,
+        canAdoptLegacy: Bool,
+        defaults: UserDefaults = .standard
+    ) -> PinnedBotsOrder {
         let scopedKey = key(for: teamId)
         if let scoped = defaults.stringArray(forKey: scopedKey) {
-            // One team has taken the old list; no other team may read it.
-            if defaults.object(forKey: legacyKey) != nil { defaults.removeObject(forKey: legacyKey) }
+            // One verified team has taken the old list; no other team may
+            // read it. Until the team list confirms this id, the id can name
+            // a dead team, and deleting the old list here would strand the
+            // pins that a real team still has to inherit.
+            if canAdoptLegacy, defaults.object(forKey: legacyKey) != nil {
+                defaults.removeObject(forKey: legacyKey)
+            }
             return PinnedBotsOrder(scoped)
         }
-        guard let legacy = defaults.stringArray(forKey: legacyKey) else { return PinnedBotsOrder() }
+        guard canAdoptLegacy, !teamId.isEmpty,
+              let legacy = defaults.stringArray(forKey: legacyKey) else { return PinnedBotsOrder() }
         let order = PinnedBotsOrder(legacy)
         defaults.set(order.ids, forKey: scopedKey)
         defaults.removeObject(forKey: legacyKey)
         return order
+    }
+
+    /// A team's stored list, never migrating: for callers that want to know
+    /// what is saved rather than what may be adopted.
+    static func stored(teamId: String, defaults: UserDefaults = .standard) -> PinnedBotsOrder {
+        PinnedBotsOrder(defaults.stringArray(forKey: key(for: teamId)) ?? [])
     }
 
     static func save(_ order: PinnedBotsOrder, teamId: String, defaults: UserDefaults = .standard) {
@@ -214,10 +269,44 @@ struct PinnedBotsSession: Equatable, Sendable {
     }
 
     /// Loads `teamId`'s pins. Nil clears the row without touching any team.
-    mutating func select(teamId: String?, defaults: UserDefaults = .standard) {
+    ///
+    /// `canAdoptLegacy` says the team list has loaded and this id is one of
+    /// its teams; only then may the pre-team list move into it. It defaults to
+    /// false, so a caller that has not checked cannot migrate by accident.
+    mutating func select(
+        teamId: String?,
+        canAdoptLegacy: Bool = false,
+        defaults: UserDefaults = .standard
+    ) {
         guard teamId != self.teamId else { return }
         self.teamId = teamId
-        order = teamId.map { PinnedBotsStorage.load(teamId: $0, defaults: defaults) } ?? PinnedBotsOrder()
+        order = teamId.map {
+            PinnedBotsStorage.load(teamId: $0, canAdoptLegacy: canAdoptLegacy, defaults: defaults)
+        } ?? PinnedBotsOrder()
+    }
+
+    /// Moves the pre-team list into the session's team once that team has
+    /// turned out to exist. The team the session already read without
+    /// migrating — the launch cache's, before the list loaded — takes the pins
+    /// here, so a valid team still inherits them.
+    mutating func adoptLegacyPinsIfPossible(
+        teamIsValid: Bool,
+        defaults: UserDefaults = .standard
+    ) {
+        guard teamIsValid, let teamId, !teamId.isEmpty else { return }
+        if defaults.object(forKey: PinnedBotsStorage.key(for: teamId)) != nil {
+            // This verified team already has its own list. The pre-team list
+            // cannot be merged into it without rewriting pins made since, so
+            // drop it before another team can inherit it.
+            defaults.removeObject(forKey: PinnedBotsStorage.legacyKey)
+            return
+        }
+        guard order.ids.isEmpty,
+              let legacy = defaults.stringArray(forKey: PinnedBotsStorage.legacyKey)
+        else { return }
+        order = PinnedBotsOrder(legacy)
+        PinnedBotsStorage.save(order, teamId: teamId, defaults: defaults)
+        defaults.removeObject(forKey: PinnedBotsStorage.legacyKey)
     }
 
     @discardableResult
@@ -235,7 +324,7 @@ struct PinnedBotsSession: Equatable, Sendable {
     }
 
     /// Drops ids the loaded list no longer has, but only when that list is
-    /// this team's current, unfiltered, non-empty list.
+    /// this team's current, unfiltered, non-empty and complete list.
     @discardableResult
     mutating func prune(
         available: Set<String>,
@@ -243,6 +332,8 @@ struct PinnedBotsSession: Equatable, Sendable {
         loadedQuery: String?,
         botsListIsEmpty: Bool,
         loadedTeamId: String?,
+        currentTeamId: String?,
+        listIsComplete: Bool,
         defaults: UserDefaults = .standard
     ) -> Bool {
         let policy = PinnedBotsPrunePolicy(
@@ -250,8 +341,9 @@ struct PinnedBotsSession: Equatable, Sendable {
             loadedQuery: loadedQuery,
             botsListIsEmpty: botsListIsEmpty,
             loadedTeamId: loadedTeamId,
-            currentTeamId: teamId,
-            pinsTeamId: teamId
+            currentTeamId: currentTeamId,
+            pinsTeamId: teamId,
+            listIsComplete: listIsComplete
         )
         guard policy.allowsPruning, order.prune(keeping: available) else { return false }
         save(defaults: defaults)
