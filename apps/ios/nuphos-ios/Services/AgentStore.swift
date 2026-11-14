@@ -265,6 +265,16 @@ final class AgentStore {
         await reload(afterChange: true)
     }
 
+    /// The Bot that leads the viewer's other Bots, as the Bots listing last read it.
+    var leaderBotId: String? { bots.first { $0.leader == true && $0.ownsChat }?.sessionId }
+
+    func setBotLeader(_ leader: Bool, botId: String, teamId: String) async throws {
+        let scope = workspaceScope
+        try await AgentChatAPI.setBotLeader(leader, token: token, teamId: teamId, sessionId: botId)
+        guard scope == workspaceScope else { return }
+        await reload(afterChange: true)
+    }
+
     /// "Make this a Bot" or "Turn into a Task". Whether it was saved.
     func setBot(_ bot: Bool, conversation: AgentConversation) async -> Bool {
         guard conversation.ownsChat, let teamId = conversation.teamId ?? selectedTeam?.id else { return false }

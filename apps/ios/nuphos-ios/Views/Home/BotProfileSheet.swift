@@ -23,6 +23,8 @@ struct BotProfileSheet: View {
     @State private var saving = false
     @State private var failure: String?
     @State private var showTriggers = false
+    @State private var leader = false
+    @State private var changingLeader = false
 
     private let faces = BotAvatars.files.map { $0.replacingOccurrences(of: ".svg", with: "") }
     private var editable: Bool { saved?.editable == true }
@@ -106,6 +108,26 @@ struct BotProfileSheet: View {
                     }
                     .listRowBackground(Theme.surface)
 
+                    if editable {
+                        Section {
+                            Toggle(isOn: Binding(get: { leader }, set: { setLeader($0) })) {
+                                Label("Leader", systemImage: "crown")
+                            }
+                            .disabled(changingLeader)
+                            .accessibilityIdentifier("bot-profile.leader")
+                        } footer: {
+                            Text("The Leader takes on your requests, hands parts to your other Bots, manages them and brings back one answer. One Bot leads at a time.")
+                        }
+                        .listRowBackground(Theme.surface)
+                    } else if leader {
+                        Section {
+                            Label("Leader", systemImage: "crown.fill")
+                        } footer: {
+                            Text("This Bot hands work to its owner's other Bots and manages them.")
+                        }
+                        .listRowBackground(Theme.surface)
+                    }
+
                     Section {
                         Button { showTriggers = true } label: {
                             Label("Triggers", systemImage: "clock.arrow.circlepath")
@@ -158,8 +180,25 @@ struct BotProfileSheet: View {
             name = profile.title
             if let avatar = profile.avatar { face = avatar }
             instructions = profile.instructions
+            leader = profile.leader
         } catch {
             loadError = error.localizedDescription
+        }
+    }
+
+    /// Applies at once, apart from Save: picking a Leader also takes the role from any other Bot.
+    private func setLeader(_ on: Bool) {
+        guard !changingLeader else { return }
+        leader = on
+        changingLeader = true
+        Task {
+            defer { changingLeader = false }
+            do {
+                try await store.setBotLeader(on, botId: target.botId, teamId: target.teamId)
+            } catch {
+                leader = !on
+                failure = error.localizedDescription
+            }
         }
     }
 

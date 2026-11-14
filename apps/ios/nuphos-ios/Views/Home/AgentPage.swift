@@ -645,11 +645,14 @@ struct ChannelRow: View {
                 AgentAvatar(agentId: channel.sessionId, runtime: channel.agentRuntime, size: 36)
             }
             VStack(alignment: .leading, spacing: 3) {
-                HStack(alignment: .firstTextBaseline) {
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text(channel.displayTitle)
                         .font(Theme.Text.body.weight(.medium))
                         .foregroundStyle(Theme.heading)
                         .lineLimit(1)
+                    if let leader = store.leaderBotId, leader == (channel.isChannel ? channel.botId : channel.sessionId) {
+                        LeaderBadge()
+                    }
                     Spacer(minLength: 8)
                     Text(HistoryTime.format(channel.lastActiveAt))
                         .font(Theme.Text.label)
@@ -674,6 +677,17 @@ struct ChannelRow: View {
         }
         .padding(.vertical, 6)
         .contentShape(Rectangle())
+    }
+}
+
+/// Marks the Bot that leads the owner's other Bots.
+struct LeaderBadge: View {
+    var body: some View {
+        Image(systemName: "crown.fill")
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(.orange)
+            .accessibilityLabel("Leader")
+            .accessibilityIdentifier("bot.leader-badge")
     }
 }
 

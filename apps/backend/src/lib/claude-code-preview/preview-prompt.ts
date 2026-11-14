@@ -3,6 +3,7 @@
 // `_meta.systemPrompt`. Sandbox-only sections (bash/skill tools, setup
 // scripts) are adapted to the native runtime equivalents it actually has.
 
+import { botLeaderSection } from '@/lib/agent/bot-leader'
 import { getConversationBySessionId } from '@/lib/agent/db'
 import { OWNER_DECISION_NOTE } from '@/lib/agent/db/channel-notes'
 import { agentConversations } from '@/lib/agent/db/shared'
@@ -158,7 +159,7 @@ async function credentialAndPermissionWallSections(
 
 /** The text appended to Claude Code's system prompt for one conversation. */
 export async function buildPreviewSystemPrompt(args: PreviewPromptArgs): Promise<string> {
-  const [base, cloudAccess, urlContext, instructions, where, taskName, channels] =
+  const [base, cloudAccess, urlContext, instructions, where, taskName, channels, leader] =
     await Promise.all([
       getSystemPrompt(args.locale, { max_output_tokens: MODEL_OUTPUT_BUDGET_TOKENS }),
       credentialAndPermissionWallSections(args).catch(() => ({
@@ -170,6 +171,7 @@ export async function buildPreviewSystemPrompt(args: PreviewPromptArgs): Promise
       runtimeWhere(args.runtimeId).catch(() => 'inside the team sandbox'),
       taskNameSection(args.sessionId).catch(() => null),
       channelsSection(args.sessionId).catch(() => null),
+      botLeaderSection(args.sessionId).catch(() => null),
     ])
   const userFacingLanguage = inferUserFacingLanguage(args.userTexts ?? [], args.locale)
 
@@ -206,6 +208,7 @@ export async function buildPreviewSystemPrompt(args: PreviewPromptArgs): Promise
     BACKGROUND_MONITOR_NOTE,
     taskName,
     channels,
+    leader,
     previewChannelPromptSection({ teamId: args.teamId, slackThread: args.slackThread }),
     nativeText(buildNuphosLinksMessage(args.teamId, { nativeClaudeSkills: true })),
     instructions,

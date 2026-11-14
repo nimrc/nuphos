@@ -238,6 +238,7 @@ struct RuntimeObservationTests {
         ConversationNestingTests.run()
         ResourceStripTests.run()
         BotQuestionsTests.run()
+        BotLeaderTests.run()
         ComposerDraftsTests.run()
         CredentialScopeTests.run()
         RetiredConnectorTests.run()

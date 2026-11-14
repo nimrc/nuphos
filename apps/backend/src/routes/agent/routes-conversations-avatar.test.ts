@@ -34,6 +34,7 @@ let member = true
 let claimWins = true
 let parentSessionId: string | undefined
 let profiles: { userId: string; update: Record<string, unknown> }[] = []
+let leaders: { session: string; team: string; leader: boolean }[] = []
 
 useIdentity({
   authenticateToken: async () => ({ user: { id: caller } }),
@@ -71,6 +72,13 @@ useAgentDb({
   updateBotSelf: async (_session, userId, _team, update) => {
     if (userId !== owner || !currentAvatar) return false
     profiles.push({ userId, update })
+
+    return true
+  },
+  // As the write: only the owner's Bot can lead.
+  setBotLeader: async (session, userId, team, leader) => {
+    if (userId !== owner || !currentAvatar) return false
+    leaders.push({ session, team, leader })
 
     return true
   },
@@ -124,6 +132,7 @@ beforeEach(() => {
   claimWins = true
   parentSessionId = undefined
   profiles = []
+  leaders = []
   turns.length = 0
 })
 const pick = (avatar: unknown, team = teamId) =>
@@ -319,4 +328,35 @@ test('a profile edit needs the owner, a Bot and a valid field', async () => {
   currentAvatar = undefined
   expect((await editProfile({ name: 'A Task' })).status).toBe(404)
   expect(profiles).toEqual([])
+})
+
+const lead = (body: unknown, team = teamId) =>
+  app.request(`/agent/conversations/s1/leader?teamId=${team}`, {
+    method: 'PUT',
+    headers: { authorization: 'Bearer test-token', 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+
+test('the owner makes a Bot their Leader, and stops it leading', async () => {
+  currentAvatar = '07-ada'
+  expect((await lead({ leader: true })).status).toBe(200)
+  expect((await lead({ leader: false })).status).toBe(200)
+  expect(leaders).toEqual([
+    { session: 's1', team: teamId, leader: true },
+    { session: 's1', team: teamId, leader: false },
+  ])
+})
+
+test('a Leader needs the owner, a Bot and a yes or no', async () => {
+  currentAvatar = '07-ada'
+  expect((await lead({})).status).toBe(400)
+  expect((await lead({ leader: 'yes' })).status).toBe(400)
+  owner = 'someone-else'
+  expect((await lead({ leader: true })).status).toBe(404)
+  owner = caller
+  currentAvatar = undefined
+  expect((await lead({ leader: true })).status).toBe(404)
+  member = false
+  expect((await lead({ leader: true }, otherTeam)).status).toBe(403)
+  expect(leaders).toEqual([])
 })

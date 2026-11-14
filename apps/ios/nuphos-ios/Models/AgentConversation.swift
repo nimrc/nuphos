@@ -133,6 +133,8 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
     var faces: [ChatFace]?
     /// A Bot's face, e.g. `05-rembrandt`; nil for a Task (#1691).
     var avatar: String?
+    /// The owner's lead Bot in this team, which hands work to their other Bots.
+    var leader: Bool?
     /// Absent when the chat has no post yet, or from an older backend.
     var lastMessage: LastMessage?
     /// Open questions, oldest first; absent when there are none.
@@ -203,6 +205,7 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
         group = try? c.decodeIfPresent(Bool.self, forKey: .group)
         faces = try? c.decodeIfPresent([ChatFace].self, forKey: .faces)
         avatar = try? c.decodeIfPresent(String.self, forKey: .avatar)
+        leader = try? c.decodeIfPresent(Bool.self, forKey: .leader)
         lastMessage = try? c.decodeIfPresent(LastMessage.self, forKey: .lastMessage)
         inputRequests = try? c.decodeIfPresent([InputRequest].self, forKey: .inputRequests)
     }

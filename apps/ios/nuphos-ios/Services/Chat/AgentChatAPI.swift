@@ -174,6 +174,15 @@ enum AgentChatAPI {
         )
     }
 
+    /// `PUT /agent/conversations/:id/leader` — the owner makes a Bot the Leader of
+    /// their other Bots in this team, taking it from any other, or stops it leading.
+    static func setBotLeader(_ leader: Bool, token: String, teamId: String, sessionId: String) async throws {
+        _ = try await send(
+            "PUT", "agent/conversations/\(sessionId)/leader",
+            query: [URLQueryItem(name: "teamId", value: teamId)], token: token, body: ["leader": leader]
+        )
+    }
+
     /// `POST /agent/bots` — a Bot with the picked name and face, on the
     /// runtime a new chat would use (#1691).
     static func createBot(token: String, teamId: String, title: String, avatar: String, runtime: RuntimeInstance?) async throws -> String {

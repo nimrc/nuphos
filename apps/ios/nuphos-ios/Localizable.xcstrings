@@ -4768,6 +4768,36 @@
           }
         }
       }
+    },
+    "Leader": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leader"
+          }
+        }
+      }
+    },
+    "The Leader takes on your requests, hands parts to your other Bots, manages them and brings back one answer. One Bot leads at a time.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leader 接下你的需求，拆分后分派给你的其他 Bot 并管理它们，最后汇总成一个答复。同一时间只有一个 Bot 担任 Leader。"
+          }
+        }
+      }
+    },
+    "This Bot hands work to its owner's other Bots and manages them.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这个 Bot 负责给主人的其他 Bot 分派工作并管理它们。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
