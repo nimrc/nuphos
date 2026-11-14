@@ -4612,6 +4612,22 @@
           }
         }
       }
+    },
+    "No Bots yet. Tap + in the top right to create one.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Bots yet. Tap + in the top right to create one."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有 Bot，点右上角的 + 新建一个"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

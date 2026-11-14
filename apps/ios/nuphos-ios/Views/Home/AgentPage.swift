@@ -479,64 +479,14 @@ struct AgentPage: View {
         .resolve(newBotState, scheme: colorScheme == .dark ? .dark : .light)
     }
 
-    /// The accessibility hint and value both entries read, so a state cannot
-    /// be described one way by the row and another by the bar button.
+    /// The accessibility hint and value the top-bar plus reads, so a state
+    /// cannot be described one way here and another by the glyph.
     private var newBotAccessibilityHint: Text {
         newBotAppearance.announcesProgress ? Text("Creating the Bot") : Text("Creates a Bot with its own chat")
     }
 
     private var newBotAccessibilityValue: Text {
         newBotAppearance.announcesProgress ? Text("In progress") : Text("")
-    }
-
-    /// The obvious create entry: the first row of the Bots list, so it also
-    /// carries the empty state.
-    private var newBotRow: some View {
-        VStack(spacing: 8) {
-            Button {
-                guard newBotAppearance.acceptsTaps else { return }
-                showNewBot = true
-            } label: {
-                HStack(spacing: 8) {
-                    if let spinner = newBotAppearance.spinner {
-                        ProgressView()
-                            .tint(spinner.color)
-                            .accessibilityHidden(true)
-                    } else {
-                        Image(systemName: "plus")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundStyle(newBotAppearance.glyph.color)
-                    }
-                    Text("New Bot")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(newBotAppearance.label.color)
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: 50)
-                .background(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(newBotAppearance.fill.color)
-                )
-                .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            }
-            .buttonStyle(NewBotButtonStyle())
-            .disabled(newBotAppearance.readsAsDisabled)
-            .accessibilityLabel("New Bot")
-            .accessibilityHint(newBotAccessibilityHint)
-            .accessibilityValue(newBotAccessibilityValue)
-
-            if store.botsList.isEmpty {
-                Text("Give each Bot its own chat")
-                    .font(.system(size: 13))
-                    .foregroundStyle(Theme.muted)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-            }
-        }
-        .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-        .listSectionSeparator(.hidden, edges: .top)
     }
 
     /// The bar entry sits straight on the navigation bar rather than inside
@@ -552,11 +502,11 @@ struct AgentPage: View {
         }
     }
 
-    /// The same create action in the navigation bar, top right. A navigation
-    /// bar takes a bare glyph, so it draws `barGlyph` (or the bare
-    /// `barSpinner` while creating) straight on the bar — no disc and no row
-    /// fill — while still reading the one shared `NewBotButtonAppearance` for
-    /// its state, colour and behaviour.
+    /// The only create entry: a bare 44×44 plus in the navigation bar, top
+    /// right, including when the list is empty. It draws `barGlyph` (or the
+    /// bare `barSpinner` while creating) straight on the bar — no disc and no
+    /// fill — while reading `NewBotButtonAppearance` for its state, colour
+    /// and behaviour.
     private var newBotBarButton: some View {
         Button {
             guard newBotAppearance.acceptsTaps else { return }
@@ -585,8 +535,6 @@ struct AgentPage: View {
         List(selection: selection) {
             if page == .chats {
                 Section {
-                    newBotRow
-
                     ForEach(store.botsList) { row in
                         Group {
                             if row.isChannel {
@@ -606,6 +554,17 @@ struct AgentPage: View {
                         .listRowBackground(openChat?.id == row.sessionId ? Theme.muted.opacity(0.12) : Color.clear)
                         .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 16))
                         .listSectionSeparator(.hidden, edges: .top)
+                    }
+
+                    if store.botsList.isEmpty {
+                        Text("No Bots yet. Tap + in the top right to create one.")
+                            .font(.system(size: 15))
+                            .foregroundStyle(Theme.muted)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 24)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                     }
                 } header: {
                     sectionHeader("Bots")
