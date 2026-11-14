@@ -130,7 +130,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld 个运行时"
+            "value": "%lld 个 Runtime"
           }
         }
       }
@@ -162,7 +162,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "智能体"
+            "value": "Agents"
           }
         }
       }
@@ -172,7 +172,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已经收到邀请？先在邮件中接受邀请，再刷新工作区。"
+            "value": "已经收到邀请？先在邮件中接受邀请，再刷新 Workspace。"
           }
         }
       }
@@ -272,7 +272,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "可加入的工作区"
+            "value": "可加入的 Workspace"
           }
         }
       }
@@ -292,7 +292,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择凭据"
+            "value": "选择 Credential"
           }
         }
       }
@@ -352,7 +352,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在智能体中继续"
+            "value": "在 Agent 中继续"
           }
         }
       }
@@ -382,7 +382,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载凭据"
+            "value": "无法加载 Credential"
           }
         }
       }
@@ -392,7 +392,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载智能体"
+            "value": "无法加载 Agent"
           }
         }
       }
@@ -412,7 +412,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载运行时"
+            "value": "无法加载 Runtime"
           }
         }
       }
@@ -422,7 +422,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法加载此智能体"
+            "value": "无法加载此 Agent"
           }
         }
       }
@@ -432,7 +432,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "创建工作区来使用智能体和运行时，或加入你的组织已开放的工作区。"
+            "value": "创建 Workspace 来使用 Agent 和 Runtime，或加入你的组织已开放的 Workspace。"
           }
         }
       }
@@ -442,7 +442,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "创建或加入工作区，即可开始和智能体对话。"
+            "value": "创建或加入 Workspace，即可开始和 Agent 对话。"
           }
         }
       }
@@ -452,7 +452,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "创建工作区"
+            "value": "创建 Workspace"
           }
         }
       }
@@ -462,7 +462,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "凭据"
+            "value": "Credentials"
           }
         }
       }
@@ -502,7 +502,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "完成"
+            "value": "已完成"
           }
         }
       }
@@ -522,7 +522,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "筛选智能体"
+            "value": "筛选 Agent"
           }
         }
       }
@@ -553,7 +553,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在加载凭据…"
+            "value": "正在加载 Credential…"
           }
         }
       }
@@ -563,7 +563,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在加载智能体…"
+            "value": "正在加载 Agent…"
           }
         }
       }
@@ -643,7 +643,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "我的智能体"
+            "value": "我的 Agent"
           }
         }
       }
@@ -663,7 +663,17 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "我的工作区"
+            "value": "我的 Workspace"
+          }
+        }
+      }
+    },
+    "New agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新建 Agent"
           }
         }
       }
@@ -673,7 +683,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "尚未连接凭据"
+            "value": "尚未连接 Credential"
           }
         }
       }
@@ -683,7 +693,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有匹配的智能体。"
+            "value": "没有匹配的 Agent。"
           }
         }
       }
@@ -693,7 +703,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "还没有智能体"
+            "value": "还没有 Agent"
           }
         }
       }
@@ -733,7 +743,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "打开智能体"
+            "value": "打开 Agent"
           }
         }
       }
@@ -843,7 +853,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在准备运行时"
+            "value": "正在准备 Runtime"
           }
         }
       }
@@ -873,7 +883,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "刷新工作区"
+            "value": "刷新 Workspace"
           }
         }
       }
@@ -933,7 +943,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "运行时"
+            "value": "Runtimes"
           }
         }
       }
@@ -963,7 +973,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "搜索智能体"
+            "value": "搜索 Agent"
           }
         }
       }
@@ -983,7 +993,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "设置工作区"
+            "value": "设置 Workspace"
           }
         }
       }
@@ -1053,7 +1063,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "从下方输入栏开始一个智能体。"
+            "value": "从下方输入栏开始一个 Agent。"
           }
         }
       }
@@ -1093,7 +1103,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "团队智能体"
+            "value": "团队 Agent"
           }
         }
       }
@@ -1103,7 +1113,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "智能体仍在生成方案——步骤、费用和风险就绪后才能批准。"
+            "value": "Agent 仍在生成方案——步骤、费用和风险就绪后才能批准。"
           }
         }
       }
@@ -1189,7 +1199,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "工作区名称"
+            "value": "Workspace 名称"
           }
         }
       }
@@ -1220,17 +1230,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "工作区的云端运行时正在启动，稍后会出现在这里。"
-          }
-        }
-      }
-    },
-    "Yu AI balance": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yu AI 余额"
+            "value": "Workspace 的云端 Runtime 正在启动，稍后会出现在这里。"
           }
         }
       }
@@ -1251,6 +1251,3304 @@
           "stringUnit": {
             "state": "translated",
             "value": "·"
+          }
+        }
+      }
+    },
+    "Bots": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bots"
+          }
+        }
+      }
+    },
+    "Tasks": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks"
+          }
+        }
+      }
+    },
+    "Inbox": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inbox"
+          }
+        }
+      }
+    },
+    "Connectors": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectors"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名称"
+          }
+        }
+      }
+    },
+    "Runtime name": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime 名称"
+          }
+        }
+      }
+    },
+    "Usage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用量"
+          }
+        }
+      }
+    },
+    "Enabled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已启用"
+          }
+        }
+      }
+    },
+    "Remove Runtime": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除 Runtime"
+          }
+        }
+      }
+    },
+    "Unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不可用"
+          }
+        }
+      }
+    },
+    "omp does not report usage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "omp 不上报用量"
+          }
+        }
+      }
+    },
+    "%lld% left": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余 %lld%"
+          }
+        }
+      }
+    },
+    "Sign In": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录"
+          }
+        }
+      }
+    },
+    "Sign In Again": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新登录"
+          }
+        }
+      }
+    },
+    "Disabled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已停用"
+          }
+        }
+      }
+    },
+    "Unknown runtime": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 Runtime"
+          }
+        }
+      }
+    },
+    "Runtime": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime"
+          }
+        }
+      }
+    },
+    "Ask owner": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "询问所有者"
+          }
+        }
+      }
+    },
+    "Ask an admin": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "询问管理员"
+          }
+        }
+      }
+    },
+    "Signed out · sign in to %@ on that computer": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已退出登录 · 请在那台电脑上登录 %@"
+          }
+        }
+      }
+    },
+    "Offline · open Nuphos on that computer": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "离线 · 请在那台电脑上打开 Nuphos"
+          }
+        }
+      }
+    },
+    "Team": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "团队"
+          }
+        }
+      }
+    },
+    "Signed-in accounts": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已登录账户"
+          }
+        }
+      }
+    },
+    "Add account": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加账户"
+          }
+        }
+      }
+    },
+    "Edit profile": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑资料"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资料"
+          }
+        }
+      }
+    },
+    "Choose photo": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择照片"
+          }
+        }
+      }
+    },
+    "Change photo": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更换照片"
+          }
+        }
+      }
+    },
+    "Remove photo": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除照片"
+          }
+        }
+      }
+    },
+    "Username": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用户名"
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "邮箱"
+          }
+        }
+      }
+    },
+    "User ID": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "User ID"
+          }
+        }
+      }
+    },
+    "Avatar URL": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "头像 URL"
+          }
+        }
+      }
+    },
+    "Signed-in devices": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已登录设备"
+          }
+        }
+      }
+    },
+    "Two-factor authentication": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "双重验证"
+          }
+        }
+      }
+    },
+    "Choose team": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择团队"
+          }
+        }
+      }
+    },
+    "Message %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "消息 %@"
+          }
+        }
+      }
+    },
+    "Voice input": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语音输入"
+          }
+        }
+      }
+    },
+    "Cancel voice input": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消语音输入"
+          }
+        }
+      }
+    },
+    "Finish voice input": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束语音输入"
+          }
+        }
+      }
+    },
+    "Send voice input": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送语音"
+          }
+        }
+      }
+    },
+    "Transcribing…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在转写…"
+          }
+        }
+      }
+    },
+    "Voice input failed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语音输入失败"
+          }
+        }
+      }
+    },
+    "Send to the current reply": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送到当前回复"
+          }
+        }
+      }
+    },
+    "Couldn't prepare this photo or video. Try a different one or choose it from Files.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法处理这张照片或视频，请换一个，或从「文件」中选择。"
+          }
+        }
+      }
+    },
+    "Couldn't paste this item. Try choosing it from Files.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法粘贴此项目，请从「文件」中选择。"
+          }
+        }
+      }
+    },
+    "Send attachments after this turn; it takes text now.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这一轮只接收文字，附件请在这一轮结束后发送。"
+          }
+        }
+      }
+    },
+    "Couldn't send attachment": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "附件发送失败"
+          }
+        }
+      }
+    },
+    "Allow microphone access for Yu Bot in Settings to use voice input.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在系统设置中允许 Yu Bot 使用麦克风，才能语音输入。"
+          }
+        }
+      }
+    },
+    "Yu AI couldn't be reached. Try again.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法连接 Yu AI，请重试。"
+          }
+        }
+      }
+    },
+    "The recording couldn't be transcribed.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这段录音无法转写。"
+          }
+        }
+      }
+    },
+    "Show more": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展开"
+          }
+        }
+      }
+    },
+    "Show less": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收起"
+          }
+        }
+      }
+    },
+    "You, %@: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你，%1$@：%2$@"
+          }
+        }
+      }
+    },
+    "Them, %@: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对方，%1$@：%2$@"
+          }
+        }
+      }
+    },
+    "You: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你：%@"
+          }
+        }
+      }
+    },
+    "Them: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对方：%@"
+          }
+        }
+      }
+    },
+    "Attached image": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "附件图片"
+          }
+        }
+      }
+    },
+    "Opens the attachment": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开附件"
+          }
+        }
+      }
+    },
+    "Image, %@, %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片，%1$@，%2$@"
+          }
+        }
+      }
+    },
+    "File, %@, %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件，%1$@，%2$@"
+          }
+        }
+      }
+    },
+    "File, %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件，%@"
+          }
+        }
+      }
+    },
+    "Image, %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片，%@"
+          }
+        }
+      }
+    },
+    "Video, %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "视频，%@"
+          }
+        }
+      }
+    },
+    "Untitled agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未命名 Agent"
+          }
+        }
+      }
+    },
+    "Untitled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未命名"
+          }
+        }
+      }
+    },
+    "Untitled plan": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未命名方案"
+          }
+        }
+      }
+    },
+    "File": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件"
+          }
+        }
+      }
+    },
+    "Infrastructure": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "基础设施"
+          }
+        }
+      }
+    },
+    "Observability": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可观测性"
+          }
+        }
+      }
+    },
+    "Networking": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "网络"
+          }
+        }
+      }
+    },
+    "Compliance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "合规"
+          }
+        }
+      }
+    },
+    "Source control": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "源代码管理"
+          }
+        }
+      }
+    },
+    "Project management": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "项目管理"
+          }
+        }
+      }
+    },
+    "Document": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文档"
+          }
+        }
+      }
+    },
+    "Role ARN": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "角色 ARN"
+          }
+        }
+      }
+    },
+    "Label": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标签"
+          }
+        }
+      }
+    },
+    "Tenant ID": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tenant ID"
+          }
+        }
+      }
+    },
+    "Client ID": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Client ID"
+          }
+        }
+      }
+    },
+    "Subscription ID": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscription ID"
+          }
+        }
+      }
+    },
+    "API token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API token"
+          }
+        }
+      }
+    },
+    "Uptime API token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uptime API token"
+          }
+        }
+      }
+    },
+    "Telemetry API token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遥测 API token"
+          }
+        }
+      }
+    },
+    "Base URL": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base URL"
+          }
+        }
+      }
+    },
+    "Auth token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auth token"
+          }
+        }
+      }
+    },
+    "Password": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密码"
+          }
+        }
+      }
+    },
+    "Grafana URL": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafana URL"
+          }
+        }
+      }
+    },
+    "Service account token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服务账户 token"
+          }
+        }
+      }
+    },
+    "OAuth client ID": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OAuth client ID"
+          }
+        }
+      }
+    },
+    "OAuth client secret": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OAuth client secret"
+          }
+        }
+      }
+    },
+    "Client secret": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Client secret"
+          }
+        }
+      }
+    },
+    "API key": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key"
+          }
+        }
+      }
+    },
+    "API secret": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API secret"
+          }
+        }
+      }
+    },
+    "Token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token"
+          }
+        }
+      }
+    },
+    "Integration token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "集成 token"
+          }
+        }
+      }
+    },
+    "Account email": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账户邮箱"
+          }
+        }
+      }
+    },
+    "Management API key": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理 API key"
+          }
+        }
+      }
+    },
+    "arn:aws:iam::123456789012:role/Nuphos": {},
+    "Production": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生产"
+          }
+        }
+      }
+    },
+    "00000000-0000-0000-0000-000000000000": {},
+    "Akamai": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akamai"
+          }
+        }
+      }
+    },
+    "Hetzner": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hetzner"
+          }
+        }
+      }
+    },
+    "Better Stack": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Better Stack"
+          }
+        }
+      }
+    },
+    "Uptime Kuma": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uptime Kuma"
+          }
+        }
+      }
+    },
+    "https://status.example.com": {},
+    "Grafana": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafana"
+          }
+        }
+      }
+    },
+    "https://grafana.example.com": {},
+    "Tailnet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tailnet"
+          }
+        }
+      }
+    },
+    "Vanta": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanta"
+          }
+        }
+      }
+    },
+    "Secureframe": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secureframe"
+          }
+        }
+      }
+    },
+    "SonarQube": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SonarQube"
+          }
+        }
+      }
+    },
+    "https://sonarcloud.io": {},
+    "Notion": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notion"
+          }
+        }
+      }
+    },
+    "Upstash": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upstash"
+          }
+        }
+      }
+    },
+    "Resend": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新发送"
+          }
+        }
+      }
+    },
+    "The role must already trust the Nuphos connector — Nuphos assumes it before saving the binding.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "该角色必须已信任 Nuphos Connector——保存绑定前 Nuphos 会先代入该角色。"
+          }
+        }
+      }
+    },
+    "The app registration needs a federated credential for this team before it can be bound.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "该应用注册需要先为本团队配置联合 Credential，才能绑定。"
+          }
+        }
+      }
+    },
+    "Provide at least one of the two tokens.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "两个 token 至少提供一个。"
+          }
+        }
+      }
+    },
+    "Provide either an auth token or a username and password.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提供 auth token，或提供用户名和密码。"
+          }
+        }
+      }
+    },
+    "Computers": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电脑"
+          }
+        }
+      }
+    },
+    "Clusters": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "集群"
+          }
+        }
+      }
+    },
+    "Personal Credentials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个人 Credential"
+          }
+        }
+      }
+    },
+    "Auto Mode": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto Mode"
+          }
+        }
+      }
+    },
+    "Full Access": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full Access"
+          }
+        }
+      }
+    },
+    "Risky commands ask for your approval": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有风险的命令会先征求你的批准"
+          }
+        }
+      }
+    },
+    "Run every command without asking (default)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不经询问执行每条命令（默认）"
+          }
+        }
+      }
+    },
+    "now": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刚刚"
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 分钟"
+          }
+        }
+      }
+    },
+    "%lld hr": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 小时"
+          }
+        }
+      }
+    },
+    "%lld hrs": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 小时"
+          }
+        }
+      }
+    },
+    "%lld day": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 天"
+          }
+        }
+      }
+    },
+    "%lld days": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 天"
+          }
+        }
+      }
+    },
+    "%lld mo": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个月"
+          }
+        }
+      }
+    },
+    "%lld mos": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个月"
+          }
+        }
+      }
+    },
+    "%lld yr": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 年"
+          }
+        }
+      }
+    },
+    "%lld yrs": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 年"
+          }
+        }
+      }
+    },
+    "Active now": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前活跃"
+          }
+        }
+      }
+    },
+    "Last active %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近活跃 %@"
+          }
+        }
+      }
+    },
+    "Last active: unknown": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近活跃：未知"
+          }
+        }
+      }
+    },
+    "You'll sign in with your own %@ account. Your plan's usage limits apply.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将使用你自己的 %@ 账户登录，并适用你所购套餐的用量限制。"
+          }
+        }
+      }
+    },
+    "Use your own %@ account. Your plan's usage limits apply.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用你自己的 %@ 账户，并适用你所购套餐的用量限制。"
+          }
+        }
+      }
+    },
+    "1. Copy this code.\n2. Open the sign-in page and sign in with your %@ account.\n3. Enter the code when asked. This page updates once you're signed in.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. 复制此验证码。\n2. 打开登录页，用你的 %@ 账户登录。\n3. 按提示输入验证码。登录成功后此页面会自动更新。"
+          }
+        }
+      }
+    },
+    "Open %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 %@"
+          }
+        }
+      }
+    },
+    "Secret needed: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要填写密钥：%@"
+          }
+        }
+      }
+    },
+    "That request wasn't understood. Try again.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没能理解这次请求，请重试。"
+          }
+        }
+      }
+    },
+    "You don't have permission to do that.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你没有权限执行此操作。"
+          }
+        }
+      }
+    },
+    "That conversation is no longer available.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这段对话已不可用。"
+          }
+        }
+      }
+    },
+    "Yu AI took too long to answer. Try again.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu AI 响应超时，请重试。"
+          }
+        }
+      }
+    },
+    "Too many requests. Try again in a moment.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请求过于频繁，请稍后再试。"
+          }
+        }
+      }
+    },
+    "Yu AI is having trouble right now. Try again in a moment.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu AI 目前有问题，请稍后再试。"
+          }
+        }
+      }
+    },
+    "Something went wrong. Try again.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出了点问题，请重试。"
+          }
+        }
+      }
+    },
+    "Sharing unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时无法分享"
+          }
+        }
+      }
+    },
+    "Preparing conversation…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备对话…"
+          }
+        }
+      }
+    },
+    "New conversation": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新对话"
+          }
+        }
+      }
+    },
+    "Shared file": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共享文件"
+          }
+        }
+      }
+    },
+    "Shared image.png": {},
+    "The server opened an unexpected stream (%@).": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服务器返回了意外的数据流（%@）。"
+          }
+        }
+      }
+    },
+    "Your message waits for the turn ahead.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的消息会等这一轮结束后发送。"
+          }
+        }
+      }
+    },
+    "The connection went quiet for too long.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连接长时间没有响应。"
+          }
+        }
+      }
+    },
+    "The runtime went quiet; the reply was closed.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime 长时间没有响应，这条回复已结束。"
+          }
+        }
+      }
+    },
+    "1. Add this account to your authenticator app": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. 将此账户添加到验证器应用"
+          }
+        }
+      }
+    },
+    "2. Enter the 6-digit code it shows": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. 输入验证器显示的 6 位验证码"
+          }
+        }
+      }
+    },
+    "AI data sharing is off. Close Account to read the notice.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 数据共享已关闭。关闭账户页即可查看说明。"
+          }
+        }
+      }
+    },
+    "Account password": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账户密码"
+          }
+        }
+      }
+    },
+    "Add a passkey": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加通行密钥"
+          }
+        }
+      }
+    },
+    "Add connector": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加 Connector"
+          }
+        }
+      }
+    },
+    "Add people": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加成员"
+          }
+        }
+      }
+    },
+    "Adding this person to the conversation also gives them use of this computer. Continue?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加此人后，对方也能使用这台电脑。继续吗？"
+          }
+        }
+      }
+    },
+    "Agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent"
+          }
+        }
+      }
+    },
+    "Agent options": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent 选项"
+          }
+        }
+      }
+    },
+    "Agree and continue": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同意并继续"
+          }
+        }
+      }
+    },
+    "Answer in the conversation": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在对话中答复"
+          }
+        }
+      }
+    },
+    "Appearance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外观"
+          }
+        }
+      }
+    },
+    "Archive": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "归档"
+          }
+        }
+      }
+    },
+    "Archive Bot": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "归档 Bot"
+          }
+        }
+      }
+    },
+    "Ask for a code from an authenticator app each time you sign in, so a stolen password or email is not enough.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每次登录都要输入验证器中的验证码，仅拿到密码或邮箱不足以登录。"
+          }
+        }
+      }
+    },
+    "Ask the agent to schedule recurring work in this conversation.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "让 Agent 在这段对话中安排重复执行的工作。"
+          }
+        }
+      }
+    },
+    "Asynchronously loaded plan": {},
+    "Back": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返回"
+          }
+        }
+      }
+    },
+    "Before you use AI agents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 AI Agent 前"
+          }
+        }
+      }
+    },
+    "Bot avatars": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bot 头像"
+          }
+        }
+      }
+    },
+    "By continuing, you agree to our [Terms of Service](https://yu-bot.airhost.site/terms/) and [Privacy Policy](https://yu-bot.airhost.site/privacy/).": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续即表示你同意我们的[服务条款](https://yu-Bot.airhost.site/terms/)和[隐私政策](https://yu-Bot.airhost.site/privacy/)。"
+          }
+        }
+      }
+    },
+    "Cancel adding account": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消添加账户"
+          }
+        }
+      }
+    },
+    "Change": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更改"
+          }
+        }
+      }
+    },
+    "Check your email": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请查收邮件"
+          }
+        }
+      }
+    },
+    "Choose a connected account to let this conversation use it.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择一个已连接的账户，供这段对话使用。"
+          }
+        }
+      }
+    },
+    "Choose credentials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择 Credential"
+          }
+        }
+      }
+    },
+    "Clear all": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部清除"
+          }
+        }
+      }
+    },
+    "Close tab": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭标签页"
+          }
+        }
+      }
+    },
+    "Confirm it is you": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认是你本人"
+          }
+        }
+      }
+    },
+    "Connect": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连接"
+          }
+        }
+      }
+    },
+    "Connecting…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在连接…"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
+          }
+        }
+      }
+    },
+    "Continuing sign-in…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在继续登录…"
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制"
+          }
+        }
+      }
+    },
+    "Copy codes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制恢复码"
+          }
+        }
+      }
+    },
+    "Couldn't load connectors": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载 Connector"
+          }
+        }
+      }
+    },
+    "Couldn't load model settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载模型设置"
+          }
+        }
+      }
+    },
+    "Couldn't load this chat": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法加载此对话"
+          }
+        }
+      }
+    },
+    "Couldn't load this page from your Mac": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法从你的 Mac 加载此页面"
+          }
+        }
+      }
+    },
+    "Create": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建"
+          }
+        }
+      }
+    },
+    "Delete account": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除账户"
+          }
+        }
+      }
+    },
+    "Depending on your runtime and model, this includes Anthropic (Claude), OpenAI (Codex), xAI (Grok), Google (Antigravity), the model provider an OpenCode runtime uses (OpenCode Zen when it is not signed in to one), or Amazon Web Services. When tracing is enabled, Yu AI stores AI execution traces, which can include conversation and tool content, for diagnostics and service improvement.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "视你的 Runtime 和模型而定，接收方可能是 Anthropic（Claude）、OpenAI（Codex）、xAI（Grok）、Google（Antigravity）、OpenCode Runtime 所用的模型服务商（未登录时是 OpenCode Zen）或 Amazon Web Services。开启追踪时，Yu AI 会保存 AI 执行过程记录，其中可能包含对话和工具内容，用于诊断和改善服务。"
+          }
+        }
+      }
+    },
+    "Desktop": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "桌面"
+          }
+        }
+      }
+    },
+    "Didn't get a code?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没收到验证码？"
+          }
+        }
+      }
+    },
+    "Dismiss": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭"
+          }
+        }
+      }
+    },
+    "Dock": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "侧栏"
+          }
+        }
+      }
+    },
+    "Drag to move the pointer. Tap to click, two fingers to scroll.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拖动可移动指针，轻点即点击，双指滚动。"
+          }
+        }
+      }
+    },
+    "Edit": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑"
+          }
+        }
+      }
+    },
+    "Email address": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "邮箱地址"
+          }
+        }
+      }
+    },
+    "Enter a code from your authenticator app to continue.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请输入验证器应用中的验证码以继续。"
+          }
+        }
+      }
+    },
+    "Enter the 6-digit code from your authenticator app.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入验证器应用中的 6 位验证码。"
+          }
+        }
+      }
+    },
+    "Enter the 6-digit code sent to": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入发送至"
+          }
+        }
+      }
+    },
+    "Everyone here sees each message and decides for themselves whether to reply, as in any group chat.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这里每个人都能看到每条消息，并自行决定是否回复，和普通群聊一样。"
+          }
+        }
+      }
+    },
+    "Favorites": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收藏"
+          }
+        }
+      }
+    },
+    "For your security, this needs a sign-in from the last 10 minutes.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出于安全考虑，需要 10 分钟内登录过才能继续。"
+          }
+        }
+      }
+    },
+    "Forward": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前进"
+          }
+        }
+      }
+    },
+    "General access": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通用访问"
+          }
+        }
+      }
+    },
+    "Getting model settings…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在获取模型设置…"
+          }
+        }
+      }
+    },
+    "Give Agents a character avatar. Turn off to show Runtime icons.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为 Agent 显示角色头像；关闭后显示 Runtime 图标。"
+          }
+        }
+      }
+    },
+    "Hide": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐藏"
+          }
+        }
+      }
+    },
+    "I saved them": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我已保存"
+          }
+        }
+      }
+    },
+    "If you lose your authenticator, each code signs you in once. They are shown only now.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果丢失验证器，每个恢复码可登录一次。这些码只显示这一次。"
+          }
+        }
+      }
+    },
+    "In this agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅此 Agent"
+          }
+        }
+      }
+    },
+    "Its chat is archived with it. Unarchive either one to bring both back.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它的对话会一起归档。恢复其中任意一个，两者都会回来。"
+          }
+        }
+      }
+    },
+    "Leave this unchanged to use Yu AI Cloud. Enter your server address to use a self-hosted instance.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "留空即使用 Yu AI 云端；填写服务器地址则使用自建实例。"
+          }
+        }
+      }
+    },
+    "Let them reply": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许回复"
+          }
+        }
+      }
+    },
+    "Live view on Mac": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac 实时画面"
+          }
+        }
+      }
+    },
+    "Loaded from your Mac. Live reload doesn't update here; reload to see changes.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内容来自你的 Mac。实时重载不会在这里更新，请手动重新加载查看变化。"
+          }
+        }
+      }
+    },
+    "Loading chats…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载对话…"
+          }
+        }
+      }
+    },
+    "Loading runtimes…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载 Runtime…"
+          }
+        }
+      }
+    },
+    "Manage computers and runtimes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理电脑与 Runtime"
+          }
+        }
+      }
+    },
+    "Move": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移动"
+          }
+        }
+      }
+    },
+    "New Agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新建 Agent"
+          }
+        }
+      }
+    },
+    "New recovery codes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新恢复码"
+          }
+        }
+      }
+    },
+    "New tab": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新标签页"
+          }
+        }
+      }
+    },
+    "No connectors yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有 Connector"
+          }
+        }
+      }
+    },
+    "No real account or runtime requests": {},
+    "Not in your Mac's dock": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不在 Mac 的程序坞中"
+          }
+        }
+      }
+    },
+    "Not now — manage my account": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂不 — 管理我的账户"
+          }
+        }
+      }
+    },
+    "Not sent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未发送"
+          }
+        }
+      }
+    },
+    "Only share information you are authorized to share. You can decline and still manage your account or request its deletion. You can withdraw permission in Account → AI data sharing. Withdrawal stops new AI use from this app; it does not undo completed transfers or stop work already running, including work started on other devices or by scheduled agents.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只分享你有权分享的信息。你可以拒绝，仍可管理账户或申请删除账户。你可以在「账户 → AI 数据共享」中撤回授权。撤回后本 App 不再发起新的 AI 使用，但不会撤销已完成的传输，也不会停止正在运行的工作，包括在其他设备上或由定时 Agent 启动的工作。"
+          }
+        }
+      }
+    },
+    "Only the owner can change who has access.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只有所有者可以更改访问权限。"
+          }
+        }
+      }
+    },
+    "Open Connectors": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 Connectors"
+          }
+        }
+      }
+    },
+    "Open Sign-In Page": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开登录页"
+          }
+        }
+      }
+    },
+    "Open desktop": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开桌面"
+          }
+        }
+      }
+    },
+    "Owner": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有者"
+          }
+        }
+      }
+    },
+    "Paste the value": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "粘贴该值"
+          }
+        }
+      }
+    },
+    "Paused": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已暂停"
+          }
+        }
+      }
+    },
+    "Preparing sign-in…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备登录…"
+          }
+        }
+      }
+    },
+    "Preview agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "预览 Agent"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私"
+          }
+        }
+      }
+    },
+    "Provider": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服务商"
+          }
+        }
+      }
+    },
+    "Queued messages · run after the turn ahead": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "排队消息 · 等当前这一轮结束后发送"
+          }
+        }
+      }
+    },
+    "Recent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近"
+          }
+        }
+      }
+    },
+    "Reload": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新加载"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除"
+          }
+        }
+      }
+    },
+    "Rename": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重命名"
+          }
+        }
+      }
+    },
+    "Reply": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回复"
+          }
+        }
+      }
+    },
+    "Request permanent account deletion": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "申请永久删除账户"
+          }
+        }
+      }
+    },
+    "Request permanent deletion": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "申请永久删除"
+          }
+        }
+      }
+    },
+    "Request received": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "申请已收到"
+          }
+        }
+      }
+    },
+    "Resend code": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新发送"
+          }
+        }
+      }
+    },
+    "Reset prompt": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置提示词"
+          }
+        }
+      }
+    },
+    "Retry": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试"
+          }
+        }
+      }
+    },
+    "Retry loading consent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试加载授权说明"
+          }
+        }
+      }
+    },
+    "Retry sign-in options": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试登录方式"
+          }
+        }
+      }
+    },
+    "Save your recovery codes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存恢复码"
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索"
+          }
+        }
+      }
+    },
+    "Search destinations or history": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索页面或历史记录"
+          }
+        }
+      }
+    },
+    "Search or enter address": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索或输入网址"
+          }
+        }
+      }
+    },
+    "Search teammates": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索成员"
+          }
+        }
+      }
+    },
+    "Select Text": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择文字"
+          }
+        }
+      }
+    },
+    "Select all": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全选"
+          }
+        }
+      }
+    },
+    "Send answer": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送答复"
+          }
+        }
+      }
+    },
+    "Server address": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服务器地址"
+          }
+        }
+      }
+    },
+    "Share": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享"
+          }
+        }
+      }
+    },
+    "Share URL": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享链接"
+          }
+        }
+      }
+    },
+    "Share file": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享文件"
+          }
+        }
+      }
+    },
+    "Share image": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享图片"
+          }
+        }
+      }
+    },
+    "Share link": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享链接"
+          }
+        }
+      }
+    },
+    "Share text": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享文字"
+          }
+        }
+      }
+    },
+    "Show on Mac": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 Mac 上显示"
+          }
+        }
+      }
+    },
+    "Sign in again": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新登录"
+          }
+        }
+      }
+    },
+    "Sign in again to manage your devices.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新登录后才能管理设备。"
+          }
+        }
+      }
+    },
+    "Sign in again to turn on two-factor authentication.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新登录后才能开启双重验证。"
+          }
+        }
+      }
+    },
+    "Sign in or create an account.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录或创建账户。"
+          }
+        }
+      }
+    },
+    "Sign out all other devices": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出其他所有设备"
+          }
+        }
+      }
+    },
+    "Sign out and sign in again": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出后重新登录"
+          }
+        }
+      }
+    },
+    "Signed out · sign in on that computer": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已退出登录 · 请在那台电脑上登录"
+          }
+        }
+      }
+    },
+    "Starting your runtime…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在启动 Runtime…"
+          }
+        }
+      }
+    },
+    "Step 1 — expand downward": {},
+    "Switch agent": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切换 Agent"
+          }
+        }
+      }
+    },
+    "Switch runtime": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切换 Runtime"
+          }
+        }
+      }
+    },
+    "Synthetic system share tests": {},
+    "The code expires in 10 minutes.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "验证码 10 分钟内有效。"
+          }
+        }
+      }
+    },
+    "The conversation owner can choose credentials for this conversation.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对话所有者可以为这段对话选择 Credential。"
+          }
+        }
+      }
+    },
+    "The conversation stays here.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对话保留在这里。"
+          }
+        }
+      }
+    },
+    "The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Recordings are transcribed by OpenAI Whisper.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提示词用于设定写作风格，并拼出 Whisper 不认识的名称，例如产品和服务名。录音由 OpenAI Whisper 转写。"
+          }
+        }
+      }
+    },
+    "This device": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此设备"
+          }
+        }
+      }
+    },
+    "This device signed in before device management existed.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此设备在设备管理上线前就已登录。"
+          }
+        }
+      }
+    },
+    "This runtime runs on your computer. After the move, people in this conversation can reply only if they can use this computer; the others can still read it.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此 Runtime 在你的电脑上。移动后，这段对话里的人必须能使用这台电脑才能回复，其他人仍可阅读。"
+          }
+        }
+      }
+    },
+    "This submits a deletion request; it does not instantly erase your account. You can continue using your account while the request is processed. Signing in again does not cancel the request.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会提交删除申请，不会立刻清空账户。处理期间你仍可使用账户。再次登录不会取消该申请。"
+          }
+        }
+      }
+    },
+    "Title": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标题"
+          }
+        }
+      }
+    },
+    "Transcription prompt": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "转写提示词"
+          }
+        }
+      }
+    },
+    "Turn off": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭"
+          }
+        }
+      }
+    },
+    "Turn on": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开启"
+          }
+        }
+      }
+    },
+    "Type DELETE": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入 DELETE"
+          }
+        }
+      }
+    },
+    "Unlink": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解除关联"
+          }
+        }
+      }
+    },
+    "Use Yu AI Cloud": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 Yu AI 云端"
+          }
+        }
+      }
+    },
+    "Use a passkey": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用通行密钥"
+          }
+        }
+      }
+    },
+    "Uses this iPhone's sign-ins, not your Mac's.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用这台 iPhone 的登录状态，不沿用 Mac 上的。"
+          }
+        }
+      }
+    },
+    "Using an agent sends your prompts, conversation history, uploaded images and files, and relevant results from connected tools to the providers needed to carry out your request.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 Agent 时，你的提示词、对话记录、上传的图片和文件，以及连接工具中的相关结果，会发送给完成请求所需的服务商。"
+          }
+        }
+      }
+    },
+    "Verification Code": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "验证码"
+          }
+        }
+      }
+    },
+    "Verification code": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "验证码"
+          }
+        }
+      }
+    },
+    "Waiting for approval…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在等待批准…"
+          }
+        }
+      }
+    },
+    "We will permanently delete your account and associated personal data within 30 days. Our team will coordinate any workspace ownership and shared-data handling. Records required by law and data jointly held by your team may be retained where necessary.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我们会在 30 天内永久删除你的账户及相关个人数据。Workspace 归属和共享数据的处理由我们协调。法律要求保留的记录和由团队共同持有的数据，在必要时会继续保留。"
+          }
+        }
+      }
+    },
+    "When an agent needs you to decide something, it shows up here. Answer it and it leaves the Inbox.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent 需要你决定时，会出现在这里。答复后就会从 Inbox 消失。"
+          }
+        }
+      }
+    },
+    "Where your account is signed in. Sign out anything you don’t recognize, then change your password.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这里是账户的登录位置。发现不认识的设备，先退出登录，再修改密码。"
+          }
+        }
+      }
+    },
+    "Who receives this data": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "谁会收到这些数据"
+          }
+        }
+      }
+    },
+    "Withdraw AI data sharing permission": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤回 AI 数据共享授权"
+          }
+        }
+      }
+    },
+    "Without a photo, your initials are shown.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不上传照片时，会显示你名字的首字母。"
+          }
+        }
+      }
+    },
+    "Workspace": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workspace"
+          }
+        }
+      }
+    },
+    "You're all caught up": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部处理完了"
+          }
+        }
+      }
+    },
+    "Your choice": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的选择"
+          }
+        }
+      }
+    },
+    "Your request has been saved. You do not need to contact support to start deletion.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "申请已保存，不必另外联系支持团队即可开始删除。"
+          }
+        }
+      }
+    },
+    "Yu AI encrypts it on its way to the runtime, which keeps it; Yu AI does not keep a copy.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu AI 会在传往 Runtime 的途中加密，密钥由 Runtime 保存，Yu AI 不保留副本。"
+          }
+        }
+      }
+    },
+    "Yu Bot is based on Nuphos, an open source project. Not affiliated with Zeabur Inc.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu Bot 基于开源项目 Nuphos，与 Zeabur Inc. 无关。"
+          }
+        }
+      }
+    },
+    "https://nuphos.example.com": {},
+    "optional": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可选"
+          }
+        }
+      }
+    },
+    "Attached image, %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "附件图片，%@"
+          }
+        }
+      }
+    },
+    "%@, selected": {
+      "comment": "Page picker: the current page and its selected state",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@，已选中"
+          }
+        }
+      }
+    },
+    "%@, %lld in Inbox, selected": {
+      "comment": "Page picker: current page, open questions in the Inbox, selected state",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@，Inbox 中 %2$lld 条，已选中"
+          }
+        }
+      }
+    },
+    "New Bot": {
+      "comment": "The create entry on the Bots page.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新建 Bot"
+          }
+        }
+      }
+    },
+    "Creates a Bot with its own chat": {
+      "comment": "VoiceOver hint for the create entries.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建一个 Bot，并和它开始对话"
+          }
+        }
+      }
+    },
+    "Creating the Bot": {
+      "comment": "VoiceOver hint while a Bot's first chat is being made.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在创建 Bot"
+          }
+        }
+      }
+    },
+    "In progress": {
+      "comment": "VoiceOver value while a Bot's first chat is being made.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在进行"
+          }
+        }
+      }
+    },
+    "Give each Bot its own chat": {
+      "comment": "Line under the create entry when no Bots exist.",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "给每个 Bot 单独开一个对话"
+          }
+        }
+      }
+    },
+    "Yu AI balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yu AI 余额"
           }
         }
       }

@@ -543,6 +543,15 @@ final class AgentStore {
         }
     }
 
+    /// Whether this team may record voice input. The server advertises it on
+    /// `GET /teams`; a missing answer (an older server, or teams not loaded
+    /// yet) reads as no, so the microphone never opens onto an error.
+    func voiceInputAvailable(teamId: String?) -> Bool {
+        guard let teamId else { return false }
+        let team = teams.first { $0.id == teamId } ?? (selectedTeam?.id == teamId ? selectedTeam : nil)
+        return team?.voiceInputAvailable == true
+    }
+
     func select(team: Team) {
         guard team != selectedTeam else { return }
         selectedTeam = team

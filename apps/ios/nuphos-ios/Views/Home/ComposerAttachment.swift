@@ -103,15 +103,19 @@ struct AttachmentPreview: View {
     let attachment: ComposerAttachment
 
     var body: some View {
-        #if canImport(UIKit)
-        if let image = attachment.thumbnail {
-            Image(uiImage: image).resizable().scaledToFill()
-        } else {
+        Group {
+            #if canImport(UIKit)
+            if let image = attachment.thumbnail {
+                Image(uiImage: image).resizable().scaledToFill()
+            } else {
+                filePlaceholder
+            }
+            #else
             filePlaceholder
+            #endif
         }
-        #else
-        filePlaceholder
-        #endif
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(attachment.accessibilityDescription))
     }
 
     private var filePlaceholder: some View {

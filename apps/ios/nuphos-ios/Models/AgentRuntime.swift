@@ -76,16 +76,16 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
     /// viewer can sign it in themselves.
     static func signInAsk(_ runtimeId: String?, viewerId: String?, isAdministrator: Bool) -> String? {
         guard let runtimeId, let viewerId else { return nil }
-        if isLocalAgent(runtimeId) { return runtimeId.hasPrefix("local_\(viewerId)_") ? nil : "Ask owner" }
-        return isAdministrator ? nil : "Ask an admin"
+        if isLocalAgent(runtimeId) { return runtimeId.hasPrefix("local_\(viewerId)_") ? nil : String(localized: "Ask owner") }
+        return isAdministrator ? nil : String(localized: "Ask an admin")
     }
 
     var providerName: String { Provider.name(provider.rawValue) }
 
     var subtitle: String? {
         let hint: String? =
-            if local?.signedIn == false { "Signed out · sign in to \(providerName) on that computer" }
-            else if status == .disabled { tier == .myComputers ? "Offline · open Nuphos on that computer" : "Disabled" }
+            if local?.signedIn == false { String(localized: "Signed out · sign in to \(providerName) on that computer") }
+            else if status == .disabled { tier == .myComputers ? String(localized: "Offline · open Nuphos on that computer") : String(localized: "Disabled") }
             else { nil }
         guard tier == .myComputers else { return hint }
         return [providerName, hint].compactMap(\.self).joined(separator: " · ")
@@ -132,7 +132,7 @@ extension RuntimeInstance.Provider {
         case "omp": "omp"
         case "hermes": "Hermes Agent"
         case "nuphos": "Nuphos"
-        default: raw?.isEmpty == false ? "Unknown runtime" : "Runtime"
+        default: raw?.isEmpty == false ? String(localized: "Unknown runtime") : String(localized: "Runtime")
         }
     }
 }

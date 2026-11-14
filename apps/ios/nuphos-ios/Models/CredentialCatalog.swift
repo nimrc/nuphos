@@ -43,7 +43,7 @@ struct CredentialCatalog: Equatable, Sendable {
     }
 
     static let providers: [Provider] = [
-        .init(optionsKey: "devices", selectionKey: "deviceIds", title: "Computers", logo: "", idKey: "deviceId", labelKeys: ["label"], detailKeys: ["platform"], symbol: "laptopcomputer"),
+        .init(optionsKey: "devices", selectionKey: "deviceIds", title: String(localized: "Computers"), logo: "", idKey: "deviceId", labelKeys: ["label"], detailKeys: ["platform"], symbol: "laptopcomputer"),
         .init(optionsKey: "awsRoles", selectionKey: "awsRoleIds", title: "AWS", logo: "logo-aws", idKey: "roleId", labelKeys: ["accountAlias", "accountId"], detailKeys: ["roleArn"]),
         .init(optionsKey: "gcpServiceAccounts", selectionKey: "gcpServiceAccountIds", title: "Google Cloud / Firebase", logo: "logo-gcp", idKey: "serviceAccountId", labelKeys: ["projectId"], detailKeys: ["serviceAccountEmail"]),
         .init(optionsKey: "azureAccounts", selectionKey: "azureAccountIds", title: "Azure", logo: "logo-azure", idKey: "accountId", labelKeys: ["label"], detailKeys: ["subscriptionId"]),
@@ -53,7 +53,7 @@ struct CredentialCatalog: Equatable, Sendable {
         .init(optionsKey: "aliyunAccounts", selectionKey: "aliyunAccountIds", title: "Alibaba Cloud", logo: "logo-aliyun", idKey: "accountId", labelKeys: ["label"], detailKeys: ["roleArn"]),
         .init(optionsKey: "volcengineAccounts", selectionKey: "volcengineAccountIds", title: "Volcengine", logo: "logo-volcengine", idKey: "accountId", labelKeys: ["label"], detailKeys: ["roleTrn"]),
         .init(optionsKey: "zeaburProviders", selectionKey: "zeaburIds", title: "Zeabur", logo: "logo-zeabur", idKey: "zeaburId", labelKeys: ["name"], detailKeys: ["kind"]),
-        .init(optionsKey: "onpremClusters", selectionKey: "onpremClusterIds", title: "Clusters", logo: "logo-kubernetes", idKey: "clusterId", labelKeys: ["label"], detailKeys: ["contextName"]),
+        .init(optionsKey: "onpremClusters", selectionKey: "onpremClusterIds", title: String(localized: "Clusters"), logo: "logo-kubernetes", idKey: "clusterId", labelKeys: ["label"], detailKeys: ["contextName"]),
         .init(optionsKey: "tailscaleClients", selectionKey: "tailscaleClientIds", title: "Tailscale", logo: "logo-tailscale", idKey: "clientId", labelKeys: ["label"], detailKeys: ["oauthClientId"]),
         .init(optionsKey: "betterStackIntegrations", selectionKey: "betterStackIntegrationIds", title: "Better Stack", logo: "logo-betterstack", idKey: "integrationId", labelKeys: ["label"], detailKeys: []),
         .init(optionsKey: "uptimeKumaInstances", selectionKey: "uptimeKumaInstanceIds", title: "Uptime Kuma", logo: "logo-uptime-kuma", idKey: "instanceId", labelKeys: ["label"], detailKeys: ["baseUrl"]),
@@ -68,7 +68,7 @@ struct CredentialCatalog: Equatable, Sendable {
         .init(optionsKey: "secureframeIntegrations", selectionKey: "secureframeIntegrationIds", title: "Secureframe", logo: "logo-secureframe", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["region"]),
         .init(optionsKey: "resendIntegrations", selectionKey: "resendIntegrationIds", title: "Resend", logo: "logo-resend", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["permission"]),
         // The member's own GitHub / Linear, where the team has no binding of it; its id is the provider.
-        .init(optionsKey: "personalCredentials", selectionKey: "personalCredentialIds", title: "Personal Credentials", logo: "logo-github", idKey: "provider", labelKeys: ["login"], detailKeys: ["provider"]),
+        .init(optionsKey: "personalCredentials", selectionKey: "personalCredentialIds", title: String(localized: "Personal Credentials"), logo: "logo-github", idKey: "provider", labelKeys: ["login"], detailKeys: ["provider"]),
         .init(optionsKey: "githubInstallations", selectionKey: "githubInstallationIds", title: "GitHub", logo: "logo-github", idKey: "installationId", labelKeys: ["accountLogin"], detailKeys: ["accountType"]),
         .init(optionsKey: "gitlabBindings", selectionKey: "gitlabBindingIds", title: "GitLab", logo: "logo-gitlab", idKey: "bindingId", labelKeys: ["username"], detailKeys: ["hostUrl"]),
         .init(optionsKey: "grafanaInstances", selectionKey: "grafanaInstanceIds", title: "Grafana", logo: "logo-grafana", idKey: "instanceId", labelKeys: ["name"], detailKeys: ["grafanaUrl"]),
@@ -94,7 +94,7 @@ struct CredentialCatalog: Equatable, Sendable {
                 guard provider.optionsKey == "devices" else { return Item(provider: provider, id: id, label: label, detail: detail) }
                 let platform = detail.map(Self.platformName)
                 let offline = row["available"]?.boolValue == false
-                return Item(provider: provider, id: id, label: label, detail: offline ? [platform, "Unavailable"].compactMap { $0 }.joined(separator: " · ") : platform, offline: offline)
+                return Item(provider: provider, id: id, label: label, detail: offline ? [platform, String(localized: "Unavailable")].compactMap { $0 }.joined(separator: " · ") : platform, offline: offline)
             }
             return items.isEmpty ? nil : (provider, items)
         }
@@ -275,15 +275,15 @@ enum PermissionMode: String, CaseIterable, Identifiable, Codable {
 
     var title: String {
         switch self {
-        case .auto: "Auto Mode"
-        case .bypass: "Full Access"
+        case .auto: String(localized: "Auto Mode")
+        case .bypass: String(localized: "Full Access")
         }
     }
 
     var subtitle: String {
         switch self {
-        case .auto: "Risky commands ask for your approval"
-        case .bypass: "Run every command without asking (default)"
+        case .auto: String(localized: "Risky commands ask for your approval")
+        case .bypass: String(localized: "Run every command without asking (default)")
         }
     }
 

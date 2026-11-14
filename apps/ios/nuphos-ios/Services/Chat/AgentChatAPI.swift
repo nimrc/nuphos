@@ -443,13 +443,13 @@ enum AgentChatAPI {
     static func conflict(status: Int, body: String?) -> Conflict {
         if status == 413 { return .other(code: "payload_too_large", message: ChatPayload.tooLargeMessage, status: status) }
         var code: String?
-        var message = body ?? "Yu AI returned status \(status)."
+        var message = body ?? HTTPStatusMessage.text(status)
         var stored: Int?
         if let body, let data = body.data(using: .utf8),
            let json = try? JSONDecoder().decode(JSONValue.self, from: data) {
             let error = json["error"] ?? json
             code = error["code"]?.stringValue
-            message = error["message"]?.stringValue ?? message
+            message = error["message"]?.stringValue ?? HTTPStatusMessage.text(status)
             stored = error["details"]?["storedMessageCount"]?.numberValue.map(Int.init)
         }
         switch code {

@@ -134,7 +134,8 @@ final class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
         routingEnabled = true
         #if DEBUG
         // Simulator scripts cannot answer the permission alert, and it blocks links.
-        if CommandLine.arguments.contains("-preview-no-push") { return }
+        if CommandLine.arguments.contains("-preview-no-push")
+            || ProcessInfo.processInfo.environment["NUPHOS_PREVIEW_NO_PUSH"] == "1" { return }
         #endif
         let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])) ?? false
         guard granted else { return }

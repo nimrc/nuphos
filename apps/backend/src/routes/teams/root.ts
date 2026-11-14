@@ -1,6 +1,8 @@
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
 
+import { config } from '@/config'
+import { teamVcpuLimit } from '@/lib/agent/devices/box-instabox-limit'
 import { AppError } from '@/lib/errors'
 import {
   createTeamForUser,
@@ -17,13 +19,32 @@ const createTeamSchema = z.object({
   name: z.string().trim().min(1).max(80),
 })
 
+/**
+ * What a team can do that the app must know before offering it. Voice input
+ * is the deployment's OpenAI key, which a team may use only with its own
+ * subscription. The app hides its microphone unless both hold, so nobody
+ * records a message the server will refuse.
+ */
+async function teamCapabilities(teamId: string) {
+  if (!config.voice.openaiApiKey) return { voiceInput: false }
+  const subscription = !config.box.billingUrl || (await teamVcpuLimit(teamId)).own
+
+  return { voiceInput: subscription }
+}
+
 export function registerTeamsRootRoutes(teamsRoutes: Hono<{ Variables: AuthVariables }>) {
   teamsRoutes.get('/', async (c) => {
     const userId = c.get('userId')
     const teams = await getMyTeams(userId)
 
     return c.json({
-      teams: teams.map((t) => ({ ...t, isOwner: t.ownerID === userId })),
+      teams: await Promise.all(
+        teams.map(async (t) => ({
+          ...t,
+          isOwner: t.ownerID === userId,
+          capabilities: await teamCapabilities(t.id),
+        })),
+      ),
     })
   })
 
@@ -36,7 +57,10 @@ export function registerTeamsRootRoutes(teamsRoutes: Hono<{ Variables: AuthVaria
     // carries the same fields GET / does. Clients adopt it as the active team
     // without refetching — a role-less team here reads as "not an admin" and
     // locks the creator out of every admin-only surface.
-    return c.json({ team: { ...team, isOwner: true } }, 201)
+    return c.json(
+      { team: { ...team, isOwner: true, capabilities: await teamCapabilities(team.id) } },
+      201,
+    )
   })
 
   // Workspace discovery by email domain: teams that list the signed-in user's

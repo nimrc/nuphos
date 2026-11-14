@@ -379,7 +379,7 @@ private struct QuotaLine: View {
         if minutes < 24 * 60 {
             return minutes < 60 ? "resets in \(max(1, minutes))m" : "resets in \(minutes / 60)h \(minutes % 60)m"
         }
-        return "resets " + date.formatted(.dateTime.weekday(.abbreviated).hour().minute())
+        return "resets " + date.formatted(.dateTime.weekday(.abbreviated).hour().minute().locale(AppLocale.current))
     }
 }
 

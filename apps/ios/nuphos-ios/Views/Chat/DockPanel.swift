@@ -86,7 +86,7 @@ struct DockPanel: View {
             Button { open(tab.destination, tab: tab.id, title: tab.title) } label: {
                 HStack(spacing: 6) {
                     icon(tab.destination, kind: tab.kind)
-                    Text(tab.title.isEmpty ? "Untitled" : tab.title)
+                    Text(tab.title.isEmpty ? String(localized: "Untitled") : tab.title)
                         .font(Theme.Text.label)
                         .foregroundStyle(front ? Theme.heading : Theme.body)
                         .lineLimit(1)

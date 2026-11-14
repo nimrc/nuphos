@@ -1,9 +1,42 @@
 import SwiftUI
 
+/// A button that never dims its label for `disabled`. The New Bot "not ready"
+/// state already sets its own fill and text colour; the system's disabled
+/// dim would blend both toward the row and drop the measured contrast below
+/// the 4.5:1 text floor.
+private struct NewBotButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+    }
+}
+
+/// A bare indeterminate spinner for the navigation bar. `ProgressView`'s
+/// circular style fades most of its arc toward the background; on the bar
+/// that dropped the dark-mode arc to 2.93:1, below the 3:1 glyph floor. This
+/// draws the state's colour at full opacity, so the measured colour is the
+/// one shown.
+private struct BareNavigationSpinner: View {
+    let color: Color
+
+    var body: some View {
+        TimelineView(.animation) { context in
+            let angle = context.date.timeIntervalSinceReferenceDate
+                .truncatingRemainder(dividingBy: 1) * 360
+            Circle()
+                .trim(from: 0, to: 0.72)
+                .stroke(color, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                .rotationEffect(.degrees(angle))
+        }
+        .frame(width: 20, height: 20)
+        .accessibilityHidden(true)
+    }
+}
+
 /// The Agent page: the conversation history for the selected team, with
 /// the composer capsule pinned to the bottom when there is no column beside it.
 struct AgentPage: View {
     @Environment(AgentStore.self) private var store
+    @Environment(\.colorScheme) private var colorScheme
     @Binding var page: HomePage
     /// Driven by the search button in the toolbar.
     @Binding var isSearching: Bool
@@ -46,6 +79,11 @@ struct AgentPage: View {
         @Bindable var store = store
 
         content
+            .toolbar {
+                if page == .chats {
+                    newBotToolbarItem
+                }
+            }
             // On the switch, so the empty and error states refresh too.
             .refreshable {
                 // An alert shown before the pull has settled leaves the spinner running for good.
@@ -414,10 +452,141 @@ struct AgentPage: View {
         }
     }
 
+    /// Creating is not disabled: the brand fill stays and taps are refused.
+    /// Not ready is the only disabled state, and the only light fill.
+    private var newBotState: NewBotButtonState {
+        #if DEBUG
+        // `-preview-new-bot creating|not-ready|ready` (or the
+        // NEW_BOT_PREVIEW_STATE environment variable, which the Simulator's
+        // launch command can set) pins a state for screenshots.
+        let args = CommandLine.arguments
+        var pin: String?
+        if let i = args.firstIndex(of: "-preview-new-bot"), i + 1 < args.count { pin = args[i + 1] }
+        if let state = ProcessInfo.processInfo.environment["NEW_BOT_PREVIEW_STATE"] { pin = state }
+        if let pin {
+            switch pin {
+            case "ready": return .ready
+            case "creating": return .creating
+            case "not-ready", "notReady": return .notReady
+            default: break
+            }
+        }
+        #endif
+        return .resolve(creating: store.creatingBot, runtimesLoaded: store.runtimesLoaded)
+    }
+
+    private var newBotAppearance: NewBotButtonAppearance {
+        .resolve(newBotState, scheme: colorScheme == .dark ? .dark : .light)
+    }
+
+    /// The accessibility hint and value both entries read, so a state cannot
+    /// be described one way by the row and another by the bar button.
+    private var newBotAccessibilityHint: Text {
+        newBotAppearance.announcesProgress ? Text("Creating the Bot") : Text("Creates a Bot with its own chat")
+    }
+
+    private var newBotAccessibilityValue: Text {
+        newBotAppearance.announcesProgress ? Text("In progress") : Text("")
+    }
+
+    /// The obvious create entry: the first row of the Bots list, so it also
+    /// carries the empty state.
+    private var newBotRow: some View {
+        VStack(spacing: 8) {
+            Button {
+                guard newBotAppearance.acceptsTaps else { return }
+                showNewBot = true
+            } label: {
+                HStack(spacing: 8) {
+                    if let spinner = newBotAppearance.spinner {
+                        ProgressView()
+                            .tint(spinner.color)
+                            .accessibilityHidden(true)
+                    } else {
+                        Image(systemName: "plus")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(newBotAppearance.glyph.color)
+                    }
+                    Text("New Bot")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(newBotAppearance.label.color)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(newBotAppearance.fill.color)
+                )
+                .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            }
+            .buttonStyle(NewBotButtonStyle())
+            .disabled(newBotAppearance.readsAsDisabled)
+            .accessibilityLabel("New Bot")
+            .accessibilityHint(newBotAccessibilityHint)
+            .accessibilityValue(newBotAccessibilityValue)
+
+            if store.botsList.isEmpty {
+                Text("Give each Bot its own chat")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.muted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .listSectionSeparator(.hidden, edges: .top)
+    }
+
+    /// The bar entry sits straight on the navigation bar rather than inside
+    /// the system toolbar glass, so the bare glyph keeps the bar background
+    /// the contrast test measures.
+    @ToolbarContentBuilder
+    private var newBotToolbarItem: some ToolbarContent {
+        if #available(iOS 26, *) {
+            ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
+                .sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
+        }
+    }
+
+    /// The same create action in the navigation bar, top right. A navigation
+    /// bar takes a bare glyph, so it draws `barGlyph` (or the bare
+    /// `barSpinner` while creating) straight on the bar — no disc and no row
+    /// fill — while still reading the one shared `NewBotButtonAppearance` for
+    /// its state, colour and behaviour.
+    private var newBotBarButton: some View {
+        Button {
+            guard newBotAppearance.acceptsTaps else { return }
+            showNewBot = true
+        } label: {
+            Group {
+                if let spinner = newBotAppearance.barSpinner {
+                    BareNavigationSpinner(color: spinner.color)
+                } else {
+                    Image(systemName: "plus")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(newBotAppearance.barGlyph.color)
+                }
+            }
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(NewBotButtonStyle())
+        .disabled(newBotAppearance.readsAsDisabled)
+        .accessibilityLabel("New Bot")
+        .accessibilityHint(newBotAccessibilityHint)
+        .accessibilityValue(newBotAccessibilityValue)
+    }
+
     private var list: some View {
         List(selection: selection) {
             if page == .chats {
                 Section {
+                    newBotRow
+
                     ForEach(store.botsList) { row in
                         Group {
                             if row.isChannel {
@@ -439,17 +608,7 @@ struct AgentPage: View {
                         .listSectionSeparator(.hidden, edges: .top)
                     }
                 } header: {
-                    sectionHeader("Bots") {
-                        Button { showNewBot = true } label: {
-                            // A 44pt hit area without making the header taller.
-                            Image(systemName: "plus")
-                                .padding(14)
-                                .contentShape(Rectangle())
-                                .padding(-14)
-                        }
-                        .disabled(store.creatingBot || !store.runtimesLoaded)
-                        .accessibilityLabel("New Bot")
-                    }
+                    sectionHeader("Bots")
                 }
             } else {
                 Section {
@@ -608,7 +767,7 @@ struct NewChatComposer: View {
                 await store.loadCredentialOptions()
                 return await store.mentionableSessions(teamId: draftTeam, excluding: nil, matching: query)
             }
-        ), voiceTeamId: draftTeam.isEmpty ? nil : draftTeam, initialAttachments: initialContent?.attachments ?? [], temporaryDirectory: temporaryDirectory, onSend: { submission in
+        ), voiceTeamId: store.voiceInputAvailable(teamId: draftTeam) ? draftTeam : nil, initialAttachments: initialContent?.attachments ?? [], temporaryDirectory: temporaryDirectory, onSend: { submission in
             do {
                 try admissionCheck?()
                 guard let session = store.newSession() else { throw SharedShareSession.Failure.workspace }

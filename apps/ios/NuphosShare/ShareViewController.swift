@@ -64,9 +64,9 @@ final class ShareViewController: UIViewController {
                     } else if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
                         guard let string = try await value(provider, type: UTType.plainText.identifier) as? String else { throw SharePayloadLimits.Failure.invalidFile }; text.append(string)
                     } else if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                        let url = try await imageRepresentation(provider); files.append((provider.suggestedName ?? "Shared image.png", UTType.png.identifier, url))
+                        let url = try await imageRepresentation(provider); files.append((provider.suggestedName ?? String(localized: "Shared image.png"), UTType.png.identifier, url))
                     } else if let type = provider.registeredTypeIdentifiers.first(where: { UTType($0)?.conforms(to: .data) == true }) {
-                        let url = try await representation(provider, type: type); files.append((provider.suggestedName ?? "Shared file", type, url))
+                        let url = try await representation(provider, type: type); files.append((provider.suggestedName ?? String(localized: "Shared file"), type, url))
                     } else { throw SharePayloadLimits.Failure.invalidFile }
                 }
             }
@@ -280,7 +280,7 @@ private struct ShareConversationView: View {
                     }
                 } else { ProgressView("Preparing conversation…") }
             }
-            .navigationTitle(model.store?.selectedTeam?.name ?? "New conversation")
+            .navigationTitle(model.store?.selectedTeam?.name ?? String(localized: "New conversation"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel", action: cancel) } }
             .task { await model.monitorIdentity() }
