@@ -1,4 +1,5 @@
-# Seeded into ~/.omp/agent/models.yml by acp-shim on every start; ${VAR} is the session's value.
+# Seeded into ~/.omp/agent/models.yml by acp-shim on every start, with the session env's
+# NUPHOS_BACKEND_URL in place. No other variable in braces, even here: any unset one skips the file.
 # Yu AI through the backend, which pays with the turn's user's own key; NUPHOS_TOKEN (an env var
 # name, read per request) is the session token that names that user.
 providers:
