@@ -3,7 +3,8 @@ import { AGENT_PROVIDER } from '../../../types/runtime.ts'
 import type { Part, ToolPart } from './parts.ts'
 import type { AgentProvider } from '../../../types/runtime.ts'
 
-const THREAD_TOOLS = new Set(['create_thread', 'send_message_to_thread'])
+// hand_off is a tracked message: it opens the Bot it handed work to.
+const THREAD_TOOLS = new Set(['create_thread', 'send_message_to_thread', 'hand_off'])
 const UUID = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i
 
 export type ThreadBadgeInfo = {

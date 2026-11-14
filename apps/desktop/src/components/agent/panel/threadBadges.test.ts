@@ -64,6 +64,13 @@ test('a messaged thread takes its id from the input', () => {
   assert.equal(info?.verb, 'messaged')
 })
 
+test('a handoff opens the Bot it handed work to', () => {
+  const info = threadBadgeInfo(part('hand_off', { input: { threadId: ID, task: 'Draft' } }))
+
+  assert.equal(info?.threadId, ID)
+  assert.equal(info?.verb, 'messaged')
+})
+
 test('a call in flight shows before its receipt arrives', () => {
   const info = threadBadgeInfo(
     part('create_thread', { state: 'input-available', input: { title: 'Audit' } }),

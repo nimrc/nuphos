@@ -7,7 +7,7 @@ struct ThreadReference: Equatable {
     let verb: String
 
     init?(_ part: ChatPart.ToolPart) {
-        guard ["create_thread", "send_message_to_thread"].contains(part.toolName),
+        guard ["create_thread", "send_message_to_thread", "hand_off"].contains(part.toolName),
               part.state == .outputAvailable,
               let id = Self.validID(part.input?["threadId"]) ?? Self.validID(Self.receipt(part.output)?["threadId"]) else { return nil }
         self.id = id

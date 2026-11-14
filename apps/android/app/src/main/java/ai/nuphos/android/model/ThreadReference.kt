@@ -6,7 +6,7 @@ import java.util.UUID
 data class ThreadReference(val id: String, val title: String?, val verb: String) {
     companion object {
         fun from(part: ChatPart.Tool): ThreadReference? {
-            if (part.toolName !in setOf("create_thread", "send_message_to_thread") || part.state != ChatPart.Tool.State.OutputAvailable) return null
+            if (part.toolName !in setOf("create_thread", "send_message_to_thread", "hand_off") || part.state != ChatPart.Tool.State.OutputAvailable) return null
             fun valid(value: JsonValue?): String? = value?.stringValue?.takeIf {
                 it.matches(Regex("[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}")) && runCatching { UUID.fromString(it) }.isSuccess
             }
