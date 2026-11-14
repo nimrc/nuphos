@@ -10,28 +10,6 @@ private struct NewBotButtonStyle: ButtonStyle {
     }
 }
 
-/// A bare indeterminate spinner for the navigation bar. `ProgressView`'s
-/// circular style fades most of its arc toward the background; on the bar
-/// that dropped the dark-mode arc to 2.93:1, below the 3:1 glyph floor. This
-/// draws the state's colour at full opacity, so the measured colour is the
-/// one shown.
-private struct BareNavigationSpinner: View {
-    let color: Color
-
-    var body: some View {
-        TimelineView(.animation) { context in
-            let angle = context.date.timeIntervalSinceReferenceDate
-                .truncatingRemainder(dividingBy: 1) * 360
-            Circle()
-                .trim(from: 0, to: 0.72)
-                .stroke(color, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .rotationEffect(.degrees(angle))
-        }
-        .frame(width: 20, height: 20)
-        .accessibilityHidden(true)
-    }
-}
-
 /// The Agent page: the conversation history for the selected team, with
 /// the composer capsule pinned to the bottom when there is no column beside it.
 struct AgentPage: View {
@@ -79,11 +57,6 @@ struct AgentPage: View {
         @Bindable var store = store
 
         content
-            .toolbar {
-                if page == .chats {
-                    newBotToolbarItem
-                }
-            }
             // On the switch, so the empty and error states refresh too.
             .refreshable {
                 // An alert shown before the pull has settled leaves the spinner running for good.
@@ -267,9 +240,13 @@ struct AgentPage: View {
     @ViewBuilder
     private var content: some View {
         switch store.phase {
-        // Bots always lists, so its "+" can make the first one.
+        // Bots always lists, so its pinned row can make the first one.
         case .loaded where page == .chats ? store.channelsLoaded && store.selectedTeam != nil && !(store.runtimesLoaded && store.runtimes.isEmpty) : !store.listedConversations.isEmpty:
-            list
+            VStack(spacing: 0) {
+                if page == .chats { newBotRow }
+                list
+            }
+            .background(Theme.canvas)
         default:
             // A scroll view even for the non-list states: with plain
             // content the bar paints an opaque system-black edge.
@@ -479,10 +456,12 @@ struct AgentPage: View {
         .resolve(newBotState, scheme: colorScheme == .dark ? .dark : .light)
     }
 
-    /// The accessibility hint and value both entries read, so a state cannot
-    /// be described one way by the row and another by the bar button.
+    /// The accessibility hint and value the pinned entry reads: all three
+    /// states are explained on it, now that it is the only creation entry.
     private var newBotAccessibilityHint: Text {
-        newBotAppearance.announcesProgress ? Text("Creating the Bot") : Text("Creates a Bot with its own chat")
+        if newBotAppearance.announcesProgress { return Text("Creating the Bot") }
+        if newBotAppearance.readsAsDisabled { return Text("Loading runtimes…") }
+        return Text("Creates a Bot with its own chat")
     }
 
     private var newBotAccessibilityValue: Text {
@@ -533,60 +512,16 @@ struct AgentPage: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-        .listSectionSeparator(.hidden, edges: .top)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 8)
     }
 
-    /// The bar entry sits straight on the navigation bar rather than inside
-    /// the system toolbar glass, so the bare glyph keeps the bar background
-    /// the contrast test measures.
-    @ToolbarContentBuilder
-    private var newBotToolbarItem: some ToolbarContent {
-        if #available(iOS 26, *) {
-            ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
-                .sharedBackgroundVisibility(.hidden)
-        } else {
-            ToolbarItem(placement: .topBarTrailing) { newBotBarButton }
-        }
-    }
-
-    /// The same create action in the navigation bar, top right. A navigation
-    /// bar takes a bare glyph, so it draws `barGlyph` (or the bare
-    /// `barSpinner` while creating) straight on the bar — no disc and no row
-    /// fill — while still reading the one shared `NewBotButtonAppearance` for
-    /// its state, colour and behaviour.
-    private var newBotBarButton: some View {
-        Button {
-            guard newBotAppearance.acceptsTaps else { return }
-            showNewBot = true
-        } label: {
-            Group {
-                if let spinner = newBotAppearance.barSpinner {
-                    BareNavigationSpinner(color: spinner.color)
-                } else {
-                    Image(systemName: "plus")
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(newBotAppearance.barGlyph.color)
-                }
-            }
-            .frame(width: 44, height: 44)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(NewBotButtonStyle())
-        .disabled(newBotAppearance.readsAsDisabled)
-        .accessibilityLabel("New Bot")
-        .accessibilityHint(newBotAccessibilityHint)
-        .accessibilityValue(newBotAccessibilityValue)
-    }
-
+    /// Scrolls under the pinned row, which stays visible however long the Bot
+    /// list gets.
     private var list: some View {
         List(selection: selection) {
             if page == .chats {
                 Section {
-                    newBotRow
-
                     ForEach(store.botsList) { row in
                         Group {
                             if row.isChannel {

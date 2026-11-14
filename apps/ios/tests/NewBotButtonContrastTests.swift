@@ -1,7 +1,6 @@
 import Foundation
 
-/// Pins the New Bot entry's contrast in every state and scheme, for both
-/// entry points.
+/// Pins the one New Bot entry's contrast in every state and scheme.
 ///
 /// The label is text, so it must clear 4.5:1 (WCAG 2.2 AA 1.4.3 for normal
 /// text; 3:1 would apply only to large text, so 4.5:1 is the stricter rule and
@@ -9,11 +8,11 @@ import Foundation
 /// so they must clear 3:1 (1.4.11). Every colour comes from `ThemePalette` via
 /// `NewBotButtonAppearance`; none is copied from the design note.
 ///
-/// The list row draws `fill` as a rounded rectangle behind `label`/`glyph`.
-/// The navigation-bar entry draws no fill at all: a navigation bar takes a
-/// bare `barGlyph`/`barSpinner` straight on the bar, so that glyph is measured
-/// against the bar background. Both entries read one `NewBotButtonAppearance`,
-/// and the source check below stops them gaining separate state or colours.
+/// The single entry draws `fill` as a rounded rectangle behind
+/// `label`/`glyph`. It is full width and pinned above the scrolling List,
+/// including when the list is empty. The navigation-bar plus was removed; the
+/// source checks below keep it out and keep the three states on this one
+/// entry.
 enum NewBotButtonContrastTests {
     private static let textFloor = 4.5
     private static let graphicFloor = 3.0
@@ -21,12 +20,9 @@ enum NewBotButtonContrastTests {
     static func run() {
         statesResolveDistinctly()
         notReadyIsDrawnUndimmed()
-        bothEntriesUseTheSameAppearance()
+        oneEntryExplainsAllThreeStates()
         for scheme in [ThemeScheme.light, .dark] {
             print("New Bot contrast — \(scheme == .dark ? "dark" : "light")")
-            // The bar's own background: sampled from the running app's
-            // navigation bar in both schemes (#F7F7F7 / #141414).
-            let bar = ThemePalette.canvas.value(for: scheme)
             for state in [NewBotButtonState.ready, .creating, .notReady] {
                 let appearance = NewBotButtonAppearance.resolve(state, scheme: scheme)
 
@@ -42,25 +38,6 @@ enum NewBotButtonContrastTests {
                 ))
                 precondition(label >= textFloor, "\(stateName(state)) label is \(label):1 in \(scheme); text needs \(textFloor):1")
                 precondition(rowGlyph >= graphicFloor, "\(stateName(state)) row plus glyph is \(rowGlyph):1 in \(scheme); a graphic needs \(graphicFloor):1")
-
-                // Navigation bar: the bare glyph sits straight on the bar —
-                // no disc and no row fill — so measure it against the bar.
-                let barGlyph = appearance.barGlyph.contrastRatio(against: bar)
-                print(String(
-                    format: "  navplus  %-8@ bare+#%06X on bar #%06X %.2f:1 (glyph, floor %.1f)",
-                    stateName(state) as NSString,
-                    appearance.barGlyph.hex, bar.hex, barGlyph, graphicFloor
-                ))
-                precondition(barGlyph >= graphicFloor, "\(stateName(state)) bare navigation plus is \(barGlyph):1 on the bar in \(scheme); a glyph needs \(graphicFloor):1")
-
-                if let spinner = appearance.barSpinner {
-                    let barSpinner = spinner.contrastRatio(against: bar)
-                    print(String(
-                        format: "           bare spinner #%06X on bar #%06X %.2f:1 (glyph, floor %.1f)",
-                        spinner.hex, bar.hex, barSpinner, graphicFloor
-                    ))
-                    precondition(barSpinner >= graphicFloor, "\(stateName(state)) bare navigation spinner is \(barSpinner):1 on the bar in \(scheme); a glyph needs \(graphicFloor):1")
-                }
 
                 if let spinner = appearance.spinner {
                     let spinnerOnFill = spinner.contrastRatio(against: appearance.fill)
@@ -94,16 +71,6 @@ enum NewBotButtonContrastTests {
             precondition(!creating.acceptsTaps && !creating.readsAsDisabled && creating.announcesProgress)
             precondition(creating.fill == ready.fill, "creating must not grey the button out")
 
-            // The navigation bar draws the same states as bare colours on the
-            // bar: brand for ready and creating, muted for not ready, and the
-            // bare spinner while creating. White is never used on the bar.
-            precondition(ready.barGlyph == ThemePalette.brand.value(for: scheme))
-            precondition(creating.barGlyph == ThemePalette.brand.value(for: scheme))
-            precondition(notReady.barGlyph == ThemePalette.muted.value(for: scheme))
-            precondition(ready.barSpinner == nil && notReady.barSpinner == nil)
-            precondition(creating.barSpinner == ThemePalette.brand.value(for: scheme))
-            precondition(ready.barGlyph != ThemePalette.onBrand.value(for: scheme), "white cannot sit on the navigation bar")
-
             // Not ready is the only light fill, and never white text.
             precondition(notReady.fill == ThemePalette.newBotNotReadyFill.value(for: scheme))
             precondition(notReady.label == ThemePalette.newBotNotReadyForeground.value(for: scheme))
@@ -133,59 +100,64 @@ enum NewBotButtonContrastTests {
         precondition(source.contains(".buttonStyle(NewBotButtonStyle())"), "The New Bot row lost its non-dimming button style")
     }
 
-    /// Both the list row and the navigation-bar plus read the one appearance
-    /// value annotated as `NewBotButtonAppearance`, and use its colours and
-    /// flags. The bar must not name a colour of its own (the build-8 defect
-    /// was a hardcoded `Theme.brand` plus) and must not paint a disc (build
-    /// 9's defect).
-    private static func bothEntriesUseTheSameAppearance() {
+    /// The one entry reads the shared appearance, uses its colours and flags,
+    /// is full width and pinned above the List including when empty, and
+    /// explains all three states. The navigation-bar plus must stay deleted
+    /// rather than hidden: nothing focusable is left on the bar.
+    private static func oneEntryExplainsAllThreeStates() {
         let source = agentPageSource()
 
         let shared = section("private var newBotAppearance", in: source)
         precondition(shared.contains(": NewBotButtonAppearance"), "newBotAppearance is not typed as NewBotButtonAppearance")
         precondition(shared.contains(".resolve(newBotState, scheme:"), "newBotAppearance no longer resolves from the state and scheme")
-        // One resolution site: neither entry may resolve (or hardcode) its own.
+        // One resolution site: the entry may not resolve (or hardcode) its own.
         precondition(occurrences(of: ".resolve(newBotState", in: source) == 1,
                      "AgentPage must resolve the appearance once, in newBotAppearance")
         precondition(occurrences(of: "NewBotButtonAppearance.resolve(", in: source) == 0,
-                     "An entry resolved its own appearance instead of reading newBotAppearance")
+                     "The entry resolved its own appearance instead of reading newBotAppearance")
+
+        // The bar entry is deleted, not hidden.
+        for removed in ["newBotBarButton", "newBotToolbarItem", "BareNavigationSpinner", "barGlyph", "barSpinner"] {
+            precondition(!source.contains(removed), "The removed navigation-bar plus is still present: \(removed)")
+        }
 
         let row = section("private var newBotRow", in: source)
-        let bar = section("private var newBotBarButton", in: source)
-        precondition(!row.isEmpty && !bar.isEmpty, "Could not find both New Bot entry points in AgentPage")
-
-        for (name, entry) in [("row", row), ("navigation bar", bar)] {
-            for token in ["newBotAppearance.acceptsTaps", "newBotAppearance.readsAsDisabled",
-                          "newBotAccessibilityHint", "newBotAccessibilityValue"] {
-                precondition(entry.contains(token), "The \(name) entry does not read \(token) from the shared appearance")
-            }
-            precondition(entry.contains(".disabled(newBotAppearance.readsAsDisabled)"),
-                         "The \(name) entry does not disable itself from the shared appearance")
+        precondition(!row.isEmpty, "Could not find the New Bot row in AgentPage")
+        for token in ["newBotAppearance.acceptsTaps", "newBotAppearance.readsAsDisabled",
+                      "newBotAccessibilityHint", "newBotAccessibilityValue",
+                      ".frame(maxWidth: .infinity)", ".disabled(newBotAppearance.readsAsDisabled)",
+                      ".accessibilityLabel(\"New Bot\")"] {
+            precondition(row.contains(token), "The New Bot row does not read \(token) from the shared appearance")
         }
         for token in ["newBotAppearance.fill.color", "newBotAppearance.label.color",
                       "newBotAppearance.glyph.color", "newBotAppearance.spinner"] {
             precondition(row.contains(token), "The row does not read \(token) from the shared appearance")
         }
-        for token in ["newBotAppearance.barGlyph.color", "newBotAppearance.barSpinner"] {
-            precondition(bar.contains(token), "The navigation bar does not read \(token) from the shared appearance")
+
+        // All three states are explained on this one entry.
+        let hint = section("private var newBotAccessibilityHint", in: source)
+        precondition(hint.contains("Creating the Bot"), "Creating is no longer explained on the row")
+        precondition(hint.contains("Loading runtimes…"), "Not ready is no longer explained on the row")
+        precondition(hint.contains("Creates a Bot with its own chat"), "Ready is no longer explained on the row")
+        precondition(section("private var newBotAccessibilityValue", in: source).contains("In progress"),
+                     "Creating no longer announces progress")
+
+        // Full width and pinned above the List, with no separate empty-state
+        // button and no list-row insets (it no longer scrolls with the rows).
+        precondition(row.contains(".padding(.horizontal, 20)") && row.contains(".padding(.vertical, 8)"),
+                     "The pinned entry lost its 20 pt side insets")
+        precondition(!row.contains(".listRowInsets") && !row.contains(".listRowBackground"),
+                     "The pinned entry is still styled as a scrolling list row")
+        let content = section("private var content", in: source)
+        guard let pinned = content.range(of: "newBotRow")?.lowerBound,
+              let list = content.range(of: "                list")?.lowerBound else {
+            preconditionFailure("Could not find the pinned entry above the List")
         }
-
-        // A navigation bar takes a bare glyph: no disc, no row fill, and no
-        // colour of its own.
-        precondition(!bar.contains("Theme."), "The navigation bar plus hardcodes a Theme colour again")
-        precondition(!bar.contains("Color(") && !bar.contains("Color."), "The navigation bar plus builds a colour of its own")
-        precondition(!bar.contains("Circle("), "The navigation bar plus draws a disc again")
-        precondition(!bar.contains(".fill("), "The navigation bar plus paints a fill again")
-        precondition(!bar.contains(".background("), "The navigation bar plus draws a background again")
-        precondition(!bar.contains("newBotAppearance.fill"), "The bare navigation plus must not use the row fill")
-        precondition(!bar.contains("newBotAppearance.glyph"), "The row's on-fill glyph colour is white and cannot sit on the bar")
-        precondition(bar.contains("Image(systemName: \"plus\")"), "The navigation bar lost its plus glyph")
-        precondition(bar.contains("BareNavigationSpinner(color: spinner.color)"), "The navigation bar plus does not draw the full-opacity bare spinner from the shared appearance")
-        precondition(!bar.contains("ProgressView()"), "The navigation bar spinner faded its arc below the glyph floor again")
-
-        // Accessibility follows the appearance, not a second state read.
-        precondition(!source.contains("newBotState == .creating ? Text("), "An entry describes creating from the raw state instead of the appearance")
-        precondition(source.contains("announcesProgress ? Text(\"In progress\")"), "Creating no longer announces progress")
+        precondition(pinned < list, "The New Bot entry is no longer pinned above the List")
+        precondition(!section("private var list", in: source).contains("newBotRow"),
+                     "The New Bot entry is back inside the scrolling List")
+        precondition(source.contains("if store.botsList.isEmpty {\n                Text(\"Give each Bot its own chat\")"),
+                     "The empty state became a second button instead of the same row's subtitle")
     }
 
     private static func agentPageSource() -> String {
