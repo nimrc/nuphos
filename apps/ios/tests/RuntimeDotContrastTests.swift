@@ -61,7 +61,7 @@ enum RuntimeDotContrastTests {
         precondition(dot.contains("state.drawsSlash"), "The status dot does not draw the offline slash")
 
         let row = source("nuphos-ios/Views/Home/RuntimePickerSheet.swift")
-        precondition(row.contains("RuntimeStatusDot(online: reachable)"),
+        precondition(row.contains("RuntimeStatusDot(online: reachable, cutout: Theme.canvas)"),
                      "SelectorAgentRow no longer draws the shared status dot")
         precondition(row.contains(".accessibilityLabel(reachable ? Text(\"Online\") : Text(\"Offline\"))"),
                      "The status dot lost its per-state VoiceOver label")

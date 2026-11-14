@@ -9,8 +9,9 @@ import SwiftUI
 struct RuntimeStatusDot: View {
     let online: Bool
     /// The row background the dot sits on; the slash is drawn in it so it
-    /// reads as a cut through the dot rather than a second colour.
-    var cutout: Color = Theme.surface
+    /// reads as a cut through the dot rather than a second colour. The rows
+    /// draw on `Theme.canvas`, so that is the default.
+    var cutout: Color = Theme.canvas
 
     private var state: RuntimeDotState { RuntimeDotState(online: online) }
 
