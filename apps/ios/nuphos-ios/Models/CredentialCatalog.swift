@@ -60,10 +60,6 @@ struct CredentialCatalog: Equatable, Sendable {
         .init(optionsKey: "sentryAccounts", selectionKey: "sentryAccountIds", title: "Sentry", logo: "logo-sentry", idKey: "accountId", labelKeys: ["label"], detailKeys: ["userEmail"]),
         .init(optionsKey: "posthogIntegrations", selectionKey: "posthogIntegrationIds", title: "PostHog", logo: "logo-posthog", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["apiBaseUrl"]),
         .init(optionsKey: "linearWorkspaces", selectionKey: "linearWorkspaceIds", title: "Linear", logo: "logo-linear", idKey: "workspaceId", labelKeys: ["label", "workspaceName"], detailKeys: ["workspaceName"]),
-        .init(optionsKey: "jiraSites", selectionKey: "jiraSiteIds", title: "Jira", logo: "logo-jira", idKey: "siteId", labelKeys: ["label"], detailKeys: ["siteUrl"]),
-        .init(optionsKey: "trelloIntegrations", selectionKey: "trelloIntegrationIds", title: "Trello", logo: "logo-trello", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["username"]),
-        .init(optionsKey: "asanaAccounts", selectionKey: "asanaAccountIds", title: "Asana", logo: "logo-asana", idKey: "accountId", labelKeys: ["label"], detailKeys: ["accountEmail"]),
-        .init(optionsKey: "plaudAccounts", selectionKey: "plaudAccountIds", title: "Plaud", logo: "logo-plaud", idKey: "bindingId", labelKeys: ["label"], detailKeys: []),
         .init(optionsKey: "vantaIntegrations", selectionKey: "vantaIntegrationIds", title: "Vanta", logo: "logo-vanta", idKey: "integrationId", labelKeys: ["label"], detailKeys: []),
         .init(optionsKey: "secureframeIntegrations", selectionKey: "secureframeIntegrationIds", title: "Secureframe", logo: "logo-secureframe", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["region"]),
         .init(optionsKey: "resendIntegrations", selectionKey: "resendIntegrationIds", title: "Resend", logo: "logo-resend", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["permission"]),
@@ -76,6 +72,12 @@ struct CredentialCatalog: Equatable, Sendable {
         .init(optionsKey: "notionIntegrations", selectionKey: "notionIntegrationIds", title: "Notion", logo: "logo-notion", idKey: "integrationId", labelKeys: ["label"], detailKeys: ["workspaceName"]),
         .init(optionsKey: "upstashAccounts", selectionKey: "upstashAccountIds", title: "Upstash", logo: "logo-upstash", idKey: "accountId", labelKeys: ["label"], detailKeys: ["email"]),
         .init(optionsKey: "cloudflareAccounts", selectionKey: "cloudflareAccountIds", title: "Cloudflare", logo: "logo-cloudflare", idKey: "accountId", labelKeys: ["accountName"], detailKeys: ["accountId"]),
+    ]
+
+    /// Selection keys for connectors upstream removed. Their rows are out of
+    /// `providers`; a stored selection that still names one is treated as absent.
+    static let retiredSelectionKeys: Set<String> = [
+        "jiraSiteIds", "trelloIntegrationIds", "asanaAccountIds", "plaudAccountIds",
     ]
 
     /// Providers that have at least one credential, in table order.
@@ -177,7 +179,6 @@ struct CredentialSelection: Equatable, Sendable {
         selectAll(in: catalog)
         ids["personalCredentialIds"] = []
         ids["resendIntegrationIds"] = []
-        ids["trelloIntegrationIds"] = []
     }
 
     func containsAll(in catalog: CredentialCatalog) -> Bool {
@@ -202,6 +203,7 @@ struct CredentialSelection: Equatable, Sendable {
         let known = Set(CredentialCatalog.providers.map(\.selectionKey))
         stored = []
         for (key, value) in json.objectValue ?? [:] {
+            if CredentialCatalog.retiredSelectionKeys.contains(key) { continue }
             if known.contains(key) {
                 // null is unset, as the server reads it; anything else is stored, and a value that
                 // isn't a list is sent back as an empty one rather than left to mean "all".

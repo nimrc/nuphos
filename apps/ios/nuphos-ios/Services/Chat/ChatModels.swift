@@ -313,6 +313,28 @@ enum ChatPart: Equatable, Sendable {
                 && input?["credentials"] == nil
         }
 
+        /// Whether the integration card is useful here. Upstream removed Jira,
+        /// Trello, Asana and Plaud: their Connectors page cannot add them, so a
+        /// request naming one gets no card rather than a dead end. Live
+        /// connectors keep theirs.
+        var showsProviderIntegrationRequest: Bool {
+            guard isProviderIntegrationRequest else { return false }
+            let named = input?["providers"]?.arrayValue?.compactMap(\.stringValue) ?? []
+            return !named.contains(where: Self.isRetiredConnector)
+        }
+
+        /// The provider ids `providers` carries, plus the display names and the
+        /// catalogue's option / selection keys older records may use.
+        private static let retiredConnectors: Set<String> = [
+            "jira", "trello", "asana", "plaud",
+            "jirasites", "trellointegrations", "asanaaccounts", "plaudaccounts",
+            "jirasiteids", "trellointegrationids", "asanaaccountids", "plaudaccountids",
+        ]
+
+        private static func isRetiredConnector(_ name: String) -> Bool {
+            retiredConnectors.contains(name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+        }
+
         /// The request id the decision's result names; the call id otherwise.
         var decisionRequestId: String {
             output?["requestId"]?.stringValue ?? toolCallId

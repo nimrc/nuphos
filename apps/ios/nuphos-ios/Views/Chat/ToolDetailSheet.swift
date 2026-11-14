@@ -18,7 +18,7 @@ struct ToolDetailSheet: View {
                 VStack(alignment: .leading, spacing: 18) {
                     header
 
-                    if part.isProviderIntegrationRequest { integrationActions }
+                    if part.showsProviderIntegrationRequest { integrationActions }
 
                     if isCommand, let command = part.input?["command"]?.stringValue {
                         section("Command") { code(command) }

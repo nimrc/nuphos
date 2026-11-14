@@ -238,6 +238,7 @@ struct RuntimeObservationTests {
         BotQuestionsTests.run()
         ComposerDraftsTests.run()
         CredentialScopeTests.run()
+        RetiredConnectorTests.run()
         StreamBacklogTests.run()
         SSEClientTests.run()
         StreamingMarkdownTests.run()
