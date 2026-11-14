@@ -9,6 +9,7 @@ import { config } from '@/config'
 import { app, websocket } from '@/index-app'
 import { startBotImportCleanup } from '@/lib/agent/bot-import/cleanup'
 import { conversationAutoArchive } from '@/lib/agent/conversation-auto-archive'
+import { handoffReminders } from '@/lib/agent/handoffs'
 import { assertRegistryInvariants } from '@/lib/agent/memory-slots'
 import {
   initMemoryRetentionRollup,
@@ -124,6 +125,7 @@ if (await initJournalSealer()) {
 }
 
 conversationAutoArchive.init()
+handoffReminders.init()
 // Track A 2.2: hourly retention-score recompute (idempotent full upsert).
 initMemoryRetentionRollup()
 logEvent('info', 'backend.memory_retention_rollup.ready')
@@ -278,6 +280,7 @@ async function shutdown(sig: string) {
   // 5. Close downstream dependencies.
   shutdownMemoryRetentionRollup()
   conversationAutoArchive.shutdown()
+  handoffReminders.shutdown()
   shutdownStuckTurnProbe()
   await Promise.allSettled([shutdownPostHog(), shutdownJournalSealer(), closeRedis(), closeDb()])
 

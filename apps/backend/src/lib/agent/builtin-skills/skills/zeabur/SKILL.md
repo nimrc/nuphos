@@ -51,10 +51,10 @@ A deployment URL carries every id you need:
 https://zeabur.com/projects/<projectID>/services/<serviceID>/deployments/<deploymentID>?envID=<environmentID>
 ```
 
-- `projectID`   → project
-- `serviceID`   → service
+- `projectID` → project
+- `serviceID` → service
 - `deploymentID`→ a specific deployment (optional for runtime logs)
-- `envID`       → environmentID (Zeabur projects have one environment per env; most queries need it)
+- `envID` → environmentID (Zeabur projects have one environment per env; most queries need it)
 
 If the URL omits `envID`, list environments for the project with `environments(projectID:)` and pick the right one.
 

@@ -2,6 +2,9 @@ import { randomUUID } from 'node:crypto'
 
 import { Hono } from 'hono'
 
+import { channelUploadPart, resolveChannelFiles } from '@/lib/agent/channel-attachments'
+import { postChannelMessage, replyQuote, wakeChannelAgents } from '@/lib/agent/channel-chat'
+import { channelFacesField } from '@/lib/agent/channel-faces'
 import {
   agentConversations,
   getConversationBySessionId,
@@ -15,18 +18,14 @@ import {
   listChannelMentions,
   ownsChannelAgent,
   removeChannelAgent,
-  setChannelLead,
 } from '@/lib/agent/db/channels'
-import { channelLead } from '@/lib/agent/channel-lead'
 import { addConversationParticipants } from '@/lib/agent/db/participants'
-import { channelUploadPart, resolveChannelFiles } from '@/lib/agent/channel-attachments'
-import { channelFacesField } from '@/lib/agent/channel-faces'
-import { postChannelMessage, replyQuote, wakeChannelAgents } from '@/lib/agent/channel-chat'
 import { resolveMentions } from '@/lib/agent/mentions'
-import { answerInputRequest } from '@/lib/agent/plan-decision'
 import { createMessageMetadata } from '@/lib/agent/message-attribution'
+import { answerInputRequest } from '@/lib/agent/plan-decision'
 import { AppError } from '@/lib/errors'
 
+import { agentsResponse, channelOrNotFound, readBody, requireTeam } from './channel-route-helpers'
 import { buildConversationOwnerMap } from './conversation-view'
 import { assertDecisionUnanswered, decisionReplyOf } from './decision-reply'
 import {
@@ -48,20 +47,6 @@ const MAX_TITLE_LENGTH = 200
 // A chat message, not a document.
 const MAX_MESSAGE_LENGTH = 20_000
 
-type Body = Record<string, unknown>
-
-async function readBody(c: Context): Promise<Body> {
-  return (await c.req.json().catch(() => ({}))) as Body
-}
-
-async function requireTeam(c: Context<{ Variables: AuthVariables }>, body: Body = {}) {
-  const teamId = await resolveVerifiedTeamId(c, readTeamIdCandidate(c, body.teamId))
-
-  if (!teamId) throw new AppError(403, 'forbidden', 'Workspace membership is required')
-
-  return teamId
-}
-
 function requireText(value: unknown, name: string, max: number): string {
   const text = typeof value === 'string' ? value.trim() : ''
 
@@ -69,23 +54,6 @@ function requireText(value: unknown, name: string, max: number): string {
     throw new AppError(400, 'invalid_request', `${name} must be 1 to ${String(max)} characters`)
 
   return text
-}
-
-function channelOrNotFound(conversation: AgentConversation | null): AgentConversation {
-  if (!conversation || !isChannel(conversation))
-    throw new AppError(404, 'not_found', 'Channel not found')
-
-  return conversation
-}
-
-async function agentsResponse(channel: AgentConversation | null) {
-  const found = channelOrNotFound(channel)
-  const lead = channelLead(found)
-
-  return {
-    agents: await listChannelAgents(found),
-    ...(lead ? { leadAgentSessionId: lead } : {}),
-  }
 }
 
 channelRoutes.post('/channels', async (c) => {
@@ -195,27 +163,6 @@ channelRoutes.delete('/conversations/:sessionId/agents/:agentSessionId', async (
 
   // Nothing back: the agent's owner may not be allowed to see who else is here.
   return c.body(null, 204)
-})
-
-// The channel's owner picks which of its Bots leads: people's posts then wake
-// the lead, which hands work to the others by name. null ends it.
-channelRoutes.put('/conversations/:sessionId/lead', async (c) => {
-  const userId = c.get('userId')
-  const body = await readBody(c)
-  const teamId = await requireTeam(c, body)
-  const channelId = c.req.param('sessionId')
-  const found = await getConversationBySessionId(channelId)
-  const channel = channelOrNotFound(found?.teamId === teamId ? found : null)
-  const lead = body.agentSessionId
-
-  if (channel.userId !== userId)
-    throw new AppError(403, 'forbidden', 'Only the chat’s owner can choose its lead')
-  if (lead !== null && (typeof lead !== 'string' || !lead))
-    throw new AppError(400, 'invalid_request', 'agentSessionId must name a Bot here, or be null')
-  if (lead !== null && !channel.agentSessionIds?.includes(lead))
-    throw new AppError(404, 'not_found', 'This Bot is not in the chat')
-
-  return c.json(await agentsResponse(await setChannelLead(channelId, lead)))
 })
 
 // Retry after an agent could not reply: it reads again what it has not read yet.

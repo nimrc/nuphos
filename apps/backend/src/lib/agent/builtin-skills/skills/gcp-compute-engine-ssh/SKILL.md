@@ -35,15 +35,16 @@ If `gcloud: command not found` (cold start), run `bash skills/gcloud/scripts/ins
 
 `gcloud compute ssh` authenticates as the impersonated bound SA. Grant it, on the target project (least privilege — add only what's missing):
 
-| Purpose | Role |
-|---|---|
-| Look up the instance | `roles/compute.viewer` (or just `compute.instances.get`) |
-| Log in **without** sudo | `roles/compute.osLogin` |
-| Log in **with** sudo (needed for `sudo …`, installs) | `roles/compute.osAdminLogin` |
-| Use a VM that runs as a service account | `roles/iam.serviceAccountUser` **on the VM's attached SA** |
-| Tunnel through IAP (VM without external IP) | `roles/iap.tunnelResourceAccessor` |
+| Purpose                                              | Role                                                       |
+| ---------------------------------------------------- | ---------------------------------------------------------- |
+| Look up the instance                                 | `roles/compute.viewer` (or just `compute.instances.get`)   |
+| Log in **without** sudo                              | `roles/compute.osLogin`                                    |
+| Log in **with** sudo (needed for `sudo …`, installs) | `roles/compute.osAdminLogin`                               |
+| Use a VM that runs as a service account              | `roles/iam.serviceAccountUser` **on the VM's attached SA** |
+| Tunnel through IAP (VM without external IP)          | `roles/iap.tunnelResourceAccessor`                         |
 
 Plus, **on the VM or its project**:
+
 - **OS Login must be on** — `enable-oslogin=TRUE` in instance or project metadata. Without it sshd reads `~/.ssh/authorized_keys` and the synthetic OS Login user (`sa_<id>`) doesn't exist → every login fails with `Permission denied (publickey)`. (`enable-oslogin-2fa` only enforces 2FA on **human** identities — service accounts are exempt, so it does not block this SA path.)
 - **Firewall** — allow ingress tcp:22 from the IAP range **`35.235.240.0/20`** when tunneling through IAP, or from your egress range when using a public IP.
 

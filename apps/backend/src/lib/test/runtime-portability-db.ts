@@ -22,11 +22,15 @@ function matches(doc: Doc, query: Doc): boolean {
         )
       if ('$exists' in expected) return (actual !== undefined) === expected.$exists
       if ('$lte' in expected) return actual <= expected.$lte
+      if ('$lt' in expected) return actual < expected.$lt
       if ('$gt' in expected) return actual > expected.$gt
       if ('$ne' in expected)
         return Array.isArray(actual) ? !actual.includes(expected.$ne) : actual !== expected.$ne
       if ('$in' in expected) return expected.$in.includes(actual)
     }
+
+    if (expected instanceof Date)
+      return actual instanceof Date && actual.getTime() === expected.getTime()
 
     return Array.isArray(actual) ? actual.includes(expected) : actual === expected
   })
@@ -84,7 +88,10 @@ function update(doc: Doc, query: Doc, mutation: Doc) {
     const key = parts.pop()!
     let parent = doc
 
-    for (const part of parts) parent = parent[part] ??= {}
+    for (const part of parts) {
+      parent[part] ??= {}
+      parent = parent[part]
+    }
     parent[key] ??= []
     const values = value && typeof value === 'object' && '$each' in value ? value.$each : [value]
 

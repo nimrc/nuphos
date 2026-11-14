@@ -24,14 +24,14 @@ bash "$SCRIPT" "$TEAM" POST "$CONNECTION/query/mongodb" @/tmp/query.json
 
 Available conversation routes:
 
-| Action | Call |
-|---|---|
-| List authorized connections | `GET /teams/{teamId}/database-connections` |
-| Connection metadata | `GET …/{connectionId}` |
-| Databases | `GET …/{connectionId}/catalog?refresh=false` |
-| Collections | `GET …/{connectionId}/catalog/collections?database=...&refresh=false` |
-| Collection detail | `GET …/{connectionId}/catalog/collection?database=...&collection=...&refresh=false` |
-| Bounded MongoDB query | `POST …/{connectionId}/query/mongodb` |
+| Action                      | Call                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| List authorized connections | `GET /teams/{teamId}/database-connections`                                          |
+| Connection metadata         | `GET …/{connectionId}`                                                              |
+| Databases                   | `GET …/{connectionId}/catalog?refresh=false`                                        |
+| Collections                 | `GET …/{connectionId}/catalog/collections?database=...&refresh=false`               |
+| Collection detail           | `GET …/{connectionId}/catalog/collection?database=...&collection=...&refresh=false` |
+| Bounded MongoDB query       | `POST …/{connectionId}/query/mongodb`                                               |
 
 Query body supports the read-only gateway's `find`, `aggregate`, `count`, and
 `explain` operations. Fetch the live OpenAPI operation when the exact query

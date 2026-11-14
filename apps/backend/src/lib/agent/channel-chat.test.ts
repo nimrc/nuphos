@@ -11,6 +11,7 @@ import { portabilityDb } from '@/lib/test/runtime-portability-db'
 
 import { agentConversations, agentMessages } from './db'
 import { QUEUED_NOTICE_STEER, withChannelPosts } from './channel-wake'
+import { leadFields } from './db/channel-lead'
 import { listChannelMentions, readChannelMessages } from './db/channels'
 import {
   CHANNEL_AGENT_TURN_BUDGET,
@@ -942,8 +943,8 @@ describe('a chat with a lead', () => {
   })
 
   test('channel_read tells the lead and the members their part, with everyone’s names', async () => {
-    const lead = await readChannelMessages(await channel(), 'agent-a', 'agent-a-owner', true)
-    const member = await readChannelMessages(await channel(), 'agent-b', 'agent-b-owner', true)
+    const lead = await leadFields(await channel(), 'agent-a')
+    const member = await leadFields(await channel(), 'agent-b')
 
     expect(lead).toMatchObject({
       leadAgentSessionId: 'agent-a',
@@ -953,7 +954,9 @@ describe('a chat with a lead', () => {
         { sessionId: 'agent-c', name: 'agent-c title' },
       ],
     })
-    expect(lead.leadNote).toContain('You lead this chat')
-    expect(member.leadNote).toContain('leads this chat and hands out the work')
+    expect(lead).toMatchObject({ leadNote: expect.stringContaining('You lead this chat') })
+    expect(member).toMatchObject({
+      leadNote: expect.stringContaining('leads this chat and hands out the work'),
+    })
   })
 })

@@ -8,14 +8,14 @@ description: Lay out, review and iterate on a product's screens on a Nuphos Desi
 A **design** is a team document the user opens on the Designs page. It holds
 **pages**; each page is one canvas of objects:
 
-| type | what it is | required fields |
-|---|---|---|
-| `frame` | a screen: a complete HTML document shown live in a sandboxed iframe | `id, type, title, x, y, width, height, html` |
-| `section` | a labelled area that groups related frames | `id, type, title, x, y, width, height, color?` |
-| `note` | a sticky note | `id, type, text, x, y, width, height, color?` |
-| `text` | a text label | `id, type, text, x, y, width, fontSize?, color?` |
-| `shape` | `rect`, `ellipse`, `arrow` or `line` | `id, type, shape, x, y, width, height, color?, text?` |
-| `ink` | a freehand stroke (people draw these; you rarely create one) | `id, type, x, y, width, height, points` |
+| type      | what it is                                                          | required fields                                       |
+| --------- | ------------------------------------------------------------------- | ----------------------------------------------------- |
+| `frame`   | a screen: a complete HTML document shown live in a sandboxed iframe | `id, type, title, x, y, width, height, html`          |
+| `section` | a labelled area that groups related frames                          | `id, type, title, x, y, width, height, color?`        |
+| `note`    | a sticky note                                                       | `id, type, text, x, y, width, height, color?`         |
+| `text`    | a text label                                                        | `id, type, text, x, y, width, fontSize?, color?`      |
+| `shape`   | `rect`, `ellipse`, `arrow` or `line`                                | `id, type, shape, x, y, width, height, color?, text?` |
+| `ink`     | a freehand stroke (people draw these; you rarely create one)        | `id, type, x, y, width, height, points`               |
 
 **Links** are flow arrows between two frames on the same page:
 `{ id, source: frameId, target: frameId, label? }` — "from this screen you get to that one".
@@ -40,14 +40,14 @@ bash "$SCRIPT" "$TEAM" POST "$DESIGN/ops" @"$WORK/ops.json"  # incremental edits
 bash "$SCRIPT" "$TEAM" PUT "$DESIGN" @"$WORK/pages.json"     # rename, or replace all pages (needs updatedAt)
 ```
 
-| Action | Call |
-|---|---|
-| List | `GET /teams/{teamId}/designs` |
-| Create | `POST …/designs` with `{ name?, pages? }` |
-| Read | `GET …/designs/{designId}` |
-| Edit | `POST …/designs/{designId}/ops` with `{ ops: [...] }` |
+| Action  | Call                                                            |
+| ------- | --------------------------------------------------------------- |
+| List    | `GET /teams/{teamId}/designs`                                   |
+| Create  | `POST …/designs` with `{ name?, pages? }`                       |
+| Read    | `GET …/designs/{designId}`                                      |
+| Edit    | `POST …/designs/{designId}/ops` with `{ ops: [...] }`           |
 | Replace | `PUT …/designs/{designId}` with `{ name?, pages?, updatedAt? }` |
-| Delete | `DELETE …/designs/{designId}`; only when explicitly asked |
+| Delete  | `DELETE …/designs/{designId}`; only when explicitly asked       |
 
 **Prefer `ops`.** Each op touches only what it names, so your edit lands beside
 whatever the user is moving on the canvas at the same moment. `PUT pages`

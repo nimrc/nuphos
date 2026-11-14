@@ -22,13 +22,13 @@ bash "$SCRIPT" "$TEAM" GET "$DIAGRAM" > /tmp/diagram.json
 bash "$SCRIPT" "$TEAM" PUT "$DIAGRAM" @/tmp/diagram-update.json
 ```
 
-| Action | Call |
-|---|---|
-| List | `GET /teams/{teamId}/architecture-diagrams` |
+| Action | Call                                                     |
+| ------ | -------------------------------------------------------- |
+| List   | `GET /teams/{teamId}/architecture-diagrams`              |
 | Create | `POST …/architecture-diagrams` with `{ "name": string }` |
-| Read | `GET …/architecture-diagrams/{diagramId}` |
+| Read   | `GET …/architecture-diagrams/{diagramId}`                |
 | Update | `PUT …/{diagramId}` with any of `{ name, nodes, views }` |
-| Delete | `DELETE …/{diagramId}`; only when explicitly requested |
+| Delete | `DELETE …/{diagramId}`; only when explicitly requested   |
 
 An update replaces the supplied `nodes` or `views` array, so always derive it
 from the latest GET. Preserve unknown fields and untouched views. Generate
@@ -87,7 +87,7 @@ Set `kind` on every node so it's colour-coded: `cloud` (infra/cloud resources, t
 
 Every node is one of two kinds:
 
-- **Concrete** — it maps to a real resource/page, so set its **`url`**. There is NO separate "resource tag" (no provider/type/id); the url *is* the binding. Use the app's own page URL — the same path you'd land on by browsing to the resource in the UI — so a double-click navigates **in-app**:
+- **Concrete** — it maps to a real resource/page, so set its **`url`**. There is NO separate "resource tag" (no provider/type/id); the url _is_ the binding. Use the app's own page URL — the same path you'd land on by browsing to the resource in the UI — so a double-click navigates **in-app**:
 
   `https://nuphos.ai/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<cluster>/workloads/deployments/namespaces/<ns>/resources/deployment/<name>`
 

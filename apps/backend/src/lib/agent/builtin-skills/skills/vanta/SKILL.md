@@ -22,7 +22,7 @@ unsupported.
 
 ## Reading failing tests (the issues to fix)
 
-Each Vanta *test* is one compliance check. The list route wraps results in an
+Each Vanta _test_ is one compliance check. The list route wraps results in an
 object, so extract `.tests[]` before piping to `jq`:
 
 ```bash

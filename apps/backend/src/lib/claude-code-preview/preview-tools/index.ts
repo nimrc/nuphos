@@ -27,6 +27,7 @@ import { localCuaToolModule } from './local-cua'
 import { localExecToolModule } from './local-exec'
 import { slackPreviewToolModule } from './slack'
 import { sessionResourceToolModule } from './session-resources'
+import { handoffToolModule } from './handoffs'
 import { threadToolModule } from './threads'
 
 import type { PreviewToolContext, PreviewToolModule } from '../preview-tool-context'
@@ -172,6 +173,7 @@ type ModuleFactory = (ctx: PreviewToolContext) => Promise<PreviewToolModule>
 const EXTRA_MODULES: ModuleFactory[] = [
   () => Promise.resolve(sessionResourceToolModule()),
   () => Promise.resolve(threadToolModule()),
+  () => Promise.resolve(handoffToolModule()),
   () => Promise.resolve(channelToolModule()),
   () => Promise.resolve(meetingToolModule()),
   (ctx) => Promise.resolve(connectorToolModule(ctx)),

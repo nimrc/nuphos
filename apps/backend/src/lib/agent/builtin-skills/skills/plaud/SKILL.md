@@ -57,13 +57,13 @@ A recording carries `id`, `name`, `created_at`, `start_at`, `duration`
 (seconds), `presigned_url` (a temporary audio URL, when available),
 `source_list` and `note_list`:
 
-| Where       | `data_type`          | What it is                                     |
-| ----------- | -------------------- | ---------------------------------------------- |
-| source_list | `transaction`        | Transcript segments                            |
-| source_list | `transaction_polish` | Cleaned-up transcript                          |
-| source_list | `outline`            | Topic outline with timestamps                  |
+| Where       | `data_type`          | What it is                                      |
+| ----------- | -------------------- | ----------------------------------------------- |
+| source_list | `transaction`        | Transcript segments                             |
+| source_list | `transaction_polish` | Cleaned-up transcript                           |
+| source_list | `outline`            | Topic outline with timestamps                   |
 | source_list | `mark_memo`          | Moments flagged with the device's highlight key |
-| note_list   | `auto_sum_note`      | The AI summary (markdown)                      |
+| note_list   | `auto_sum_note`      | The AI summary (markdown)                       |
 
 Each block holds its content inline in `data_content`, or behind a short-lived
 signed URL in `data_link` — fetch that URL with plain `curl` and **no**

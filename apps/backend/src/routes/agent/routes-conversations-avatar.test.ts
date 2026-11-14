@@ -106,10 +106,16 @@ useDb({
         return Promise.resolve()
       },
       // The chats a Bot made a Task leaves.
-      find: (filter: { agentSessionIds?: string }) => {
+      find: (filter: { agentSessionIds?: string; $or?: object[] }) => {
         if (filter.agentSessionIds) left.push(filter.agentSessionIds)
+        // A Leader's handoffs: none recorded here.
+        const cursor = {
+          toArray: () => Promise.resolve([]),
+          sort: () => cursor,
+          limit: () => cursor,
+        }
 
-        return { toArray: () => Promise.resolve([]) }
+        return cursor
       },
       updateMany: () => Promise.resolve(),
     }),
@@ -359,4 +365,15 @@ test('a Leader needs the owner, a Bot and a yes or no', async () => {
   member = false
   expect((await lead({ leader: true }, otherTeam)).status).toBe(403)
   expect(leaders).toEqual([])
+})
+
+test("only the owner reads a Bot's handoffs", async () => {
+  const read = () =>
+    app.request(`/agent/conversations/s1/handoffs?teamId=${teamId}`, {
+      headers: { authorization: 'Bearer test-token' },
+    })
+
+  expect(await (await read()).json()).toEqual({ handoffs: [] })
+  owner = 'someone-else'
+  expect((await read()).status).toBe(404)
 })

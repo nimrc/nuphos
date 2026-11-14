@@ -21,7 +21,7 @@ bash skills/huawei/scripts/setup-credentials.sh <teamId> <accountId> [region]
 source ~/.huawei/credentials.env
 ```
 
-Nuphos uses OIDC federation here, like every other cloud connector — but Huawei Cloud has no AssumeRole, so the trust relationship *is* an IAM5 OIDC provider plus a trust agency assigned to Nuphos's audience on it. Nuphos mints a per-team RS256 ID token and calls STS's `AssumeAgencyWithOIDC` (`POST https://sts.<region>.myhuaweicloud.com/v5/agencies/assume-with-oidc`, unsigned) with the provider and agency URNs to get temporary AK/SK + security token directly — no long-lived Huawei keys, no intermediate token, and no relation to IAM's legacy Keystone identity-provider APIs, which don't see IAM5 providers at all.
+Nuphos uses OIDC federation here, like every other cloud connector — but Huawei Cloud has no AssumeRole, so the trust relationship _is_ an IAM5 OIDC provider plus a trust agency assigned to Nuphos's audience on it. Nuphos mints a per-team RS256 ID token and calls STS's `AssumeAgencyWithOIDC` (`POST https://sts.<region>.myhuaweicloud.com/v5/agencies/assume-with-oidc`, unsigned) with the provider and agency URNs to get temporary AK/SK + security token directly — no long-lived Huawei keys, no intermediate token, and no relation to IAM's legacy Keystone identity-provider APIs, which don't see IAM5 providers at all.
 
 `setup-credentials.sh` calls `GET /teams/:teamId/huawei-accounts/:accountId/credentials` with the user's `NUPHOS_TOKEN` and writes both naming schemes, because neither reads the other's:
 

@@ -42,6 +42,7 @@ useIdentity({
 })
 
 const { channelRoutes } = await import('./routes-channels')
+const { channelLeadRoutes } = await import('./routes-channel-lead')
 const { conversationParticipantsRoutes } = await import('./routes-conversation-participants')
 const { agentConversations } = await import('@/lib/agent/db')
 const { authorizeThreadDelivery } = await import('@/lib/agent/thread-bridge')
@@ -52,6 +53,7 @@ app.use('*', async (c, next) => {
   await next()
 })
 app.route('/', channelRoutes)
+app.route('/', channelLeadRoutes)
 app.route('/', conversationParticipantsRoutes)
 app.onError(errorHandler)
 

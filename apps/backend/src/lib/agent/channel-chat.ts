@@ -11,8 +11,9 @@ import {
   steerQueuedNotice,
   steerRunningTurn,
 } from './channel-wake'
-import { addressedAgents, channelLead, channelRecipients } from './channel-lead'
-import { isChannel, listChannelAgents, postText } from './db/channels'
+import { channelRecipients } from './channel-lead'
+import { addressedIn } from './db/channel-lead'
+import { isChannel, postText } from './db/channels'
 import { bumpConversationActivity } from './db/read-state'
 import { pushTimelineEvent } from './db/participants'
 import { agentConversations } from './db/shared'
@@ -32,31 +33,7 @@ export const CHANNEL_AGENT_TURN_BUDGET = 10
 
 type Post = { id: string; text: string; metadata: MessageMetadata; files?: object[] }
 
-// Enough of the original to recognize it; the reply is about it, not a copy of it.
-const REPLY_QUOTE_LENGTH = 200
-
-/**
- * What a reply quotes: a snapshot of the post `messageId` in this channel, so
- * the quote stays when the original goes. None for a post the channel lacks.
- */
-export async function replyQuote(
-  channel: Pick<AgentConversation, 'sessionId' | 'userId'>,
-  messageId: unknown,
-): Promise<MessageMetadata['replyTo']> {
-  if (typeof messageId !== 'string' || !messageId || messageId.length > 100) return undefined
-  const original = await agentMessages().findOne({
-    sessionId: channel.sessionId,
-    userId: channel.userId,
-    messageId,
-  })
-  const sender = parseMessageMetadata(original?.metadata)?.sender
-
-  if (!original || !sender) return undefined
-  // A post of files alone is quoted as its file.
-  const text = Array.from(postText(original.parts).trim()).slice(0, REPLY_QUOTE_LENGTH).join('')
-
-  return { id: messageId, authorName: sender.displayName, text: text || 'File' }
-}
+export { replyQuote } from './channel-reply-quote'
 
 /**
  * Records a message, with its `files` parts. A person's post wakes the channel's
@@ -93,10 +70,7 @@ export async function postChannelMessage(
   })
   await bumpConversationActivity(channel.sessionId, channel.userId)
   await noteMentions({ ...channel, teamId }, post)
-  // Only a led chat routes by name, so only it looks the names up.
-  const addressed = channelLead(channel)
-    ? addressedAgents(await listChannelAgents(channel), post.text, authorSessionId)
-    : []
+  const addressed = await addressedIn(channel, post.text, authorSessionId)
 
   if (authorSessionId)
     await agentConversations().updateOne(

@@ -28,14 +28,14 @@ bash skills/posthog/scripts/setup-credentials.sh "$TEAM" "<integrationId>" && so
 
 It writes `~/.posthog/nuphos.env` (mode 600) and prints the enabled projects:
 
-| Variable | Meaning |
-| --- | --- |
-| `POSTHOG_HOST` | Region API host: `https://us.posthog.com` or `https://eu.posthog.com`. Not the `*.i.posthog.com` ingestion host. |
-| `POSTHOG_ACCESS_TOKEN` | Short-lived OAuth access token (`pha_…`). Never print it. |
-| `POSTHOG_TOKEN_EXPIRES_AT` | When it expires; re-run the setup command after that. |
-| `POSTHOG_PROJECT_ID` | Default project (the first one enabled). |
-| `POSTHOG_PROJECT_IDS` | Comma-separated project ids this integration may use. Stay inside this list. |
-| `POSTHOG_SCOPES` | Space-separated scopes PostHog granted, e.g. `insight:read feature_flag:write`. Check it before planning a call. |
+| Variable                   | Meaning                                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `POSTHOG_HOST`             | Region API host: `https://us.posthog.com` or `https://eu.posthog.com`. Not the `*.i.posthog.com` ingestion host. |
+| `POSTHOG_ACCESS_TOKEN`     | Short-lived OAuth access token (`pha_…`). Never print it.                                                        |
+| `POSTHOG_TOKEN_EXPIRES_AT` | When it expires; re-run the setup command after that.                                                            |
+| `POSTHOG_PROJECT_ID`       | Default project (the first one enabled).                                                                         |
+| `POSTHOG_PROJECT_IDS`      | Comma-separated project ids this integration may use. Stay inside this list.                                     |
+| `POSTHOG_SCOPES`           | Space-separated scopes PostHog granted, e.g. `insight:read feature_flag:write`. Check it before planning a call. |
 
 `setup-credentials.sh` answers **403** when the integration is not enabled for
 this conversation or the caller is not on its access list (ask the user to enable

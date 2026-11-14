@@ -7,8 +7,6 @@ import { parseMessageMetadata } from '../message-metadata'
 import { fenceUntrusted } from '../untrusted-content'
 
 import { canReply, readableConversationScope } from './access'
-import { channelLead, leadFieldsFor } from '../channel-lead'
-
 import { assertBot } from './bot-membership'
 import { readNote } from './channel-notes'
 import { agentConversations, agentMessages } from './shared'
@@ -91,19 +89,6 @@ export async function removeChannelAgent(
   return await agentConversations().findOneAndUpdate(
     { sessionId: channelId, kind: 'channel' },
     { $pull: { agentSessionIds: agentSessionId } },
-    { returnDocument: 'after' },
-  )
-}
-
-/** The chat's lead, one of its Bots, or none. */
-export async function setChannelLead(channelId: string, agentSessionId: string | null) {
-  return await agentConversations().findOneAndUpdate(
-    agentSessionId === null
-      ? { sessionId: channelId, kind: 'channel' }
-      : { sessionId: channelId, kind: 'channel', agentSessionIds: agentSessionId },
-    agentSessionId === null
-      ? { $unset: { leadAgentSessionId: '' } }
-      : { $set: { leadAgentSessionId: agentSessionId } },
     { returnDocument: 'after' },
   )
 }
@@ -203,7 +188,6 @@ export async function readChannelMessages(
     | 'agentSessionIds'
     | 'instructions'
     | 'leadAgentSessionId'
-    | 'teamId'
   >,
   agentSessionId: string,
   /** The reading agent's owner, whose posts carry `fromOwner`. */
@@ -259,25 +243,8 @@ export async function readChannelMessages(
     ...(channel.instructions
       ? { sharedInstructions: fenceUntrusted('channel-setup', channel.instructions, '') }
       : {}),
-    ...(await leadFields(channel, agentSessionId)),
     note: readNote(channel),
   }
-}
-
-/** The lead, and what it means for this reader, as channel_read shows them. */
-async function leadFields(
-  channel: Pick<AgentConversation, 'agentSessionIds' | 'leadAgentSessionId' | 'teamId'>,
-  readerId: string,
-) {
-  const leadId = channelLead(channel)
-
-  if (!leadId) return {}
-  const members = await listChannelAgents(channel)
-  const lead = members.find((member) => member.sessionId === leadId)
-
-  if (!lead) return {}
-
-  return { leadAgentSessionId: leadId, ...leadFieldsFor(lead, members, readerId) }
 }
 
 /**

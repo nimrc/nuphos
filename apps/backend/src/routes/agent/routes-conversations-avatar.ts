@@ -13,6 +13,7 @@ import {
   updateBotSelf,
 } from '@/lib/agent/db'
 import { leaveChats } from '@/lib/agent/db/bot-membership'
+import { listHandoffs } from '@/lib/agent/handoffs'
 import { systemSender } from '@/lib/agent/message-metadata'
 import {
   validateRequestedAgentRuntime,
@@ -105,6 +106,19 @@ agent.put('/conversations/:sessionId/leader', async (c) => {
     throw new AppError(404, 'not_found', 'Bot not found')
 
   return c.json({ leader: body.data.leader })
+})
+
+// What a Bot handed out or was given and is not finished: the owner's view of a Leader's work.
+agent.get('/conversations/:sessionId/handoffs', async (c) => {
+  const userId = c.get('userId')
+  const sessionId = c.req.param('sessionId')
+  const teamId = await resolveVerifiedTeamId(c, readTeamIdCandidate(c))
+  const conversation = await getReadableConversation(sessionId, userId, teamId)
+
+  if (!conversation || conversation.userId !== userId)
+    throw new AppError(404, 'not_found', 'Conversation not found')
+
+  return c.json({ handoffs: await listHandoffs(sessionId, userId, c.req.query('all') === 'true') })
 })
 
 // "+" on Bots. It is placed on the runtime the client would start a new chat on, so its

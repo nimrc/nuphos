@@ -36,10 +36,10 @@ helm list -A | grep -iE 'prometheus|kube-prometheus'
 
 Three situations:
 
-| Found | Action |
-|---|---|
-| Nothing | Full install (step 2) |
-| kube-prometheus-stack already installed | Config-only: add the Better Stack receiver + rules (steps 1, 3, 4) via `helm upgrade --reuse-values` |
+| Found                                                      | Action                                                                                                                                               |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nothing                                                    | Full install (step 2)                                                                                                                                |
+| kube-prometheus-stack already installed                    | Config-only: add the Better Stack receiver + rules (steps 1, 3, 4) via `helm upgrade --reuse-values`                                                 |
 | A different stack (VictoriaMetrics, vanilla Prometheus, …) | Don't replace it — wire its existing alerting path to Better Stack. Ask the user before touching an existing stack. VictoriaMetrics specifics below. |
 
 **VictoriaMetrics coexist path** (the victoria-metrics-k8s-stack layout —
@@ -88,6 +88,7 @@ skill's credentials setup first.
 
       (Requires team-admin; if the PATCH is rejected, continue with the
       URL for this session and tell the user an admin should save it.)
+
 2. **Watchdog heartbeat** — create via API:
 
 ```bash

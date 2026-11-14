@@ -62,17 +62,17 @@ you read so they can correct you in one line.
 
 All paths start with `/teams/{teamId}/discord`. Ids are Discord snowflakes.
 
-| Action | Method and suffix |
-|---|---|
-| Server, reachable channels, this conversation's thread | `GET /` |
-| Recent messages, oldest first | `GET /channels/{channelId}/messages?limit=1..100&before=&after=&around=` |
-| One message | `GET /channels/{channelId}/messages/{messageId}` |
-| Pinned messages | `GET /channels/{channelId}/pins` |
-| Active threads under a channel | `GET /channels/{channelId}/threads` |
-| Search messages | `GET /search?content=…&channelId=&authorId=&limit=1..25` |
-| Find members by name | `GET /members?query=…&limit=1..25` |
-| Post a message | `POST /channels/{channelId}/messages` with `{ "content": "…", "replyTo": "messageId" }` |
-| React to a message | `PUT /channels/{channelId}/messages/{messageId}/reactions/{emoji}` |
+| Action                                                 | Method and suffix                                                                       |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| Server, reachable channels, this conversation's thread | `GET /`                                                                                 |
+| Recent messages, oldest first                          | `GET /channels/{channelId}/messages?limit=1..100&before=&after=&around=`                |
+| One message                                            | `GET /channels/{channelId}/messages/{messageId}`                                        |
+| Pinned messages                                        | `GET /channels/{channelId}/pins`                                                        |
+| Active threads under a channel                         | `GET /channels/{channelId}/threads`                                                     |
+| Search messages                                        | `GET /search?content=…&channelId=&authorId=&limit=1..25`                                |
+| Find members by name                                   | `GET /members?query=…&limit=1..25`                                                      |
+| Post a message                                         | `POST /channels/{channelId}/messages` with `{ "content": "…", "replyTo": "messageId" }` |
+| React to a message                                     | `PUT /channels/{channelId}/messages/{messageId}/reactions/{emoji}`                      |
 
 Notes:
 

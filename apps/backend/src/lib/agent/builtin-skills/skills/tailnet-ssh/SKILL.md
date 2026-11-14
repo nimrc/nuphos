@@ -82,15 +82,15 @@ prevent.
 
 ## Troubleshooting
 
-| Symptom | Cause |
-|---|---|
-| `tailscale_sandbox_access_disabled` | No administrator has enabled private network access on this binding. |
-| `tailscale_client_agent_access_denied` | The binding is not selected in this session's credential selector. |
-| `tailscale_auth_key_denied` | The customer's OAuth client lacks the `auth_keys` scope, or does not own the configured tag. |
-| Joins, but no peers listed | The ACL grants this tag nothing. The customer needs a `grants` entry with this tag as `src`. |
-| Peer listed, SSH times out | The ACL allows discovery but not port 22, or the host is not running tailscaled. |
-| SSH asks for a password | Tailscale SSH is not enabled on that host. Do not fall back to keys. |
-| `tailscaled did not start` | Re-run; if it persists, report it. Do not try to install a different networking mode — userspace is the only one the sandbox can use. |
+| Symptom                                | Cause                                                                                                                                 |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `tailscale_sandbox_access_disabled`    | No administrator has enabled private network access on this binding.                                                                  |
+| `tailscale_client_agent_access_denied` | The binding is not selected in this session's credential selector.                                                                    |
+| `tailscale_auth_key_denied`            | The customer's OAuth client lacks the `auth_keys` scope, or does not own the configured tag.                                          |
+| Joins, but no peers listed             | The ACL grants this tag nothing. The customer needs a `grants` entry with this tag as `src`.                                          |
+| Peer listed, SSH times out             | The ACL allows discovery but not port 22, or the host is not running tailscaled.                                                      |
+| SSH asks for a password                | Tailscale SSH is not enabled on that host. Do not fall back to keys.                                                                  |
+| `tailscaled did not start`             | Re-run; if it persists, report it. Do not try to install a different networking mode — userspace is the only one the sandbox can use. |
 
 ## Disconnect
 

@@ -7,7 +7,10 @@ import { getBuiltinSkillsDirectory } from '@/lib/agent/skill-store/inject'
 const helper = join(getBuiltinSkillsDirectory(), 'firebase/scripts/inspect.py')
 
 test('Firebase helper uses selected credentials per invocation and outputs metadata only', () => {
-  const result = Bun.spawnSync(['python3', '-c', `
+  const result = Bun.spawnSync([
+    'python3',
+    '-c',
+    `
 import importlib.util, contextlib, io, json, os, sys
 from unittest.mock import patch
 spec = importlib.util.spec_from_file_location('firebase_helper', sys.argv[1])
@@ -26,14 +29,19 @@ assert calls == [('https://backend.invalid/teams/team/gcp-projects/bound-project
 assert json.loads(output.getvalue()) == {'apps':[{'appId':'web-app','platform':'WEB'}], 'nextPageToken':'next'}
 assert 'secret' not in output.getvalue()
 assert m.NoRedirect().redirect_request(None, None, 302, '', {}, 'https://untrusted.invalid') is None
-`, helper])
+`,
+    helper,
+  ])
 
   expect(result.exitCode).toBe(0)
   expect(result.stdout.toString()).toBe('')
 })
 
 test('denied credential handout prevents every Firebase call', () => {
-  const result = Bun.spawnSync(['python3', '-c', `
+  const result = Bun.spawnSync([
+    'python3',
+    '-c',
+    `
 import importlib.util, os, sys
 from unittest.mock import patch
 from urllib.error import HTTPError
@@ -50,7 +58,9 @@ with patch.dict(os.environ, {'NUPHOS_TOKEN':'fixture', 'OPENAB_CREDENTIALS_DIR':
     else: raise AssertionError('expected denial')
 assert len(calls) == 1
 assert 'firebase.googleapis.com' not in calls[0]
-`, helper])
+`,
+    helper,
+  ])
 
   expect(result.exitCode).toBe(0)
 })
