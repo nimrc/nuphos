@@ -113,8 +113,8 @@ Search returns `results[]` each with `id`, `object` (`page`/`data_source`), a
 `url`, and (for pages) `properties`. Report the `url` back so the user can open
 it.
 
-> **Databases vs data sources (API ≥ 2025-09-03).** A Notion *database* is a
-> container; the actual queryable table of rows + schema is a *data source*
+> **Databases vs data sources (API ≥ 2025-09-03).** A Notion _database_ is a
+> container; the actual queryable table of rows + schema is a _data source_
 > inside it (usually one, sometimes several). Search and `query` operate on
 > **data sources**, not the database container — a `data_source` result's `id`
 > is the id you query directly. Given a database id, list its data sources with

@@ -39,6 +39,12 @@ object BotActions {
         else request("PATCH", "$conversation/avatar", token, query, JsonValue.obj("avatar" to JsonValue.Null))
     }
 
+    /** Make a Bot the Leader of its owner's other Bots in this team, which takes it from any other, or stop it leading. */
+    suspend fun setLeader(token: String, team: String, session: String, leader: Boolean, request: Request = AgentChatApi::send) {
+        request("PUT", "agent/conversations/${ConversationActions.segment(session)}/leader", token,
+            listOf("teamId" to team), JsonValue.obj("leader" to JsonValue.Bool(leader)))
+    }
+
     private fun sessionId(response: String): String =
         JsonValue.parse(response)?.get("sessionId")?.stringValue?.takeIf { it.isNotEmpty() } ?: throw NuphosApi.Failure.InvalidResponse
 }

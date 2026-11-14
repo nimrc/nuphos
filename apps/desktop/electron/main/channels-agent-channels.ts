@@ -31,6 +31,14 @@ export const agentChannelChannels = {
   ) => agent.notifyMention({ ...args, parentWindow: BrowserWindow.fromWebContents(e.sender) }),
   'agent:listChannelAgents': (_e: unknown, channelId: string, teamId: string) =>
     agent.listChannelAgents(channelId, teamId),
+  'agent:setBotLeader': (_e: unknown, sessionId: string, teamId: string, leader: boolean) =>
+    agent.setBotLeader(sessionId, teamId, leader),
+  'agent:setChannelLead': (
+    _e: unknown,
+    channelId: string,
+    teamId: string,
+    agentId: string | null,
+  ) => agent.setChannelLead(channelId, teamId, agentId),
   'agent:addChannelAgent': (_e: unknown, channelId: string, teamId: string, agentId: string) =>
     agent.addChannelAgent(channelId, teamId, agentId),
   'agent:removeChannelAgent': (_e: unknown, channelId: string, teamId: string, agentId: string) =>

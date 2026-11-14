@@ -45,6 +45,7 @@ aws ssm describe-instance-information --region <region> \
 ```
 
 **IAM the bound role needs** (caller side):
+
 - `ssm:SendCommand`, `ssm:GetCommandInvocation`, `ssm:DescribeInstanceInformation` — for Run Command (non-interactive; **use this for the agent**)
 - `ssm:StartSession` (+ terminate) — for an interactive Session Manager shell
 - (interactive SSH-over-SSM only) `ssm:StartSession` on document `AWS-StartSSHSession`
@@ -72,6 +73,7 @@ Pushes a **60-second** ephemeral public key, then connects over SSH. Use when th
 **Requirements on the instance:** the `ec2-instance-connect` package (pre-installed on AL2/AL2023 and Ubuntu 20.04+) and a security group allowing tcp:22 from your source. **Public IP** → connect directly. **Private subnet, no public IP** → go through an **EC2 Instance Connect Endpoint (EICE)** — no bastion, no public IP needed.
 
 **IAM the bound role needs:**
+
 - `ec2-instance-connect:SendSSHPublicKey`, `ec2:DescribeInstances`, `ec2:DescribeImages` (the wrapper reads the AMI description to guess the OS user)
 - (private via EICE) also `ec2-instance-connect:OpenTunnel`
 

@@ -2,6 +2,9 @@ import { randomUUID } from 'node:crypto'
 
 import { Hono } from 'hono'
 
+import { channelUploadPart, resolveChannelFiles } from '@/lib/agent/channel-attachments'
+import { postChannelMessage, replyQuote, wakeChannelAgents } from '@/lib/agent/channel-chat'
+import { channelFacesField } from '@/lib/agent/channel-faces'
 import {
   agentConversations,
   getConversationBySessionId,
@@ -17,14 +20,12 @@ import {
   removeChannelAgent,
 } from '@/lib/agent/db/channels'
 import { addConversationParticipants } from '@/lib/agent/db/participants'
-import { channelUploadPart, resolveChannelFiles } from '@/lib/agent/channel-attachments'
-import { channelFacesField } from '@/lib/agent/channel-faces'
-import { postChannelMessage, replyQuote, wakeChannelAgents } from '@/lib/agent/channel-chat'
 import { resolveMentions } from '@/lib/agent/mentions'
-import { answerInputRequest } from '@/lib/agent/plan-decision'
 import { createMessageMetadata } from '@/lib/agent/message-attribution'
+import { answerInputRequest } from '@/lib/agent/plan-decision'
 import { AppError } from '@/lib/errors'
 
+import { agentsResponse, channelOrNotFound, readBody, requireTeam } from './channel-route-helpers'
 import { buildConversationOwnerMap } from './conversation-view'
 import { assertDecisionUnanswered, decisionReplyOf } from './decision-reply'
 import {
@@ -46,20 +47,6 @@ const MAX_TITLE_LENGTH = 200
 // A chat message, not a document.
 const MAX_MESSAGE_LENGTH = 20_000
 
-type Body = Record<string, unknown>
-
-async function readBody(c: Context): Promise<Body> {
-  return (await c.req.json().catch(() => ({}))) as Body
-}
-
-async function requireTeam(c: Context<{ Variables: AuthVariables }>, body: Body = {}) {
-  const teamId = await resolveVerifiedTeamId(c, readTeamIdCandidate(c, body.teamId))
-
-  if (!teamId) throw new AppError(403, 'forbidden', 'Workspace membership is required')
-
-  return teamId
-}
-
 function requireText(value: unknown, name: string, max: number): string {
   const text = typeof value === 'string' ? value.trim() : ''
 
@@ -67,17 +54,6 @@ function requireText(value: unknown, name: string, max: number): string {
     throw new AppError(400, 'invalid_request', `${name} must be 1 to ${String(max)} characters`)
 
   return text
-}
-
-function channelOrNotFound(conversation: AgentConversation | null): AgentConversation {
-  if (!conversation || !isChannel(conversation))
-    throw new AppError(404, 'not_found', 'Channel not found')
-
-  return conversation
-}
-
-async function agentsResponse(channel: AgentConversation | null) {
-  return { agents: await listChannelAgents(channelOrNotFound(channel)) }
 }
 
 channelRoutes.post('/channels', async (c) => {

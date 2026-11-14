@@ -21,7 +21,6 @@ import { usePaneSummary } from '../../app/workspace/usePaneSummary'
 import { t } from '../../i18n'
 import { useAgentAvatarPick } from '../../lib/agentAvatarChoices'
 import { openChangeBotAvatar } from '../../lib/changeBotAvatar'
-import { copyLinkWithFeedback } from '../../lib/copyLink'
 import { sessionShortcutCombo } from '../../lib/sessionShortcuts'
 import { useIsSubAgent } from '../../lib/subAgentIds'
 import { makeBot, turnIntoTask } from '../channels/botChannel'
@@ -38,6 +37,8 @@ import { ShortcutHint } from '../ui/shortcut-hint'
 import { toast } from '../ui/toast'
 import { Tooltip } from '../ui/tooltip'
 
+import { copySessionValue } from './copySessionValue'
+import { LeaderMenuItem } from './LeaderMenuItem'
 import { agentSessionUrl } from './sessionUrl'
 import { SummaryIcon } from './summary/ChatSummaryToggle'
 import { useArchiveSession } from './useArchiveSession'
@@ -115,27 +116,7 @@ export function SessionHeaderMenu({
   // pane, which would make the closed pane the active one again.
   const closePaneOnClose = useRef(false)
 
-  function copy(value: string, what: 'Link' | 'ID') {
-    const copied =
-      what === 'Link' ? t('Link copied') : isBot ? t('Bot ID copied') : t('Task ID copied')
-
-    void copyLinkWithFeedback(value, (text) => navigator.clipboard.writeText(text), {
-      onSuccess: () =>
-        toast.success(copied, undefined, {
-          timeoutMs: 1200,
-          dedupe: false,
-        }),
-      onError: () =>
-        toast.error(
-          what === 'Link'
-            ? t('Could not copy link')
-            : isBot
-              ? t('Could not copy Bot ID')
-              : t('Could not copy task ID'),
-          t('Clipboard was blocked.'),
-        ),
-    })
-  }
+  const copy = (value: string, what: 'Link' | 'ID') => copySessionValue(value, what, isBot)
 
   // ⌥⌘R, ⇧⌘C and ⇧⌘A run the same actions as the menu items below.
   const onShortcut = useRef<((action: string) => void) | null>(null)
@@ -218,6 +199,7 @@ export function SessionHeaderMenu({
             {t('Change avatar')}
           </MenuItem>
         )}
+        {canRename && isBot && <LeaderMenuItem sessionId={sessionId} teamId={teamId} />}
         {canRename && (isBot || !subAgent) && (
           <MenuItem
             icon={isBot ? <BotOff className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}

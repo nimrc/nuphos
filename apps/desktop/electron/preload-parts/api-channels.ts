@@ -28,6 +28,10 @@ export const channelsApi = {
     ipcRenderer.invoke('agent:listChannelMentions', teamId),
   agentListChannelAgents: (channelId: string, teamId: string) =>
     ipcRenderer.invoke('agent:listChannelAgents', channelId, teamId),
+  agentSetBotLeader: (sessionId: string, teamId: string, leader: boolean) =>
+    ipcRenderer.invoke('agent:setBotLeader', sessionId, teamId, leader),
+  agentSetChannelLead: (channelId: string, teamId: string, agentSessionId: string | null) =>
+    ipcRenderer.invoke('agent:setChannelLead', channelId, teamId, agentSessionId),
   agentAddChannelAgent: (channelId: string, teamId: string, agentSessionId: string) =>
     ipcRenderer.invoke('agent:addChannelAgent', channelId, teamId, agentSessionId),
   agentRemoveChannelAgent: (channelId: string, teamId: string, agentSessionId: string) =>

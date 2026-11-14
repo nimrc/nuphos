@@ -4798,6 +4798,96 @@
           }
         }
       }
+    },
+    "No lead": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不设负责人"
+          }
+        }
+      }
+    },
+    "%@ leads this chat: your messages go to it, and it hands work to the other Bots. Write @Name to reach a Bot directly.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 负责这个群聊：你的消息先交给它，由它把工作分派给其他 Bot。要直接找某个 Bot，请写 @名字。"
+          }
+        }
+      }
+    },
+    "Lead": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "负责人"
+          }
+        }
+      }
+    },
+    "Handoffs": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "交接任务"
+          }
+        }
+      }
+    },
+    "To %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "交给 %@"
+          }
+        }
+      }
+    },
+    "From %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来自 %@"
+          }
+        }
+      }
+    },
+    "Blocked": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受阻"
+          }
+        }
+      }
+    },
+    "Late": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逾期"
+          }
+        }
+      }
+    },
+    "Another Bot": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "另一个 Bot"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

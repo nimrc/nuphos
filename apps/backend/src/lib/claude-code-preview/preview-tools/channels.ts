@@ -6,6 +6,7 @@ import { agentFileParts, resolveChannelFiles } from '@/lib/agent/channel-attachm
 import { postAsAgent } from '@/lib/agent/channel-chat'
 import { getConversationBySessionId, upsertConversationShell } from '@/lib/agent/db'
 import { assertBot, speakingBot } from '@/lib/agent/db/bot-membership'
+import { leadFields } from '@/lib/agent/db/channel-lead'
 import {
   addChannelAgent,
   isChannel,
@@ -253,11 +254,10 @@ export function channelToolModule(): PreviewToolModule {
 
         return answer(
           memberChannel(ctx, parsed.data.channelId).then(async ({ channel, self }) =>
-            withFiles(
-              channel,
-              self,
-              await readChannelMessages(channel, ctx.sessionId, self.userId),
-            ),
+            withFiles(channel, self, {
+              ...(await readChannelMessages(channel, ctx.sessionId, self.userId)),
+              ...(await leadFields(channel, ctx.sessionId)),
+            }),
           ),
         )
       },

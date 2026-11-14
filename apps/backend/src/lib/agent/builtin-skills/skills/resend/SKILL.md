@@ -142,9 +142,9 @@ above rule out.
 
 ## Errors worth recognising
 
-| Status | name | What it means |
-| --- | --- | --- |
-| 401 | `restricted_api_key` | Valid key, sending-access only. Not retryable. |
-| 403 | `invalid_api_key` | The key is bad or revoked. Ask the user to re-bind. |
-| 422 | `validation_error` | Usually an unverified `from` domain, or no `text`/`html`. |
-| 429 | `rate_limit_exceeded` | Back off; do not tight-loop. |
+| Status | name                  | What it means                                             |
+| ------ | --------------------- | --------------------------------------------------------- |
+| 401    | `restricted_api_key`  | Valid key, sending-access only. Not retryable.            |
+| 403    | `invalid_api_key`     | The key is bad or revoked. Ask the user to re-bind.       |
+| 422    | `validation_error`    | Usually an unverified `from` domain, or no `text`/`html`. |
+| 429    | `rate_limit_exceeded` | Back off; do not tight-loop.                              |

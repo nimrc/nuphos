@@ -685,7 +685,7 @@ struct LeaderBadge: View {
     var body: some View {
         Image(systemName: "crown.fill")
             .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(.orange)
+            .foregroundStyle(Theme.warning)
             .accessibilityLabel("Leader")
             .accessibilityIdentifier("bot.leader-badge")
     }

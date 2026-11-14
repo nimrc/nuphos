@@ -16,6 +16,7 @@ Use this skill when the user wants machine or cluster logs collected into Loki s
 **UX contract — read this first.** The user will say something minimal: "把这台 VM 的日志接进来" or "collect logs from 35.x.x.x so you can search them". They will NOT specify deployment topology, ports, log paths, or labels — discovering those is YOUR job. Never bounce a list of questions back. Instead: discover everything you can (steps 0–0.5), fill the rest with the defaults below, then present ONE consolidated plan message ("here is exactly what I will do: …") for a single yes — and after that yes, execute end-to-end without re-asking unless you hit a genuine surprise that changes scope.
 
 Defaults (state them in the plan; the user overrides by replying, not by being interrogated):
+
 - `env` label: `stage` · `service` label: derived from what the VM runs (discovery) · extra log paths: derived from discovery
 - Loki/Grafana placement: a k8s already running on/for those VMs (incl. k3s) > docker on the VM > plain binaries — pick automatically
 - Grafana exposure for the Nuphos bind: HTTPS + generated strong password, preferring existing ingress/LB infrastructure over new public ports (switch to a private-access option like GCP IAP only if the user raises private-only requirements)

@@ -26,7 +26,9 @@ type FakeRelay = {
  * A CONNECT proxy that echoes whatever the tunnelled stream sends, so a byte
  * arriving back at the local port proves the whole chain.
  */
-function startFakeRelay(opts: { status?: number; expectCredential?: string } = {}): Promise<FakeRelay> {
+function startFakeRelay(
+  opts: { status?: number; expectCredential?: string } = {},
+): Promise<FakeRelay> {
   const targets: string[] = []
   const server = net.createServer((socket) => {
     let head = ''

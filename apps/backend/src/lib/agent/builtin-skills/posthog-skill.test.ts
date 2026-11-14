@@ -1,4 +1,12 @@
-import { accessSync, chmodSync, constants, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import {
+  accessSync,
+  chmodSync,
+  constants,
+  mkdtempSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -75,7 +83,9 @@ describe('posthog skill', () => {
       `source "${envFile}" && printf '%s|%s|%s|%s|%s' "$POSTHOG_HOST" "$POSTHOG_ACCESS_TOKEN" "$POSTHOG_PROJECT_ID" "$POSTHOG_PROJECT_IDS" "$POSTHOG_SCOPES"`,
     ])
 
-    expect(exported.stdout.toString()).toBe("https://eu.posthog.com|pha_it's|12|12,34|user:read project:read insight:read")
+    expect(exported.stdout.toString()).toBe(
+      "https://eu.posthog.com|pha_it's|12|12,34|user:read project:read insight:read",
+    )
     expect(proc.stdout.toString()).not.toContain('pha_')
   })
 
@@ -127,7 +137,9 @@ describe('posthog skill', () => {
 
     expect(proc.exitCode).toBe(3)
     expect(proc.stdout.toString()).toContain('DRY RUN - nothing was changed.')
-    expect(proc.stdout.toString()).toContain('Would PATCH http://127.0.0.1:9/api/projects/12/feature_flags/5/')
+    expect(proc.stdout.toString()).toContain(
+      'Would PATCH http://127.0.0.1:9/api/projects/12/feature_flags/5/',
+    )
   })
 
   test('a hog function write maps to the hog_function scope', () => {
@@ -138,7 +150,9 @@ describe('posthog skill', () => {
     )
 
     expect(proc.exitCode).toBe(3)
-    expect(proc.stdout.toString()).toContain('Would DELETE http://127.0.0.1:9/api/projects/12/hog_functions/abc/')
+    expect(proc.stdout.toString()).toContain(
+      'Would DELETE http://127.0.0.1:9/api/projects/12/hog_functions/abc/',
+    )
   })
 
   test('the helper only sends the token to the PostHog Cloud hosts', () => {

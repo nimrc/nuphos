@@ -27,15 +27,15 @@ on non-2xx responses. Put request bodies in files.
 
 All paths start with `/teams/{teamId}/agent-triggers`.
 
-| Action | Method and suffix |
-|---|---|
-| List a conversation's triggers | `GET /?targetSessionId={sessionId}` |
-| List your own triggers | `GET /` |
-| Create | `POST /` |
-| Read | `GET /{triggerId}` |
-| Update | `PATCH /{triggerId}` |
-| Delete | `DELETE /{triggerId}` |
-| Test once | `POST /{triggerId}/test-fire` with optional `{ "payload": {...} }` |
+| Action                         | Method and suffix                                                  |
+| ------------------------------ | ------------------------------------------------------------------ |
+| List a conversation's triggers | `GET /?targetSessionId={sessionId}`                                |
+| List your own triggers         | `GET /`                                                            |
+| Create                         | `POST /`                                                           |
+| Read                           | `GET /{triggerId}`                                                 |
+| Update                         | `PATCH /{triggerId}`                                               |
+| Delete                         | `DELETE /{triggerId}`                                              |
+| Test once                      | `POST /{triggerId}/test-fire` with optional `{ "payload": {...} }` |
 
 Create body:
 

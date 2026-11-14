@@ -1,4 +1,5 @@
 import { receiveAgentAvatars } from '../lib/agentAvatarChoices.ts'
+import { receiveBotLeaders } from '../lib/botLeaders.ts'
 import { publishRuntimeStates } from '../lib/agentRuntimeStates.ts'
 import { receiveConversationReadStates } from '../lib/agentUnreadSessions.ts'
 import { queryClient } from '../lib/query/client.ts'
@@ -107,6 +108,7 @@ export const agentApi = {
     )
     receiveConversationReadStates(page.conversations)
     receiveAgentAvatars(page.conversations, requestedAt)
+    receiveBotLeaders(page.conversations)
     receiveSubAgents(page.conversations)
 
     return page
@@ -154,6 +156,7 @@ export const agentApi = {
 
     receiveConversationReadStates([detail], true)
     receiveAgentAvatars([detail], requestedAt)
+    receiveBotLeaders([detail])
     // Only a parent it names is trusted here; the list says when one is gone.
     if (detail.parentSessionId) receiveSubAgents([detail])
 

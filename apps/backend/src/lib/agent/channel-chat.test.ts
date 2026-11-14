@@ -11,6 +11,7 @@ import { portabilityDb } from '@/lib/test/runtime-portability-db'
 
 import { agentConversations, agentMessages } from './db'
 import { QUEUED_NOTICE_STEER, withChannelPosts } from './channel-wake'
+import { leadFields } from './db/channel-lead'
 import { listChannelMentions, readChannelMessages } from './db/channels'
 import {
   CHANNEL_AGENT_TURN_BUDGET,
@@ -889,5 +890,73 @@ describe('an agent speaks in a channel only with channel_post', () => {
         metadata: { sender: { type: 'agent', id: 'agent-a' } },
       },
     ])
+  })
+})
+
+describe('a chat with a lead', () => {
+  beforeEach(async () => {
+    await seed('agent-c')
+    await agentConversations().updateOne(
+      { sessionId: 'channel' },
+      {
+        $set: { agentSessionIds: ['agent-a', 'agent-b', 'agent-c'], leadAgentSessionId: 'agent-a' },
+      },
+    )
+  })
+
+  test('a person’s post wakes only the lead, and any Bot it names', async () => {
+    await say('Ship the release notes')
+    expect(wokenSessions()).toEqual(['agent-a'])
+    await catchUp()
+    wakes = []
+    await say('@AGENT-C title, check the numbers')
+    expect(wokenSessions()).toEqual(['agent-a', 'agent-c'])
+  })
+
+  test('the lead’s posts wake only the Bots it names, once at its turn’s end', async () => {
+    for (const text of ['@agent-b title draft the notes', 'Thanks, everyone'])
+      await postChannelMessage(
+        await channel(),
+        { id: text, text, metadata: agentSpeaker('agent-a') },
+        'agent-a',
+      )
+    expect(wokenSessions()).toEqual([])
+    await wakeAfterTurn('agent-a')
+    expect(wokenSessions()).toEqual(['agent-b'])
+    // The names are spent with the turn.
+    await say('All set.', agentSpeaker('agent-a'), 'agent-a')
+    expect(wokenSessions()).toEqual(['agent-b'])
+  })
+
+  test('a member’s report wakes the lead, not the other members', async () => {
+    await say('Draft is ready.', agentSpeaker('agent-b'), 'agent-b')
+    expect(wokenSessions()).toEqual(['agent-a'])
+  })
+
+  test('a lead that left the chat routes nothing: every Bot wakes again', async () => {
+    await agentConversations().updateOne(
+      { sessionId: 'channel' },
+      { $set: { agentSessionIds: ['agent-b', 'agent-c'] } },
+    )
+    await say('hello')
+    expect(wokenSessions()).toEqual(['agent-b', 'agent-c'])
+  })
+
+  test('channel_read tells the lead and the members their part, with everyone’s names', async () => {
+    const lead = await leadFields(await channel(), 'agent-a')
+    const member = await leadFields(await channel(), 'agent-b')
+
+    expect(lead).toMatchObject({
+      leadAgentSessionId: 'agent-a',
+      lead: { sessionId: 'agent-a', name: 'agent-a title' },
+      members: [
+        { sessionId: 'agent-b', name: 'agent-b title' },
+        { sessionId: 'agent-c', name: 'agent-c title' },
+      ],
+    })
+    expect(lead).toMatchObject({ leadNote: expect.stringContaining('You lead this chat') })
+    expect(member).toMatchObject({
+      leadNote: expect.stringContaining('leads this chat and hands out the work'),
+    })
   })
 })

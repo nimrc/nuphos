@@ -203,7 +203,7 @@ export function SessionParticipants({
 
   // A channel's agents count as people here, and so do the viewer's own that could join.
   const agents = channel?.agents ?? []
-  const everyone = [...participants, ...agentPeople(agents, currentUserId, channel?.ownerId ?? '')]
+  const everyone = [...participants, ...agentPeople(currentUserId, channel, sessionId, teamId)]
   const addable = channel ? addableAgents(teamId, currentUserId, agents) : []
   // Anyone may add their own agent; only the owner invites people.
   const invitable: Pickable[] = [

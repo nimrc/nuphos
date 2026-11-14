@@ -104,8 +104,7 @@ for example `{{file:notes.md}}`. Nuphos resolves that marker to the new Bot's
 isolated imported directory. Do not claim that unexported absolute paths will
 exist on the target computer; list them as manual setup.
 
-Names have at most 120 characters, instructions/prompts 8,000, and each memory
-500. At most 100 Bots, 100 groups, 100 memories per object, 64 skills and 64
+Names have at most 120 characters, instructions/prompts 8,000, and each memory 500. At most 100 Bots, 100 groups, 100 memories per object, 64 skills and 64
 schedules per Bot. Keep the ZIP below 100 MiB, expanded content below 500 MiB,
 each file below 25 MiB and entries below 10,000. PNG portraits must be at most
 512 KiB and 2048 pixels on either side. Do not include links or special files.

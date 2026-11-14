@@ -19,7 +19,7 @@ structure below.
 Write the report in the **user's preferred language** — infer it from the
 language they are writing to you in, or honor an explicit request ("give me the
 English version"). Translate the section headings accordingly; the section
-*order and meaning* below are canonical, the wording is not. Keep widely-used
+_order and meaning_ below are canonical, the wording is not. Keep widely-used
 technical terms in their original English (memory leak, ingress controller,
 on-call, connection pool) even in a non-English report. This skill file is in
 English for maintainability — do not mirror that choice onto the output.
@@ -49,32 +49,36 @@ rules:
 Produce the report in the following **fixed section order**. Notes per section:
 
 ### 1. Incident Summary
+
 - 2–4 sentences: what happened, when, and how it was resolved.
 - No detail — give the reader the whole picture fast.
 
 ### 2. Incident Metadata
+
 Present the following fields as a table (use N/A when unknown):
 
-| Field | Description |
-|---|---|
-| Incident name | Short identifying name |
-| Severity | P1 / P2 / P3 (by impact scope, see below) |
-| Status | In progress / Resolved |
-| Affected customers | Customer name or "all users" |
-| Affected services | Service name and environment (prod/staging) |
-| Detected at | ISO 8601 or YYYY/MM/DD HH:mm TZ |
-| Recovered at | Same format; "not yet recovered" if ongoing |
-| Total downtime | Difference between detection and recovery |
-| Primary responders | Names or roles |
-| Preliminary technical root cause | One-line technical summary |
-| Managerial root cause | Any process / people / access-control gap |
+| Field                            | Description                                 |
+| -------------------------------- | ------------------------------------------- |
+| Incident name                    | Short identifying name                      |
+| Severity                         | P1 / P2 / P3 (by impact scope, see below)   |
+| Status                           | In progress / Resolved                      |
+| Affected customers               | Customer name or "all users"                |
+| Affected services                | Service name and environment (prod/staging) |
+| Detected at                      | ISO 8601 or YYYY/MM/DD HH:mm TZ             |
+| Recovered at                     | Same format; "not yet recovered" if ongoing |
+| Total downtime                   | Difference between detection and recovery   |
+| Primary responders               | Names or roles                              |
+| Preliminary technical root cause | One-line technical summary                  |
+| Managerial root cause            | Any process / people / access-control gap   |
 
 **Severity definitions (for classification):**
+
 - **P1**: all users affected, or a core function completely unusable.
 - **P2**: some users or some functionality affected.
 - **P3**: minimal impact, a workaround exists, no customer complaints.
 
 ### 3. Timeline
+
 - List key events in chronological order.
 - Format: `YYYY/MM/DD HH:mm TZ: event description`
 - Cover: detection, notification, engagement, investigation, recovery, follow-up confirmation.
@@ -83,16 +87,17 @@ Present the following fields as a table (use N/A when unknown):
   was located).
 
 ### 4. Impact Assessment
+
 Assess the five dimensions below in a table; mark each "Affected", "Not
 affected", or "Under investigation" with a note:
 
-| Dimension | Assessment | Notes |
-|---|---|---|
-| Service availability | | |
-| User impact | | |
-| Data integrity | | |
-| Data confidentiality | | |
-| Operational impact | | |
+| Dimension            | Assessment | Notes |
+| -------------------- | ---------- | ----- |
+| Service availability |            |       |
+| User impact          |            |       |
+| Data integrity       |            |       |
+| Data confidentiality |            |       |
+| Operational impact   |            |       |
 
 > SOC 2 auditors focus on **data integrity** and **data confidentiality** — even
 > for a pure availability incident, address both dimensions explicitly rather
@@ -105,36 +110,43 @@ affected", or "Under investigation" with a note:
 > when you have not looked.
 
 ### 5. Immediate Response and Recovery
+
 - Describe what each role did after the incident began.
 - Narrate chronologically, emphasizing "who did what, and what result it achieved."
 - Include both the workaround and the formal recovery actions.
 
 ### 6. Root Cause Analysis (RCA)
+
 Three sub-sections:
 
 #### 6.1 Technical root cause
+
 - The direct technical cause of the incident.
 - Attach supporting screenshots or data if available.
 
 #### 6.2 Managerial root cause
+
 - Any process gap, access-control issue, or communication problem.
 - If none, state "no significant managerial root cause for this incident."
 
 #### 6.3 Contributing factors
+
 - Numbered list of everything that accelerated or amplified the impact.
 - E.g. version issue, missing configuration, insufficient monitoring, concentrated access.
 
 ### 7. Corrective Actions
+
 Present as a table:
 
-| # | Action | Owner | Status | Link (optional) |
-|---|---|---|---|---|
+| #   | Action | Owner | Status | Link (optional) |
+| --- | ------ | ----- | ------ | --------------- |
 
 - Status: Done / In progress / To do.
 - Corrective actions fix what already happened — restart a service, patch a
   version, revoke access.
 
 ### 8. Preventive Actions
+
 Same table format.
 
 - Preventive actions stop recurrence — add alerts, strengthen monitoring, write an SOP.
@@ -145,28 +157,32 @@ Same table format.
 > Mitigation).
 
 ### 9. Verification
+
 - How to confirm each action took effect (measurable, verifiable).
 - E.g. monitoring dashboard screenshot, load-test results, a second engineer confirming access.
 
 ### 10. Lessons Learned
+
 - 2–4 paragraphs on the systemic issues this incident exposed.
 - Cover not just the technical problem but the process and organizational learning.
 
 ### 11. SOC 2 / Compliance Mapping
+
 Table mapping this report to the relevant SOC 2 Trust Services Criteria (TSC)
 and/or ISO 22301 clauses:
 
-| Clause | Corresponding content |
-|---|---|
-| CC7.3 (Evaluate Security Events) | ... |
-| CC7.4 (Incident Response) | ... |
-| CC7.5 (Incident Recovery) | ... |
-| A1.2 (Availability / Environmental Threats) | ... |
+| Clause                                      | Corresponding content |
+| ------------------------------------------- | --------------------- |
+| CC7.3 (Evaluate Security Events)            | ...                   |
+| CC7.4 (Incident Response)                   | ...                   |
+| CC7.5 (Incident Recovery)                   | ...                   |
+| A1.2 (Availability / Environmental Threats) | ...                   |
 
 > If the customer specifically requires ISO 22301 mapping, add a second ISO
 > table (clauses 10.1.1–10.1.3).
 
 ### 12. Closure Criteria
+
 List, as a checkbox list, the items that must be complete before closing:
 
 ```
@@ -178,6 +194,7 @@ List, as a checkbox list, the items that must be complete before closing:
 ```
 
 ### 13. Conclusion
+
 - 2–3 sentences: what happened, how it recovered, and the long-term prevention.
 
 ---
@@ -185,6 +202,7 @@ List, as a checkbox list, the items that must be complete before closing:
 ## How to use
 
 ### Mode A: build the report from raw information
+
 The user provides incident information (times, symptoms, handling, root cause);
 organize it into the structure above and output the full report. Ask for the
 following required information if not yet provided:
@@ -196,11 +214,13 @@ following required information if not yet provided:
 5. Any tracking tickets (e.g. Linear / Jira issue links)
 
 ### Mode B: convert an existing document
+
 If the user provides an existing incident record (Slack thread, meeting notes,
 an engineer's memo), reorganize it into the section structure and fill missing
 fields (use N/A or mark "to be completed").
 
 ### Mode C: continue a Nuphos investigation (most common)
+
 Nuphos has just investigated an incident with the other skills and the user asks
 to wrap it up. You already hold most of the material — timings, symptoms,
 investigation path, root cause, and actions are in the conversation. Map them to

@@ -22,7 +22,7 @@ Secureframe is unsupported.
 
 ## Reading failing tests (the issues to fix)
 
-Each Secureframe *test* is one compliance check. The list route wraps results in
+Each Secureframe _test_ is one compliance check. The list route wraps results in
 an object, so extract `.tests[]` before piping to `jq`:
 
 ```bash

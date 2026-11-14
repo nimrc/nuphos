@@ -77,7 +77,7 @@ Ask before guessing at a target — running kubectl against the wrong cluster is
 
 If a credential fetch reports HTTP 403 on kubectl's stderr, your member account does not have Access to the backing credential, or that credential was not selected for this agent session. Do not retry and do not try to request temporary access from inside the sandbox. Ask the user or a team admin to add the member account to the integration's Access allow list, or switch to another integration already enabled for this session.
 
-A 403 *from the Kubernetes API itself* (`... is forbidden: User ... cannot list resource ...`) is different: that is the cluster's own RBAC, not Nuphos access. Tell the user which subject needs which role. One special case — on Volcengine VKE, RBAC is bound when the credential is issued, so a grant made afterwards never applies to the existing one. After the user grants it, call `get_kubeconfig` once with `fresh: true` and rewrite `~/.kube/config`.
+A 403 _from the Kubernetes API itself_ (`... is forbidden: User ... cannot list resource ...`) is different: that is the cluster's own RBAC, not Nuphos access. Tell the user which subject needs which role. One special case — on Volcengine VKE, RBAC is bound when the credential is issued, so a grant made afterwards never applies to the existing one. After the user grants it, call `get_kubeconfig` once with `fresh: true` and rewrite `~/.kube/config`.
 
 ## Common operations
 

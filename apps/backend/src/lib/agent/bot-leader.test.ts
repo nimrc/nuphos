@@ -75,7 +75,7 @@ describe('Bot leader', () => {
     expect(section).toContain("## You lead your owner's Bots")
     expect(section).toContain('Writer (session writer): Drafts the release notes.')
     expect(section).toContain('Reviewer (session reviewer)')
-    expect(section).toContain('threadId lead')
+    expect(section).toContain('hand_off')
     expect(section).not.toContain('Archived')
     expect(section).not.toContain('Not mine')
     expect(section).not.toContain('(session lead)')

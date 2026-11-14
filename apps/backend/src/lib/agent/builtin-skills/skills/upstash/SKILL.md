@@ -21,9 +21,9 @@ pre-installs Upstash's official CLI, which reads the credentials this skill
 loads; prefer it for supported operations and use the raw Management API for
 the remaining endpoints.
 
-> **Scope: control plane, not data plane.** This is the *Management* API — it
+> **Scope: control plane, not data plane.** This is the _Management_ API — it
 > manages databases as resources (create/delete/stats/plan). It does **not**
-> read or write the keys *inside* a Redis database. For that you need the
+> read or write the keys _inside_ a Redis database. For that you need the
 > database's own REST endpoint + token, which `GET /redis/database/{id}` exposes
 > as `endpoint` and `rest_token` (see "Talking to a database" below).
 
@@ -226,7 +226,7 @@ ups_safe POST /vector/index/$IDX/rename -d '{"name":"new-name"}'
 
 Create requires `name`, `region` (`us-east-1`, `eu-west-1`, `us-central1`),
 `similarity_function` (`COSINE`, `EUCLIDEAN`, `DOT_PRODUCT`), and
-`dimension_count`. Unlike Redis, Vector *does* take a `region` field.
+`dimension_count`. Unlike Redis, Vector _does_ take a `region` field.
 
 ## Talking to a database (data plane)
 

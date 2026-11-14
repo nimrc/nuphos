@@ -1,3 +1,4 @@
+import type { AgentLead as Lead } from './agent-lead-types.ts'
 import type { AgentCredentialAccess } from './agent-credential-types.ts'
 import type { AgentMessageMention } from './mention-types.ts'
 import type { SessionResource } from './session-resource-types'
@@ -33,7 +34,7 @@ export type ConversationMoveCheck = {
 export type ConversationAccess = 'owner' | 'reply' | 'view'
 
 /** What makes a person an agent: the face it shows, and whether this viewer may take it out. */
-export type AgentFace = { avatar?: string; provider?: AgentProvider; removable?: boolean }
+export type AgentFace = { avatar?: string; provider?: AgentProvider; removable?: boolean } & Lead
 
 export type AgentConversationParticipant = AgentConversationPerson & {
   isOwner: boolean
@@ -73,6 +74,8 @@ export type AgentConversation = {
   title: string
   /** Picked bot avatar, e.g. `05-rembrandt`. Absent: the one its sessionId selects. */
   avatar?: string
+  /** The owner's lead Bot in this team, which hands work to their other Bots. */
+  leader?: boolean
   firstMessage: string
   messageCount: number
   tokenUsage?: AgentTokenUsageSummary

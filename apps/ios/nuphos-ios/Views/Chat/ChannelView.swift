@@ -88,6 +88,10 @@ struct ChannelView: View {
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier("bot-profile-entry")
                 }
+                // A group chat with Bots to route between: its owner picks the lead.
+                if channel.faces.botId == nil, channel.isOwner, channel.agents.count > 1 {
+                    ToolbarItem(placement: .primaryAction) { leadMenu }
+                }
                 if let bot = desktopBot {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
@@ -147,6 +151,32 @@ struct ChannelView: View {
             #endif
     }
 
+    private var lead: ChannelAgent? { channel.agents.first { $0.sessionId == channel.leadId } }
+
+    private var leadMenu: some View {
+        Menu {
+            Section("Lead") {
+                ForEach(channel.agents) { agent in
+                    Button {
+                        channel.setLead(agent.sessionId)
+                    } label: {
+                        if agent.sessionId == channel.leadId { Label(agent.title, systemImage: "checkmark") } else { Text(agent.title) }
+                    }
+                }
+                Button {
+                    channel.setLead(nil)
+                } label: {
+                    if channel.leadId == nil { Label("No lead", systemImage: "checkmark") } else { Text("No lead") }
+                }
+            }
+        } label: {
+            Image(systemName: channel.leadId == nil ? "crown" : "crown.fill")
+        }
+        .accessibilityLabel("Lead")
+        .accessibilityValue(lead?.title ?? String(localized: "No lead"))
+        .accessibilityIdentifier("chat.lead")
+    }
+
     @ViewBuilder
     private var placeholder: some View {
         if !channel.loaded {
@@ -157,9 +187,15 @@ struct ChannelView: View {
             VStack(alignment: .leading, spacing: 12) {
                 ChatIcon(faces: channel.faces, title: channel.title, size: 44)
                 Text(channel.title).font(.title3.weight(.semibold)).foregroundStyle(Theme.heading)
-                Text("Everyone here sees each message and decides for themselves whether to reply, as in any group chat.")
-                    .font(Theme.Text.secondary)
-                    .foregroundStyle(Theme.body)
+                Group {
+                    if let lead {
+                        Text("\(lead.title) leads this chat: your messages go to it, and it hands work to the other Bots. Write @Name to reach a Bot directly.")
+                    } else {
+                        Text("Everyone here sees each message and decides for themselves whether to reply, as in any group chat.")
+                    }
+                }
+                .font(Theme.Text.secondary)
+                .foregroundStyle(Theme.body)
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("chat.empty")
@@ -238,6 +274,7 @@ struct ChannelView: View {
                 TimestampLabel(date: date)
             case .post(let post, let first):
                 ChannelPostRow(post: post, first: first, mine: post.isMine(viewerId: channel.viewerId),
+                               lead: post.isAgent && post.senderId == channel.leadId,
                                attachments: channel.sendingAttachments[post.id] ?? [], files: channel.files,
                                resolve: channel.transferGroup, onLink: open(link:),
                                flashed: flashed == post.id,
@@ -357,6 +394,8 @@ private struct ChannelPostRow: View {
     let post: ChannelPost
     let first: Bool
     let mine: Bool
+    /// Posted by the chat's lead Bot.
+    var lead = false
     let attachments: [ComposerAttachment]
     /// The chat's file groups, already read.
     let files: [String: [TransferDownloadGroup.File]]
@@ -442,6 +481,7 @@ private struct ChannelPostRow: View {
                                             avatarURL: post.avatar?.absoluteString ?? ""), size: Self.avatar)
             }
             Text(post.name).font(Theme.Text.caption.weight(.medium)).foregroundStyle(Theme.body).lineLimit(1)
+            if lead { LeaderBadge() }
             if post.isAgent {
                 Text("Agent")
                     .font(.system(size: 10, weight: .medium))

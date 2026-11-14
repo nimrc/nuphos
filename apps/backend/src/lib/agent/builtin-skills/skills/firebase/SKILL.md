@@ -43,16 +43,16 @@ could include projects outside the conversation selection.
 
 ## Capability and permission boundaries
 
-| Service | This connector's implemented inventory | Required permission / distinction |
-| --- | --- | --- |
-| Management | Project metadata and state | firebase.projects.get; successful ACTIVE metadata confirms Firebase project availability |
-| Apps | Registered apps, paginated | firebase.clients.list; not API keys or app config |
-| Firestore | No dedicated Firebase inventory in this release | Official databases.list uses datastore.databases.list; data reads require separate permissions |
-| Realtime Database | No dedicated inventory/data access in this release | Management instances.list uses firebasedatabase.instances.list; data REST additionally needs firebase.database and userinfo.email scopes, absent from the current handout |
-| Authentication | No dedicated inventory/user access in this release | Official config inspection uses firebaseauth.configs.get; do not enumerate users by default |
-| Hosting | No dedicated inventory/deploy in this release | Official sites.list uses firebasehosting.sites.list |
-| Functions | No dedicated Firebase inventory/deploy in this release | Existing gcloud skill can inspect functions with cloudfunctions.functions.list and task authorization; do not claim all Cloud Run services are Firebase functions |
-| Storage | No dedicated Firebase-linked bucket inventory in this release | Existing gcloud skill can inspect GCS with its granted IAM; Firebase-linked bucket list needs firebasestorage.buckets.list and projectNumber |
+| Service           | This connector's implemented inventory                        | Required permission / distinction                                                                                                                                         |
+| ----------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Management        | Project metadata and state                                    | firebase.projects.get; successful ACTIVE metadata confirms Firebase project availability                                                                                  |
+| Apps              | Registered apps, paginated                                    | firebase.clients.list; not API keys or app config                                                                                                                         |
+| Firestore         | No dedicated Firebase inventory in this release               | Official databases.list uses datastore.databases.list; data reads require separate permissions                                                                            |
+| Realtime Database | No dedicated inventory/data access in this release            | Management instances.list uses firebasedatabase.instances.list; data REST additionally needs firebase.database and userinfo.email scopes, absent from the current handout |
+| Authentication    | No dedicated inventory/user access in this release            | Official config inspection uses firebaseauth.configs.get; do not enumerate users by default                                                                               |
+| Hosting           | No dedicated inventory/deploy in this release                 | Official sites.list uses firebasehosting.sites.list                                                                                                                       |
+| Functions         | No dedicated Firebase inventory/deploy in this release        | Existing gcloud skill can inspect functions with cloudfunctions.functions.list and task authorization; do not claim all Cloud Run services are Firebase functions         |
+| Storage           | No dedicated Firebase-linked bucket inventory in this release | Existing gcloud skill can inspect GCS with its granted IAM; Firebase-linked bucket list needs firebasestorage.buckets.list and projectNumber                              |
 
 Management project/apps reads accept the existing cloud-platform OAuth scope;
 IAM grants remain separate. Disabled Management API, permission denial, a missing
@@ -65,6 +65,7 @@ or create a refresh daemon. Writes, deployments and deletions require the normal
 task-specific authorization and a separately verified supported tool path.
 
 Official references:
+
 - https://firebase.google.com/docs/reference/firebase-management/rest/v1beta1/projects/get
 - https://firebase.google.com/docs/reference/firebase-management/rest/v1beta1/projects/searchApps
 - https://firebase.google.com/docs/projects/iam/permissions

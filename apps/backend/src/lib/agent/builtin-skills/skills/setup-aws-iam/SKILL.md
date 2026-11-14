@@ -17,10 +17,10 @@ day-to-day operations instead.
 
 This flow spans two different tools. Getting this wrong is the #1 failure mode:
 
-| Steps | Tool | Credentials | Why |
-| --- | --- | --- | --- |
-| 1–3 (list roles, set trust policy) | **`local_exec`** | the user's local `~/.aws` (their IAM-admin identity) | The account isn't bound yet, so the sandbox cannot mint creds for it. Only the user's own cli can read/modify IAM here. |
-| 4 (bind) | **`create_connector` MCP tool** | current conversation’s user and team | Reuses the Add connector validation and saves the connection directly. |
+| Steps                              | Tool                            | Credentials                                          | Why                                                                                                                     |
+| ---------------------------------- | ------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 1–3 (list roles, set trust policy) | **`local_exec`**                | the user's local `~/.aws` (their IAM-admin identity) | The account isn't bound yet, so the sandbox cannot mint creds for it. Only the user's own cli can read/modify IAM here. |
+| 4 (bind)                           | **`create_connector` MCP tool** | current conversation’s user and team                 | Reuses the Add connector validation and saves the connection directly.                                                  |
 
 Do **not** try to run the IAM setup commands through the sandbox `bash` tool —
 the sandbox has no access to the user's local AWS credentials. Run every

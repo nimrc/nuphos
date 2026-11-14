@@ -31,6 +31,8 @@ export type ChannelFields = {
   agentTurns?: number
   /** On an agent: the channels it posted in this turn, woken once when the turn ends. */
   channelWakes?: string[]
+  /** On an agent: by channel, the member Bots its posts this turn named, which a led chat wakes. */
+  channelAddressed?: Record<string, string[]>
   /** People @mentioned here, in a channel or a shared agent, who have not posted since: their Inbox entry. */
   mentions?: Record<string, { messageId: string; at: Date }>
   /** A live call mirrored here: speech and chat come in, agents' posts go to its chat. */
@@ -78,6 +80,12 @@ export async function removeChannelAgent(
   channelId: string,
   agentSessionId: string,
 ): Promise<AgentConversation | null> {
+  // A lead that left leads no more.
+  await agentConversations().updateOne(
+    { sessionId: channelId, kind: 'channel', leadAgentSessionId: agentSessionId },
+    { $unset: { leadAgentSessionId: '' } },
+  )
+
   return await agentConversations().findOneAndUpdate(
     { sessionId: channelId, kind: 'channel' },
     { $pull: { agentSessionIds: agentSessionId } },
@@ -234,9 +242,6 @@ export async function readChannelMessages(
     more: docs.length > READ_PAGE,
     ...(channel.instructions
       ? { sharedInstructions: fenceUntrusted('channel-setup', channel.instructions, '') }
-      : {}),
-    ...(channel.leadAgentSessionId && channel.agentSessionIds?.includes(channel.leadAgentSessionId)
-      ? { leadAgentSessionId: channel.leadAgentSessionId }
       : {}),
     note: readNote(channel),
   }

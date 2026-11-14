@@ -66,6 +66,8 @@ data class AgentConversation(
     val faces: List<ChatFace>? = null,
     /** A Bot's face, e.g. `05-rembrandt`; null for a Task. */
     val avatar: String? = null,
+    /** The owner's lead Bot in this team, which hands work to their other Bots. */
+    val leader: Boolean? = null,
     /** A chat's newest post. Read through [lastPost], so a bad value only costs the preview. */
     val lastMessage: JsonValue? = null,
     /** Open `request_user_decision` questions, oldest first; list rows carry only the open ones. */

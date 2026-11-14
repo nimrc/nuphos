@@ -25,7 +25,8 @@ const fails = (cmd: string, args: string[], cwd = root) => {
   }
   throw new Error(`${cmd} ${args.join(' ')} unexpectedly succeeded`)
 }
-const setupAlice = () => run('bash', [setup, alice, '--name', 'Alice Example', '--email', 'alice@example.invalid'])
+const setupAlice = () =>
+  run('bash', [setup, alice, '--name', 'Alice Example', '--email', 'alice@example.invalid'])
 
 beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), 'git-signing-'))
@@ -53,7 +54,9 @@ test('signs and verifies commits for the participant who set it up', () => {
   expect(run(bin, [alice, 'log', '-1', '--format=%an <%ae> %G?'], repo)).toBe(
     'Alice Example <alice@example.invalid> G',
   )
-  expect(statSync(join(root, '.config/nuphos-git-identities', alice, 'signing_ed25519')).mode & 0o777).toBe(0o600)
+  expect(
+    statSync(join(root, '.config/nuphos-git-identities', alice, 'signing_ed25519')).mode & 0o777,
+  ).toBe(0o600)
 })
 
 test('leaves no identity in the shared config, so plain git commits fail', () => {
@@ -71,7 +74,9 @@ test('refuses a participant without an identity', () => {
   expect(fails(join(root, '.local/bin/git-as'), [bob, 'status'], join(root, 'repo'))).toContain(
     `no git identity configured for participant ${bob}`,
   )
-  expect(fails(join(root, '.local/bin/git-as'), ['../' + alice, 'status'])).toContain('invalid sender id')
+  expect(fails(join(root, '.local/bin/git-as'), ['../' + alice, 'status'])).toContain(
+    'invalid sender id',
+  )
 })
 
 test('keeps the existing key when run again', () => {
@@ -83,10 +88,12 @@ test('keeps the existing key when run again', () => {
 })
 
 test('rejects values that could escape the generated git config', () => {
-  expect(fails('bash', [setup, alice, '--name', 'Eve"\n[core]', '--email', 'e@example.invalid'])).toContain(
-    'must not contain quotes',
+  expect(
+    fails('bash', [setup, alice, '--name', 'Eve"\n[core]', '--email', 'e@example.invalid']),
+  ).toContain('must not contain quotes')
+  expect(fails('bash', [setup, '../x', '--name', 'Eve', '--email', 'e@example.invalid'])).toContain(
+    'invalid sender id',
   )
-  expect(fails('bash', [setup, '../x', '--name', 'Eve', '--email', 'e@example.invalid'])).toContain('invalid sender id')
 })
 
 test('records the participant even when another identity is seeded elsewhere', () => {
@@ -110,7 +117,10 @@ test('records the participant even when another identity is seeded elsewhere', (
 })
 
 test('clears author and committer overrides from the shared config', () => {
-  writeFileSync(globalConfig, '[author]\n\tname = Somebody\n[committer]\n\temail = somebody@example.invalid\n')
+  writeFileSync(
+    globalConfig,
+    '[author]\n\tname = Somebody\n[committer]\n\temail = somebody@example.invalid\n',
+  )
   setupAlice()
   expect(readFileSync(globalConfig, 'utf8')).not.toContain('Somebody')
   expect(readFileSync(globalConfig, 'utf8')).not.toContain('somebody@')

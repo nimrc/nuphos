@@ -120,15 +120,15 @@ responses into a failing command. Put scripts and large bodies in files rather
 than shell-escaping them inline. Do not call a bound `cost_dashboard_*` tool;
 the REST response is the single contract used by both Desktop and the agent.
 
-| Action | Call |
-|---|---|
-| Create dashboard | `POST /teams/{teamId}/dashboards` → `{ name, timeRange: { periodStart, periodEnd, granularity? } }` |
-| Add a panel (auto-runs) | `POST …/{dashboardId}/panels` → `{ title, kind: 'chart'\|'scalar'\|'table', code, staticParams?, credentialAccess? }` |
-| Edit a panel (code edit ⇒ new version) | `PUT …/{dashboardId}/panels/{panelId}` → `{ title?, kind?, code?, staticParams?, credentialAccess? }` |
-| Re-run one panel | `POST …/{dashboardId}/panels/{panelId}/execute?force=1` |
-| Re-run all panels | `POST …/{dashboardId}/refresh?force=1` |
-| Schedule refreshes | `PUT …/{dashboardId}` → `{ cadence: 'daily'\|'weekly'\|'monthly'\|null }` |
-| Read dashboard + panels + snapshots | `GET …/{dashboardId}` |
+| Action                                 | Call                                                                                                                  |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Create dashboard                       | `POST /teams/{teamId}/dashboards` → `{ name, timeRange: { periodStart, periodEnd, granularity? } }`                   |
+| Add a panel (auto-runs)                | `POST …/{dashboardId}/panels` → `{ title, kind: 'chart'\|'scalar'\|'table', code, staticParams?, credentialAccess? }` |
+| Edit a panel (code edit ⇒ new version) | `PUT …/{dashboardId}/panels/{panelId}` → `{ title?, kind?, code?, staticParams?, credentialAccess? }`                 |
+| Re-run one panel                       | `POST …/{dashboardId}/panels/{panelId}/execute?force=1`                                                               |
+| Re-run all panels                      | `POST …/{dashboardId}/refresh?force=1`                                                                                |
+| Schedule refreshes                     | `PUT …/{dashboardId}` → `{ cadence: 'daily'\|'weekly'\|'monthly'\|null }`                                             |
+| Read dashboard + panels + snapshots    | `GET …/{dashboardId}`                                                                                                 |
 
 Key facts:
 
