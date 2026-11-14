@@ -117,6 +117,13 @@ enum ThemePalette {
     static let primaryButtonDisabledFill = PaletteColor(light: 0xE8DBFC, dark: 0x3A2B59)
     static let primaryButtonDisabledForeground = body
 
+    /// The composer bar's own surface. Glass could not hold the 4.5:1 floor
+    /// for Attach and Mic over a pure-white attachment, even with an opaque
+    /// floor behind it (the glass lifted #141414 to #404040), so the composer
+    /// is an opaque canvas bar. This is deliberately a separate token from
+    /// `canvas` so the contrast test pins the composer, not the page.
+    static let composerBarFill = canvas
+
     /// The Bots list's thread-count capsule: `muted` at 12% over `canvas`,
     /// resolved to an opaque colour so the ratio never depends on the row.
     static let threadCapsuleFill = muted.composited(over: canvas, opacity: 0.12)

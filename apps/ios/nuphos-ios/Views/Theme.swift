@@ -46,6 +46,9 @@ enum Theme {
     /// The primary action's disabled fill and label, measured in both schemes.
     static let primaryButtonDisabledFill = adaptive(ThemePalette.primaryButtonDisabledFill)
     static let primaryButtonDisabledForeground = adaptive(ThemePalette.primaryButtonDisabledForeground)
+    /// The composer bar's opaque fill. It replaces the glass on the composer
+    /// so a pure-white attachment cannot lift the Attach/Mic backdrop.
+    static let composerBarFill = adaptive(ThemePalette.composerBarFill)
     /// The Bots list's thread-count capsule, opaque so its ratio is fixed.
     static let threadCapsuleFill = adaptive(ThemePalette.threadCapsuleFill)
     /// The disabled send key: the light disc keeps its 60% `muted` exactly;
@@ -105,6 +108,18 @@ extension View {
     /// label and a hairline instead (5.76:1 in both schemes).
     func dangerBorderedButton() -> some View {
         buttonStyle(Theme.DangerBorderedButtonStyle())
+    }
+
+    /// The composer's surface. The dark composer is opaque canvas so a
+    /// bright attachment cannot lift Attach/Mic; the light composer keeps the
+    /// glass it had, because its body colour clears the floor on white.
+    @ViewBuilder
+    func composerSurface(isDark: Bool, in shape: some Shape) -> some View {
+        if isDark {
+            background(Theme.composerBarFill, in: shape)
+        } else {
+            glass(interactive: true, in: shape)
+        }
     }
 
     /// Liquid Glass on iOS 26 and later; a material in the same shape before.
