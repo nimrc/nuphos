@@ -8,6 +8,7 @@ import { t } from '../../i18n'
 import { Button } from '../ui/button'
 import { toast } from '../ui/toast'
 
+import { AgentParticipantActions } from './AgentParticipantActions'
 import { PersonFace } from './PersonFace'
 import { ParticipantMenu } from './ShareAccess'
 
@@ -206,19 +207,11 @@ export function ParticipantList({
               <span className="px-1.5 text-[12px] text-tertiary">{t('Owner')}</span>
             )}
             {participant.agent && (
-              <>
-                <span className="px-1.5 text-[12px] text-tertiary">{t('Agent')}</span>
-                {participant.agent.removable && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={pending !== null}
-                    onClick={() => onRemove(participant)}
-                  >
-                    {t('Remove')}
-                  </Button>
-                )}
-              </>
+              <AgentParticipantActions
+                agent={participant.agent}
+                disabled={pending !== null}
+                onRemove={() => onRemove(participant)}
+              />
             )}
             {person && canManage && !self && (
               <ParticipantMenu

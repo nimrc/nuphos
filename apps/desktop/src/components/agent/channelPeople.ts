@@ -2,6 +2,7 @@ import { api } from '../../api'
 import { t } from '../../i18n'
 import { announceChatArchived } from '../../lib/chatArchiveEvents'
 import { ownAgents } from '../channels/channelShared'
+import { toast } from '../ui/toast'
 
 import { announceTimelineChange } from './panel/timelineEvents'
 
@@ -12,12 +13,19 @@ import type {
 } from '../../api/agent-types'
 import type { Pickable } from './PersonFace'
 
-/** A channel's agents as the Share card's people; the viewer may take out their own, or any if they own the channel. */
+/**
+ * A channel's agents as the Share card's people; the viewer may take out their
+ * own, or any if they own the channel, and then also picks which one leads.
+ */
 export function agentPeople(
-  agents: ChannelAgent[],
   viewerId: string,
-  channelOwnerId: string,
+  channel: { agents: ChannelAgent[]; ownerId: string; onAgentsChange: () => void } | undefined,
+  sessionId: string,
+  teamId: string,
 ): AgentConversationParticipant[] {
+  const agents = channel?.agents ?? []
+  const owns = channel?.ownerId === viewerId
+
   return agents.map((agent) => ({
     id: agent.sessionId,
     name: agent.title,
@@ -26,9 +34,28 @@ export function agentPeople(
     role: 'reply',
     agent: {
       avatar: agent.avatar,
-      removable: agent.ownerId === viewerId || channelOwnerId === viewerId,
+      removable: agent.ownerId === viewerId || owns,
+      lead: agent.lead === true,
+      ...(owns && agents.length > 1
+        ? {
+            setLead: (lead: boolean) =>
+              setLead(sessionId, teamId, lead ? agent.sessionId : null, channel),
+          }
+        : {}),
     },
   }))
+}
+
+function setLead(
+  sessionId: string,
+  teamId: string,
+  agentId: string | null,
+  channel: { onAgentsChange: () => void },
+) {
+  api
+    .agentSetChannelLead(sessionId, teamId, agentId)
+    .then(() => channel.onAgentsChange())
+    .catch((err: unknown) => toast.apiError(t('Could not change the lead'), err))
 }
 
 /** The viewer's own agents that are not in the channel yet, as teammates to pick. */

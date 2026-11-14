@@ -33,7 +33,15 @@ export type ConversationMoveCheck = {
 export type ConversationAccess = 'owner' | 'reply' | 'view'
 
 /** What makes a person an agent: the face it shows, and whether this viewer may take it out. */
-export type AgentFace = { avatar?: string; provider?: AgentProvider; removable?: boolean }
+export type AgentFace = {
+  avatar?: string
+  provider?: AgentProvider
+  removable?: boolean
+  /** Leads its chat: people's posts wake it, and it hands work to the other Bots. */
+  lead?: boolean
+  /** Set where this viewer, the chat's owner, may make it the lead or stop it leading. */
+  setLead?: (lead: boolean) => void
+}
 
 export type AgentConversationParticipant = AgentConversationPerson & {
   isOwner: boolean
@@ -73,6 +81,8 @@ export type AgentConversation = {
   title: string
   /** Picked bot avatar, e.g. `05-rembrandt`. Absent: the one its sessionId selects. */
   avatar?: string
+  /** The owner's lead Bot in this team, which hands work to their other Bots. */
+  leader?: boolean
   firstMessage: string
   messageCount: number
   tokenUsage?: AgentTokenUsageSummary

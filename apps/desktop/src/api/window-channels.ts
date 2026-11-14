@@ -24,7 +24,20 @@ export type WindowChannelsApi = {
   ): Promise<{ sessionId: string; title: string; avatar: string }>
   agentMakeBot(sessionId: string, teamId: string): Promise<{ avatar: string }>
   agentListChannelMentions(teamId: string): Promise<{ mentions: ChannelMention[] }>
-  agentListChannelAgents(channelId: string, teamId: string): Promise<{ agents: ChannelAgent[] }>
+  agentListChannelAgents(
+    channelId: string,
+    teamId: string,
+  ): Promise<{ agents: ChannelAgent[]; leadAgentSessionId?: string }>
+  agentSetBotLeader(
+    sessionId: string,
+    teamId: string,
+    leader: boolean,
+  ): Promise<{ leader: boolean }>
+  agentSetChannelLead(
+    channelId: string,
+    teamId: string,
+    agentSessionId: string | null,
+  ): Promise<{ agents: ChannelAgent[]; leadAgentSessionId?: string }>
   agentAddChannelAgent(
     channelId: string,
     teamId: string,

@@ -16,6 +16,10 @@ export const channelsApi = {
     window.api.agentNotifyMention(args),
   agentListChannelAgents: (channelId: string, teamId: string) =>
     window.api.agentListChannelAgents(channelId, teamId),
+  agentSetBotLeader: (sessionId: string, teamId: string, leader: boolean) =>
+    window.api.agentSetBotLeader(sessionId, teamId, leader),
+  agentSetChannelLead: (channelId: string, teamId: string, agentSessionId: string | null) =>
+    window.api.agentSetChannelLead(channelId, teamId, agentSessionId),
   agentAddChannelAgent: (channelId: string, teamId: string, agentSessionId: string) =>
     window.api.agentAddChannelAgent(channelId, teamId, agentSessionId),
   agentRemoveChannelAgent: (channelId: string, teamId: string, agentSessionId: string) =>

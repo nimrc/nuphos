@@ -33,7 +33,12 @@ export async function loadChannel(client: QueryClient, teamId: string, channelId
     api.agentListChannelAgents(channelId, teamId),
   ])
 
-  return { detail, agents: listed.agents, revision }
+  const agents = listed.agents.map((agent) => ({
+    ...agent,
+    lead: agent.sessionId === listed.leadAgentSessionId,
+  }))
+
+  return { detail, agents, revision }
 }
 
 /** After a post or an agent change, from any pane showing the channel: fetch it all now. */

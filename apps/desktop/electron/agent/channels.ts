@@ -41,8 +41,28 @@ export async function makeBot(sessionId: string, teamId: string): Promise<{ avat
 export async function listChannelAgents(
   channelId: string,
   teamId: string,
-): Promise<{ agents: ChannelAgent[] }> {
+): Promise<{ agents: ChannelAgent[]; leadAgentSessionId?: string }> {
   return callJsonForRenderer('GET', `${at(channelId)}/agents${teamQuery(teamId)}`)
+}
+
+/** The owner makes a Bot the Leader of their other Bots in this team, or stops it leading. */
+export async function setBotLeader(
+  sessionId: string,
+  teamId: string,
+  leader: boolean,
+): Promise<{ leader: boolean }> {
+  return callJsonForRenderer('PUT', `${at(sessionId)}/leader${teamQuery(teamId)}`, { leader })
+}
+
+/** The chat's owner picks which of its Bots leads it; null for none. */
+export async function setChannelLead(
+  channelId: string,
+  teamId: string,
+  agentSessionId: string | null,
+): Promise<{ agents: ChannelAgent[]; leadAgentSessionId?: string }> {
+  return callJsonForRenderer('PUT', `${at(channelId)}/lead${teamQuery(teamId)}`, {
+    agentSessionId,
+  })
 }
 
 /** Only the agent's owner can add it: their word that the channel may talk to it. */

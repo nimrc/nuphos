@@ -11,6 +11,7 @@ import { chatPreview, chatTime } from './chat-preview'
 import { chatRowAccess } from './chat-row-access'
 import { chatRowIcon } from './chat-row-icon'
 import { ChatRowStatus } from './ChatRowStatus'
+import { LeaderBadge } from './LeaderBadge'
 import { PhoneViewingBadge } from './PhoneViewingBadge'
 import { SessionResources } from './SessionResources'
 import { threadFoldsAway } from './thread-status'
@@ -112,7 +113,12 @@ export function chatSidebarItem({
     trailing: status,
     // A phone viewing this chat's dock tab shows here too, where the tab itself may be out of
     // sight. Not in the trailing slot: hover swaps that for the row's actions, hiding Stop.
-    note: <PhoneViewingBadge sessionId={conversation.sessionId} />,
+    note: (
+      <>
+        <LeaderBadge botId={isBot ? conversation.sessionId : botOfChannel(conversation)} />
+        <PhoneViewingBadge sessionId={conversation.sessionId} />
+      </>
+    ),
     foldedStatus: status,
     finished: threadFoldsAway({
       conversation,
