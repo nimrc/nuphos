@@ -4553,12 +4553,66 @@
         }
       }
     },
-    "New task": {},
-    "Ask Nuphos anything…": {},
-    "Connect cloud accounts and integrations in Nuphos to use them here.": {},
-    "Sign in with your Nuphos account to continue.": {},
-    "Sign out of Nuphos?": {},
-    "Welcome to Nuphos": {}
+    "New task": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新建 Task"
+          }
+        }
+      }
+    },
+    "Ask Nuphos anything…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向 Yu Bot 提问…"
+          }
+        }
+      }
+    },
+    "Connect cloud accounts and integrations in Nuphos to use them here.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在 Nuphos 中连接云端账户和集成，再回到这里使用。"
+          }
+        }
+      }
+    },
+    "Sign in with your Nuphos account to continue.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用你的账户登录以继续。"
+          }
+        }
+      }
+    },
+    "Sign out of Nuphos?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要退出 Yu Bot 吗？"
+          }
+        }
+      }
+    },
+    "Welcome to Nuphos": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "欢迎使用 Yu Bot"
+          }
+        }
+      }
+    }
   },
   "version": "1.0"
 }
