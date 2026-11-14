@@ -161,6 +161,8 @@ final class ChatSession {
     var canSteer: Bool { !readOnly && isNativeRuntime && allows("steer") && !allows("reply") && !steeringPending }
     var canReply: Bool { !readOnly && (!isNativeRuntime || allows("reply")) }
     var canCancel: Bool { !readOnly && !isStopping && (isNativeRuntime ? allows("cancel") : transportStreaming) }
+    /// Steering and the local queue carry text only.
+    var acceptsAttachments: Bool { !canSteer && !(transportStreaming && !isNativeRuntime) }
     var canSubmit: Bool { loaded && loadError == nil && !readOnly && failedSubmission == nil && !submitting && !awaitingAdmission && !steeringPending && (!isNativeRuntime || isNew || allows("send") || canReply || canSteer || runtimeMayAcceptLater) }
     /// A message the agent cannot take now still goes: it waits in the
     /// session queue, as on Desktop.
@@ -460,10 +462,9 @@ final class ChatSession {
             return
         }
         if transportStreaming && !isNativeRuntime {
-            if !trimmed.isEmpty {
-                queued.append(trimmed)
-                Analytics.shared.track("agent_message_queued", teamID: teamId)
-            }
+            guard attachments.isEmpty else { error = String(localized: "Send attachments after this turn; it takes text now."); return }
+            queued.append(trimmed)
+            Analytics.shared.track("agent_message_queued", teamID: teamId)
             return
         }
         // Words for the quoted question answer it, as its options do; with files, a message answering nothing.

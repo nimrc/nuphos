@@ -15,6 +15,8 @@ struct ProfileSheet: View {
 
     @State private var confirmSignOut = false
     @State private var privacyError: String?
+    @State private var confirmWithdraw = false
+    @State private var withdrawing = false
     @State private var yuaiBalance: Double?
     @AppStorage(Whisper.promptKey) private var whisperPrompt = Whisper.defaultPrompt
 
@@ -107,12 +109,8 @@ struct ProfileSheet: View {
                 Section("Privacy") {
                     Link("Privacy policy", destination: URL(string: "https://yu-bot.airhost.site/privacy/")!)
                     if session.aiConsentAccepted {
-                        Button("Withdraw AI data sharing permission") {
-                            Task {
-                                do { try await session.setAIConsent(accepted: false); dismiss() }
-                                catch { privacyError = error.localizedDescription }
-                            }
-                        }
+                        Button("Withdraw AI data sharing permission") { confirmWithdraw = true }
+                            .disabled(withdrawing)
                     } else {
                         Text("AI data sharing is off. Close Account to read the notice.")
                     }
@@ -151,6 +149,20 @@ struct ProfileSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
+            }
+            .confirmationDialog("Withdraw AI data sharing permission?", isPresented: $confirmWithdraw, titleVisibility: .visible) {
+                Button("Withdraw", role: .destructive) {
+                    withdrawing = true
+                    privacyError = nil
+                    Task {
+                        defer { withdrawing = false }
+                        do { try await session.setAIConsent(accepted: false); dismiss() }
+                        catch { privacyError = error.localizedDescription }
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("You can't chat with Bots until you allow it again, and unsent drafts are deleted. Work already running is not stopped.")
             }
             .confirmationDialog("Sign out of Yu Bot?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) {

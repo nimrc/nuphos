@@ -4678,6 +4678,76 @@
           }
         }
       }
+    },
+    "Couldn't connect": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法连接"
+          }
+        }
+      }
+    },
+    "Turn this Bot into a Task?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把这个 Bot 转成 Task？"
+          }
+        }
+      }
+    },
+    "Turn into a Task": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "转成 Task"
+          }
+        }
+      }
+    },
+    "It leaves every chat it is in, group chats included. Making it a Bot again does not add it back.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它会退出所在的所有聊天，包括群聊。之后再把它设为 Bot，也不会自动加回去。"
+          }
+        }
+      }
+    },
+    "Withdraw AI data sharing permission?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤回 AI 数据共享授权？"
+          }
+        }
+      }
+    },
+    "Withdraw": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤回"
+          }
+        }
+      }
+    },
+    "You can't chat with Bots until you allow it again, and unsent drafts are deleted. Work already running is not stopped.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新授权前将无法与 Bot 对话，未发送的草稿会被删除。已在运行的工作不会停止。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
