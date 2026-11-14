@@ -77,11 +77,11 @@ struct AddConnectorSheet: View {
                 Text(connector.title).font(.system(size: 15)).foregroundStyle(Theme.heading)
                 Spacer(minLength: 0)
                 if connectors.connecting == connector.key {
-                    ProgressView().controlSize(.small).tint(Theme.muted)
+                    ProgressView().controlSize(.small).tint(Theme.body)
                 } else {
                     Image(systemName: chevron(connector))
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Theme.muted)
+                        .foregroundStyle(Theme.body)
                 }
             }
             .contentShape(Rectangle())

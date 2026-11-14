@@ -87,7 +87,7 @@ struct NativeBrowser: View {
             Button("Hide", systemImage: "xmark") { bannerHidden = true }
                 .labelStyle(.iconOnly)
                 .font(Theme.Text.label)
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
@@ -106,7 +106,7 @@ struct NativeBrowser: View {
             Button("Hide", systemImage: "xmark") { bannerHidden = true }
                 .labelStyle(.iconOnly)
                 .font(Theme.Text.label)
-                .foregroundStyle(Theme.muted)
+                .foregroundStyle(Theme.body)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
@@ -121,7 +121,7 @@ struct NativeBrowser: View {
             Text(reason)
         } actions: {
             if let tabId {
-                Button("Live view on Mac") { liveView(tabId) }.buttonStyle(.borderedProminent)
+                Button("Live view on Mac") { liveView(tabId) }.prominentButton()
                 Button("Show on Mac") { showOnMac() }
             }
         }

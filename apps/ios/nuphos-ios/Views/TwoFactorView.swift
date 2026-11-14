@@ -122,14 +122,20 @@ struct TwoFactorView: View {
                 LabeledContent("Status", value: String(localized: "On"))
                 LabeledContent("Recovery codes left", value: "\(status.recoveryCodesRemaining)")
                 Button("New recovery codes") { confirming = .codes }
-                Button("Turn off", role: .destructive) { confirming = .disable }
+                Button(role: .destructive) { confirming = .disable } label: {
+                    Text("Turn off").foregroundStyle(Theme.danger)
+                }
+                .tint(Theme.danger)
                 if let passkeys = status.passkeys {
                     ForEach(passkeys) { passkey in
                         HStack {
                             Label(passkey.name, systemImage: "person.badge.key")
                             Spacer()
-                            Button("Remove", role: .destructive) { confirming = .removePasskey(passkey) }
-                                .buttonStyle(.borderless)
+                            Button(role: .destructive) { confirming = .removePasskey(passkey) } label: {
+                                Text("Remove").foregroundStyle(Theme.danger)
+                            }
+                            .buttonStyle(.borderless)
+                            .tint(Theme.danger)
                         }
                     }
                     Button {
