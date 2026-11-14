@@ -52,7 +52,7 @@ struct MfaCodeEntry: View {
                     Text(busy ? "Verifying…" : submitLabel)
                 }.frame(maxWidth: .infinity, minHeight: 20)
             }
-            .buttonStyle(.borderedProminent).controlSize(.large).buttonBorderShape(.capsule)
+            .prominentButton().controlSize(.large).buttonBorderShape(.capsule)
             .disabled(!complete || busy)
             if let passkey {
                 Button("Use a passkey") {

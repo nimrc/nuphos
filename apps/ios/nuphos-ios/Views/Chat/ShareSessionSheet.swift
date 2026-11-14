@@ -210,7 +210,7 @@ struct ShareSessionSheet: View {
                             AvatarView(user: member.asUser, size: 28)
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(member.displayName).foregroundStyle(Theme.heading).lineLimit(1)
-                                Text(member.email).font(.caption).foregroundStyle(Theme.muted).lineLimit(1)
+                                Text(member.email).font(.caption).foregroundStyle(Theme.body).lineLimit(1)
                             }
                             Spacer(minLength: 8)
                             if pending == member.id { ProgressView() } else { Image(systemName: "plus.circle").foregroundStyle(Theme.brandText) }

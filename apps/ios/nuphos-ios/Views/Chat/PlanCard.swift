@@ -127,7 +127,7 @@ struct PlanCard: View {
                 Button("Request changes") { showRevise = true }
                     .buttonStyle(.bordered)
                 Button("Reject", role: .destructive) { Task { await run { try await session.rejectPlan(plan.id) } } }
-                    .buttonStyle(.bordered)
+                    .dangerBorderedButton()
             }
             .controlSize(.small)
             .font(Theme.Text.label.weight(.medium))
@@ -169,7 +169,7 @@ struct PlanStepDisclosureStyle: DisclosureGroupStyle {
                     Spacer(minLength: 8)
                     Image(systemName: configuration.isExpanded ? "chevron.down" : "chevron.right")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.muted)
+                        .foregroundStyle(Theme.body)
                 }
                 .contentShape(Rectangle())
             }

@@ -48,6 +48,12 @@ final class AgentStore {
     private(set) var bots: [AgentConversation] = []
     /// Set once the chats have loaded, so the home list can open on the right tab.
     private(set) var channelsLoaded = false
+    /// The team `channels` and `bots` were loaded for. A pin prune may only
+    /// run against the current team's list.
+    private(set) var channelsTeamId: String?
+    /// The search text `channels` and `bots` were loaded with. Empty means the
+    /// full list; a stale filtered list must never prune pins.
+    private(set) var channelsQuery = ""
 
     /// Both listings the desktop sidebar reads: chats of one's own, then the ones joined.
     /// Then one's Bots, for those that have no chat yet.
@@ -68,6 +74,8 @@ final class AgentStore {
         guard team.id == selectedTeam?.id, query == search, !Task.isCancelled else { return }
         channels = rows.sorted { $0.lastActiveAt > $1.lastActiveAt }
         bots = botPage.conversations
+        channelsQuery = query
+        channelsTeamId = team.id
         if query.isEmpty { HomePage.hasChats = !botsList.isEmpty }
         channelsLoaded = true
     }
@@ -474,6 +482,9 @@ final class AgentStore {
         credentials.reset()
         channels = []
         bots = []
+        channelsLoaded = false
+        channelsTeamId = nil
+        channelsQuery = ""
         runtimes = []
         agentDevices = []
         agentDevicesError = false
