@@ -69,6 +69,11 @@ final class AgentStore {
     /// Both listings the desktop sidebar reads: chats of one's own, then the ones joined.
     /// Then one's Bots, for those that have no chat yet.
     func loadChannels() async {
+        // A load in flight is not proof of anything: if it fails, is cancelled,
+        // or the query or team changes under it, the previous answer stays on
+        // screen but its completeness must not, or a pin made while the list is
+        // stale could be pruned against a list that never had it.
+        channelsComplete = false
         guard let team = selectedTeam else { return }
         let query = search
         let limit = Self.channelsPageLimit
