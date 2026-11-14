@@ -54,6 +54,7 @@ struct AgentPage: View {
     @State private var renaming: AgentConversation?
     @State private var profile: BotProfileTarget?
     @State private var archivingBot: AgentConversation?
+    @State private var unbotting: AgentConversation?
     @State private var renamedTitle = ""
     @State private var refreshing = false
     #if DEBUG
@@ -121,6 +122,13 @@ struct AgentPage: View {
                 Button("Archive Bot", role: .destructive) { Task { await store.archive(sessionId: conversation.sessionId, teamId: conversation.teamId) } }
             } message: { _ in
                 Text("Its chat is archived with it. Unarchive either one to bring both back.")
+            }
+            // Un-botting removes it from every chat, and making it a Bot again does not add it back.
+            .alert("Turn this Bot into a Task?", isPresented: Binding(get: { unbotting != nil }, set: { if !$0 { unbotting = nil } }), presenting: unbotting) { conversation in
+                Button("Cancel", role: .cancel) {}
+                Button("Turn into a Task", role: .destructive) { Task { _ = await store.setBot(false, conversation: conversation) } }
+            } message: { _ in
+                Text("It leaves every chat it is in, group chats included. Making it a Bot again does not add it back.")
             }
             .alert("Rename agent", isPresented: Binding(get: { renaming != nil }, set: { if !$0 { renaming = nil } }), presenting: renaming) { conversation in
                 let title = renamedTitle.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -304,6 +312,7 @@ struct AgentPage: View {
             } description: {
                 Text("Your workspace's cloud runtime is starting. It appears here in a moment.")
             }
+            .task { await store.awaitRuntime() }
         case .idle, .loading:
             ProgressView("Loading agents…")
                 .tint(Theme.muted)
@@ -412,8 +421,9 @@ struct AgentPage: View {
         .tint(.orange) }
         if conversation.ownsChat, !conversation.isChannel {
             Button {
+                if conversation.isBot { unbotting = conversation; return }
                 Task {
-                    if await store.setBot(!conversation.isBot, conversation: conversation), !conversation.isBot {
+                    if await store.setBot(true, conversation: conversation) {
                         await openBotChat(conversation.sessionId)
                     }
                 }

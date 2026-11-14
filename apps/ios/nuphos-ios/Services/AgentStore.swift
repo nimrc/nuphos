@@ -326,8 +326,10 @@ final class AgentStore {
         publishSharingContext()
     }
 
+    /// An empty list is always read again: the server creates the cloud
+    /// runtime on a later listing, e.g. after a rebuild.
     func loadRuntimes(force: Bool = false) async {
-        guard let team = selectedTeam, force || !runtimesLoaded else { return }
+        guard let team = selectedTeam, force || !runtimesLoaded || runtimes.isEmpty else { return }
         do {
             let next = try await NuphosAPI.runtimeInstances(token: token, teamId: team.id)
             guard !Task.isCancelled, selectedTeam?.id == team.id else { return }
@@ -338,6 +340,15 @@ final class AgentStore {
         } catch {
             guard !Task.isCancelled, selectedTeam?.id == team.id else { return }
             runtimesError = error.localizedDescription
+        }
+    }
+
+    /// Polls while the workspace has no runtime yet, for the "Preparing your runtime" views.
+    func awaitRuntime() async {
+        while runtimesLoaded, runtimes.isEmpty {
+            try? await Task.sleep(for: .seconds(5))
+            guard !Task.isCancelled else { return }
+            await loadRuntimes(force: true)
         }
     }
 

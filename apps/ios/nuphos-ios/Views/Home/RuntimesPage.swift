@@ -68,6 +68,7 @@ struct RuntimesPage: View {
                 // The server gives every workspace its cloud runtime; there is nothing to add here.
                 ContentUnavailableView("Preparing your runtime", systemImage: "cpu", description: Text("Your workspace's cloud runtime is starting. It appears here in a moment."))
                     .listRowBackground(Color.clear)
+                    .task { await store.awaitRuntime() }
             }
             ForEach(boxes) { box in
                 Section {

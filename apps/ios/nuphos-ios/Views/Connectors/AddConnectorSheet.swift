@@ -56,6 +56,15 @@ struct AddConnectorSheet: View {
             }
         }
         .interactiveDismissDisabled(connectors.connecting != nil)
+        // On the sheet, not the page under it: every connect runs from here, and a covered page can't present.
+        .alert(
+            "Couldn't connect",
+            isPresented: Binding(get: { connectors.connectError != nil }, set: { if !$0 { connectors.connectError = nil } })
+        ) {
+            Button("OK") { connectors.connectError = nil }
+        } message: {
+            Text(connectors.connectError ?? "")
+        }
     }
 
     @ViewBuilder

@@ -544,7 +544,7 @@ struct ChatComposerBar<Controls: View>: View {
         .hoverEffect()
         #endif
         .contentTransition(.symbolEffect(.replace))
-        .disabled(action != .stop && (!canSend || !hasPayload || (!allowsAttachments && !attachments.isEmpty)))
+        .disabled(action != .stop && (!canSend || !hasPayload))
         .accessibilityLabel(action.accessibilityLabel)
     }
 
@@ -553,7 +553,12 @@ struct ChatComposerBar<Controls: View>: View {
     private var filled: Bool { action == .stop || hasPayload }
 
     private func send() {
-        guard !preparingSubmission, canSend, hasPayload, allowsAttachments || attachments.isEmpty else { return }
+        guard !preparingSubmission, canSend, hasPayload else { return }
+        // Says why instead of a greyed-out button; the draft stays as it is.
+        guard allowsAttachments || attachments.isEmpty else {
+            attachmentError = String(localized: "Send attachments after this turn; it takes text now.")
+            return
+        }
         let draft = ComposerSubmission(text: text.trimmingCharacters(in: .whitespacesAndNewlines), attachments: attachments)
         preparingSubmission = true
         Task {

@@ -13,22 +13,12 @@ struct ConnectorsPage: View {
     private var canConnect: Bool { team?.isAdministrator == true }
 
     var body: some View {
-        @Bindable var connectors = connectors
-
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Theme.canvas)
             .sheet(isPresented: $adding) {
                 AddConnectorSheet(teamId: team?.id ?? "")
                     .environment(connectors)
-            }
-            .alert(
-                "Couldn't connect",
-                isPresented: Binding(get: { connectors.connectError != nil }, set: { if !$0 { connectors.connectError = nil } })
-            ) {
-                Button("OK") { connectors.connectError = nil }
-            } message: {
-                Text(connectors.connectError ?? "")
             }
             .task(id: team?.id) {
                 if let id = team?.id { await connectors.load(teamId: id) }

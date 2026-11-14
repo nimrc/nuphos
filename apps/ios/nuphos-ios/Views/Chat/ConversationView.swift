@@ -356,7 +356,7 @@ struct ConversationView: View {
                 // While the agent cannot take a message, the button queues it.
                 sendsDuringTurn: session.isNativeRuntime && !session.sendQueues,
                 canSteer: session.canSteer,
-                allowsAttachments: !session.canSteer,
+                allowsAttachments: session.acceptsAttachments,
                 editRequest: $session.editingSubmission,
                 mentions: MentionSource(
                     teamId: session.teamId,

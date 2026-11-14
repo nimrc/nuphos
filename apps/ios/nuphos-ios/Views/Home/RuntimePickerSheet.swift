@@ -56,6 +56,7 @@ private struct RuntimePicker: View {
                     ProgressView("Loading runtimes…").tint(Theme.muted)
                 } else if choices.isEmpty {
                     ContentUnavailableView("Preparing your runtime", systemImage: "cpu", description: Text("Your workspace's cloud runtime is starting. It appears here in a moment."))
+                        .task { await store.awaitRuntime() }
                 } else { boxList }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
