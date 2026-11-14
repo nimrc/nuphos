@@ -145,6 +145,19 @@ describe('handoffs', () => {
     expect((await agentHandoffs().findOne({ id }))?.nudges).toBe(MAX_NUDGES)
   })
 
+  test('a new due time sets how long each reminder waits', async () => {
+    const { id } = await handOff(lead, { toSessionId: 'writer', task: 'Draft', dueInMinutes: 10 })
+    const later = (minutes: number) => new Date(Date.now() + minutes * 60_000)
+
+    await updateHandoff(writer, { handoffId: id, status: 'blocked', report: 'Need access' })
+    await updateHandoff(lead, { handoffId: id, dueInMinutes: 120 })
+    expect(await nudgeOverdueHandoffs(later(60))).toBe(0)
+    expect(await nudgeOverdueHandoffs(later(121))).toBe(1)
+    // The next one waits the new two hours, not the first ten minutes.
+    expect(await nudgeOverdueHandoffs(later(140))).toBe(0)
+    expect(await nudgeOverdueHandoffs(later(242))).toBe(1)
+  })
+
   test('a report or a new due time stops the reminders', async () => {
     const { id } = await handOff(lead, { toSessionId: 'writer', task: 'Draft', dueInMinutes: 10 })
 

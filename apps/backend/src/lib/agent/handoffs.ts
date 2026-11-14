@@ -26,6 +26,8 @@ export type Handoff = {
   /** The assignee's latest report. */
   report?: string
   dueAt: Date
+  /** How long to wait for a report, again after each reminder. */
+  remindEveryMs: number
   createdAt: Date
   updatedAt: Date
   /** Overdue reminders sent to the delegator; they stop at MAX_NUDGES. */
@@ -68,6 +70,7 @@ export async function handOff(
     ...(input.doneWhen ? { doneWhen: input.doneWhen } : {}),
     status: 'open',
     dueAt: new Date(now.getTime() + (input.dueInMinutes ?? DEFAULT_DUE_MINUTES) * 60_000),
+    remindEveryMs: (input.dueInMinutes ?? DEFAULT_DUE_MINUTES) * 60_000,
     createdAt: now,
     updatedAt: now,
     nudges: 0,
@@ -125,7 +128,11 @@ export async function updateHandoff(
     // A new due time starts the reminders over.
     ...(input.dueInMinutes === undefined
       ? {}
-      : { dueAt: new Date(now.getTime() + input.dueInMinutes * 60_000), nudges: 0 }),
+      : {
+          dueAt: new Date(now.getTime() + input.dueInMinutes * 60_000),
+          remindEveryMs: input.dueInMinutes * 60_000,
+          nudges: 0,
+        }),
   }
 
   await agentHandoffs().updateOne({ id: handoff.id }, { $set: update })
@@ -178,9 +185,7 @@ export async function nudgeOverdueHandoffs(now = new Date()): Promise<number> {
       {
         $inc: { nudges: 1 },
         // Wait as long again before the next reminder.
-        $set: {
-          dueAt: new Date(now.getTime() + (handoff.dueAt.getTime() - handoff.createdAt.getTime())),
-        },
+        $set: { dueAt: new Date(now.getTime() + handoff.remindEveryMs) },
       },
       { returnDocument: 'after' },
     )
