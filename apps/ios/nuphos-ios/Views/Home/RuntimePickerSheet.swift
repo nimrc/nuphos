@@ -240,7 +240,7 @@ struct SelectorAgentRow: View {
                 HStack(spacing: 6) {
                     Text(SelectorBox.agentName(runtime)).font(.system(size: titleSize, weight: .medium)).foregroundStyle(Theme.heading).fixedSize(horizontal: false, vertical: true)
                     if let reachable = runtime.reachable(online: online) {
-                        Circle().fill(reachable ? Color.green : Color.red).frame(width: 7, height: 7)
+                        RuntimeStatusDot(online: reachable)
                             .accessibilityElement()
                             .accessibilityLabel(reachable ? Text("Online") : Text("Offline"))
                     }

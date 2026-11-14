@@ -46,6 +46,12 @@ enum Theme {
     /// Label and plus glyph on `newBotNotReadyFill`.
     static let newBotNotReadyForeground = adaptive(ThemePalette.newBotNotReadyForeground)
 
+    /// The Cloud runtime status dot: green online, red offline (also the
+    /// disabled runtime's shape). Never `Color.green`/`Color.red`, so the
+    /// contrast tests measure the palette the view actually draws.
+    static let dotOnline = adaptive(ThemePalette.dotOnline)
+    static let dotOffline = adaptive(ThemePalette.dotOffline)
+
     private static func adaptive(_ color: PaletteColor) -> Color {
         adaptive(light: color.light.hex, dark: color.dark.hex)
     }

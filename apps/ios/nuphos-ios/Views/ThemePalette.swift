@@ -108,4 +108,39 @@ enum ThemePalette {
     /// the light and 3.77:1 in the dark, so the light uses the designer's dark
     /// grey and the dark lifts to a muted light grey (never white).
     static let newBotNotReadyForeground = PaletteColor(light: 0x48484A, dark: 0xD4D4D8)
+
+    /// The Cloud runtime status dot: green when the runtime answers, red when
+    /// it does not (and for a disabled runtime, which keeps the offline shape).
+    /// Both clear 3:1 on `canvas` and `surface` in each scheme.
+    static let dotOnline = PaletteColor(light: 0x1B7F3B, dark: 0x30D158)
+    static let dotOffline = PaletteColor(light: 0xFF3B30, dark: 0xFF453A)
+}
+
+/// The Cloud runtime status dot's shared state and geometry.
+///
+/// Foundation only, like `ThemePalette`, so the contrast test can check that
+/// the two states differ by shape as well as by colour: both are filled
+/// circles, and only the offline state carries one diagonal slash.
+enum RuntimeDotState: Equatable, Sendable {
+    case online
+    case offline
+
+    init(online: Bool) {
+        self = online ? .online : .offline
+    }
+
+    /// Both states are filled circles.
+    var isFilled: Bool { true }
+
+    /// Offline cuts the dot with one slash; online has none.
+    var drawsSlash: Bool { self == .offline }
+
+    /// The dot's diameter in points.
+    var diameter: Double { 8 }
+
+    /// The slash's thickness in points.
+    var slashWidth: Double { 1.5 }
+
+    /// The slash runs diagonally, so the two states also differ in silhouette.
+    var slashAngleDegrees: Double { 45 }
 }
