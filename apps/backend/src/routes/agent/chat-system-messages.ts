@@ -106,6 +106,7 @@ export function buildNuphosLinksMessage(
           'Examples: `rg -i "s3|bucket" skills/nuphos-api/references/gui-routes.md`; `rg -i "ec2|instance" skills/nuphos-api/references/gui-routes.md`; `rg -i "grafana|dashboard" skills/nuphos-api/references/gui-routes.md`; `rg -i "pod|deployment|service" skills/nuphos-api/references/gui-routes.md`.',
           'Use a catalog row only when you have every required id listed on that row. Use the exact displayed resource name/id as the markdown link text. Example: `[prod-cluster](https://nuphos.ai/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<clusterName>)`.',
         ]),
+    `A Bot, Task or chat is named, never addressed: write its name as a markdown link to its path, e.g. \`[Q](/teams/${teamId ?? '<teamId>'}/agent/<sessionId>)\`, which opens it in the app. Never show its URL, path or session id as visible text, also not right after create_bot, create_thread or send_message_to_thread.`,
     nativeClaudeSkills
       ? 'Keep links useful rather than noisy: link each important resource once, then you may refer to it plainly later. If neither the response nor route catalog supplies a complete route, do not invent a Nuphos URL.'
       : 'Keep links useful rather than noisy: link each important resource once, then you may refer to it plainly later. If the catalog has no matching route, or you are missing an id, do not invent a Nuphos URL.',
