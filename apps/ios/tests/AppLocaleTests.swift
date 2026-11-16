@@ -24,12 +24,14 @@ enum AppLocaleTests {
         precondition(fallback == english)
 
         let date = Date(timeIntervalSince1970: 1_794_572_100) // 2026-11-13 12:15 UTC
-        let zh = date.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened).locale(appChinese))
+        // UTC, so the expected 12:15 holds on any machine's time zone.
+        let utc = TimeZone(identifier: "UTC")!
+        let zh = date.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, locale: appChinese, timeZone: utc))
         precondition(zh.contains("2026年11月13日"), "Chinese date order, got \(zh)")
         precondition(zh.contains("12:15"), "Chinese 24-hour time, got \(zh)")
         precondition(!zh.contains("AM") && !zh.contains("PM"), "Chinese time is 24-hour, got \(zh)")
 
-        let en = date.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened).locale(appEnglish))
+        let en = date.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, locale: appEnglish, timeZone: utc))
         precondition(en.contains("Nov 13, 2026"), "English date order, got \(en)")
         precondition(en.contains("12:15"), "English time, got \(en)")
     }
