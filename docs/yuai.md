@@ -34,11 +34,10 @@ docker build -t <registry>/nuphos-runtime:opencode-yuai-<n> apps/runtime/yuai
 
 `BASE` picks the published runtime image they build on; `OMP_VERSION` the omp release.
 
-## TODO
+## Session token lifetime
 
-- **Session token lifetime.** The token omp/OpenCode send is minted per turn and expires after 24h,
-  but the agent reads `NUPHOS_TOKEN` from the env acp-shim started it with. An agent
-  process kept alive past 24h would get 401 from `/llm/yuai`. Check whether acp-shim respawns
-  OpenCode with each turn's env; if not, read the token per request (e.g. a header from a file
-  under `$OPENAB_CREDENTIALS_DIR`, as `runtime-guard.sh` does) or accept recently expired tokens
-  for this route only.
+The token omp sends is minted per turn and expires after 24h, while an omp process can outlive
+it. omp's `apiKey` is therefore a command that reads `$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN`, the
+file OpenAB rewrites with the current token on every turn. omp caches the answer and runs the
+command again after a 401, so the request retries with the fresh token (checked against omp
+18.20.0). The OpenCode variant still reads `NUPHOS_TOKEN` from its env once, and is not deployed.

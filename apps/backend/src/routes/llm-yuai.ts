@@ -25,8 +25,7 @@ async function payingEmail(c: Context): Promise<string> {
   const token = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : ''
   const claims = token ? verifyPreviewMcpToken(token) : null
 
-  // TODO(yuai): the token is minted per turn with a 24h expiry, but OpenCode reads it once at
-  // start. A single OpenCode process alive past 24h would get 401 here; see docs/yuai.md.
+  // An expired token gets 401 like any other: omp then re-reads the session's current one.
   // Exchanged tokens (`lim`) only vend one connector's credential, never model calls.
   if (!claims || claims.lim)
     throw new AppError(401, 'unauthorized', 'A Nuphos runtime session token is required')
