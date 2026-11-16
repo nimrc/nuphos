@@ -1,11 +1,13 @@
 # Seeded into ~/.omp/agent/models.yml by acp-shim on every start, with the session env's
 # NUPHOS_BACKEND_URL in place. No other variable in braces, even here: any unset one skips the file.
-# Yu AI through the backend, which pays with the turn's user's own key; NUPHOS_TOKEN (an env var
-# name, read per request) is the session token that names that user.
+# Yu AI through the backend, which pays with the turn's user's own key; the key is the session
+# token that names that user. It expires after 24h while omp's env is fixed at spawn, so the key
+# is read from the file OpenAB rewrites every turn. omp caches a command's answer and runs it
+# again after a 401, which picks up the fresh token; the env's copy covers a missing file.
 providers:
   yuai:
     baseUrl: ${NUPHOS_BACKEND_URL}/llm/yuai/v1
-    apiKey: NUPHOS_TOKEN
+    apiKey: '!cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || printf %s "$NUPHOS_TOKEN"'
     api: openai-completions
     authHeader: true
     models:

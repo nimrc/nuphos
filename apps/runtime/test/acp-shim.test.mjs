@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
-import { mkdtemp, realpath, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, realpath, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { PassThrough } from 'node:stream'
@@ -550,5 +550,36 @@ test("the Yu AI omp image's templates seed both files from a session env", async
     assert.match(await readFile(join(agent, 'config.yml'), 'utf8'), /yuai\/deepseek/)
   } finally {
     await rm(home, { recursive: true, force: true })
+  }
+})
+
+test("the Yu AI omp key is read from the session's credentials file, not the spawn env", async () => {
+  const { seedOmpAgentDir } = await import('../image/acp-shim.mjs')
+  const { readFile, writeFile } = await import('node:fs/promises')
+  const { execFileSync } = await import('node:child_process')
+  const root = await mkdtemp(join(tmpdir(), 'omp-yuai-key-'))
+  try {
+    seedOmpAgentDir(
+      { HOME: root, NUPHOS_BACKEND_URL: 'http://backend.svc:3000' },
+      new URL('../yuai-omp', import.meta.url).pathname,
+    )
+    const models = await readFile(join(root, '.omp', 'agent', 'models.yml'), 'utf8')
+    const apiKey = models.match(/^\s*apiKey: '(.*)'$/m)?.[1]?.replaceAll("''", "'")
+    // omp runs a `!` value through /bin/sh and runs it again after a 401, so a token
+    // OpenAB refreshed since the agent started is picked up; an env var name is not.
+    assert.ok(apiKey?.startsWith('!'), `apiKey is a command, got ${apiKey}`)
+    const key = (env) =>
+      execFileSync('/bin/sh', ['-c', apiKey.slice(1)], { env, encoding: 'utf8' }).trim()
+    const credentials = join(root, 'credentials')
+    await mkdir(credentials)
+    await writeFile(join(credentials, 'NUPHOS_TOKEN'), 'fresh\n')
+    assert.equal(key({ OPENAB_CREDENTIALS_DIR: credentials, NUPHOS_TOKEN: 'stale' }), 'fresh')
+    // Without a credentials file (none written yet) the spawn env's token still works.
+    assert.equal(
+      key({ OPENAB_CREDENTIALS_DIR: join(root, 'none'), NUPHOS_TOKEN: 'spawn' }),
+      'spawn',
+    )
+  } finally {
+    await rm(root, { recursive: true, force: true })
   }
 })
