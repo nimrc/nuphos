@@ -18,6 +18,8 @@ data:
     fi
     chown mongodb:mongodb /data/configdb/nuphos-keyfile
     chmod 400 /data/configdb/nuphos-keyfile
+    # containerd 2.x leaves the soft nofile at 1024; WiredTiger keeps a file per collection and index.
+    ulimit -n 65536
     /usr/local/bin/docker-entrypoint.sh mongod --replSet rs0 --keyFile /data/configdb/nuphos-keyfile --bind_ip_all &
     pid=$!
     trap 'kill -TERM "$pid"; wait "$pid"' TERM INT
